@@ -31,11 +31,14 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;opacity:.35;mi
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .45 0 0 0 0 .4 0 0 0 .22 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
 .wrap{max-width:700px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
 body.wide .wrap{max-width:1400px}
-.proj{display:grid;grid-template-columns:minmax(0,1fr) minmax(260px,340px);gap:14px;align-items:start}
+.proj{display:grid;grid-template-columns:minmax(0,1fr) minmax(240px,300px);gap:12px;align-items:start}
 @media (max-width:900px){.proj{grid-template-columns:1fr}}
-.proj .board{max-height:calc(100vh - 150px);max-width:calc(100vh - 150px);width:100%;margin:0 auto}
-.proj .tile{font-size:clamp(8px,1.05vw,15px)}
-.proj .tok{width:30%;max-width:28px}
+.proj .board{aspect-ratio:auto;width:100%;height:max(560px,calc(100vh - 130px));max-width:none;margin:0;
+  grid-template-columns:1.55fr repeat(10,minmax(0,1fr)) 1.55fr;grid-template-rows:1.55fr repeat(10,minmax(0,1fr)) 1.55fr}
+.proj .tile{font-size:clamp(11px,1.35vw,22px);padding:2px}
+.proj .tile .ic{font-size:.7em}
+.proj .tile.corner{font-size:clamp(12px,1.5vw,24px)}
+.proj .tok{width:24%;max-width:30px}
 .proj .more{position:relative;font-size:.8em;font-weight:700;background:var(--ink);color:var(--paper);border-radius:99px;padding:0 4px;line-height:1.4}
 .pturn{display:flex;align-items:center;gap:12px;font-family:var(--display);font-size:clamp(18px,2.6vw,38px);line-height:1.15;text-align:left}
 .pturn svg{width:clamp(54px,7vw,110px);height:auto;flex:0 0 auto}
@@ -288,7 +291,7 @@ input[type=text]{font-family:var(--body);font-size:15px;color:var(--ink);backgro
     <button class="btn primary" id="btnStart" style="align-self:center;padding:12px 34px;font-size:17px">入學報到 →</button>
     </div>
     <div class="panel"><div class="label">國企系老師與執秘</div><div class="teach" id="teach"></div></div>
-    <p class="note" style="text-align:center;font-size:11px;opacity:.7">版本 2026-10-22 v15（開始時介紹老師）</p>
+    <p class="note" style="text-align:center;font-size:11px;opacity:.7">版本 2026-10-22 v16（大螢幕格子放大）</p>
     <p class="note" style="text-align:center">紅色格是國企系老師的課，要真的完成課堂任務才拿得到學分；走到其他系的格子可以學到該系的特殊技能，集滿三個有獎勵；每年回到報到處，可以跟玟玟執秘簡報技能換學分。</p>
   </section>
 
