@@ -54,8 +54,9 @@ button:focus-visible,input:focus-visible{outline:2px dashed var(--red);outline-o
 .pl-setup:first-child{border-top:0;padding-top:0}
 .pl-setup input[type=text]{flex:none}
 .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+input[type=email],input[type=password]{font-family:var(--body);font-size:15px;color:var(--ink);background:var(--paper);border:1.5px solid var(--line);border-radius:10px;padding:7px 10px;min-width:0}
 input[type=text]{font-family:var(--body);font-size:15px;color:var(--ink);background:var(--paper);border:1.5px solid var(--line);border-radius:10px;padding:7px 10px;min-width:0;flex:1 1 120px}
-.avpick{display:grid;grid-template-columns:repeat(6,1fr);gap:4px}
+.avpick{display:grid;grid-template-columns:repeat(5,1fr);gap:4px}
 .avpick button{border:2px solid transparent;background:transparent;border-radius:12px;padding:2px 0 4px;display:flex;flex-direction:column;align-items:center;font-size:12px;line-height:1.2;min-width:0}
 .avpick button[aria-pressed="true"]{border-color:var(--red);background:var(--paper-2)}
 .avpick svg{width:100%;max-width:56px;height:auto;display:block}
@@ -211,7 +212,7 @@ input[type=text]{font-family:var(--body);font-size:15px;color:var(--ink);backgro
     <div class="tabs" id="tabs">
       <button data-mode="student">學生<small>加入教室</small></button>
       <button data-mode="teacher">老師<small>開新教室</small></button>
-      <button data-mode="local">單機<small>同一支手機</small></button>
+      <button data-mode="local">展示試玩<small>免教室代碼</small></button>
     </div>
     <p class="warn" id="noFb" hidden>線上教室還沒設定好：請依照「設定說明」把 Firebase 設定填進 firebase-config.js。在那之前只能用「單機」模式。</p>
     <div id="mStudent" class="panel">
@@ -222,9 +223,15 @@ input[type=text]{font-family:var(--body);font-size:15px;color:var(--ink);backgro
       <input type="text" id="jName" maxlength="8" placeholder="你的暱稱" autocomplete="off">
       <p class="bad" id="jErr" style="margin:0;font-size:13px" hidden></p>
       <button class="btn primary" id="btnJoin" style="align-self:center;padding:12px 34px;font-size:17px">加入教室 →</button>
+      <button class="btn" id="btnDemo" style="align-self:center">沒有教室代碼？直接展示試玩</button>
     </div>
     <div id="mTeacher" class="panel" hidden>
-      <div class="label">開一間新教室</div>
+      <div class="label">開一間新教室（限老師）</div>
+      <div id="tLogin" style="display:flex;flex-direction:column;gap:8px">
+        <input type="email" id="tEmail" placeholder="老師帳號（電子郵件）" autocomplete="username">
+        <input type="password" id="tPw" placeholder="密碼" autocomplete="current-password">
+      </div>
+      <div id="tWho" class="row" hidden><span class="note" id="tWhoTxt"></span><button class="btn" id="btnTOut" style="padding:4px 12px;font-size:13px">登出</button></div>
       <div><div class="label">畢業門檻學分</div><div class="seg" id="segTT"></div></div>
       <p class="note">開好後畫面會顯示教室代碼和 QR Code，投影給全班掃。大家加入後按「開始比賽」，最先拿到畢業證書的前三名獲勝，排名即時更新。</p>
       <p class="bad" id="tErr" style="margin:0;font-size:13px" hidden></p>
@@ -232,13 +239,19 @@ input[type=text]{font-family:var(--body);font-size:15px;color:var(--ink);backgro
     </div>
     <div id="mLocal" style="display:flex;flex-direction:column;gap:14px" hidden>
     <div class="panel">
+      <div class="label">展示試玩模式</div>
+      <p class="note">不用老師開教室，也不用登入，選好角色按「入學報到」就能玩。適合展示、自己測試，或 1–4 人用同一支手機輪流玩。這個模式的成績不會出現在教室排行榜。</p>
+      <button class="btn" id="btnDemoQR" style="align-self:flex-start">顯示展示用 QR Code</button>
+    </div>
+    <div class="panel">
       <div><div class="label">玩家人數（同一支手機輪流玩）</div><div class="seg" id="segN"></div></div>
-      <div><div class="label">畢業門檻學分</div><div class="seg" id="segT"></div><p class="note" id="tNote"></p></div>
+      <div><div class="label">畢業門檻學分</div><div class="seg" id="segT" hidden></div><p class="note" id="tNote"></p></div>
     </div>
     <div class="panel"><div class="label">選擇你的國企系新生</div><div id="plSetup" style="display:flex;flex-direction:column;gap:12px"></div></div>
     <button class="btn primary" id="btnStart" style="align-self:center;padding:12px 34px;font-size:17px">入學報到 →</button>
     </div>
     <div class="panel"><div class="label">國企系老師與執秘</div><div class="teach" id="teach"></div></div>
+    <p class="note" style="text-align:center;font-size:11px;opacity:.7">版本 2026-10-22 v10（老師登入・20 位學生・展示試玩）</p>
     <p class="note" style="text-align:center">紅色格是國企系老師的課，要真的完成課堂任務才拿得到學分；走到其他系的格子可以學到該系的特殊技能，集滿三個有獎勵；每年回到報到處，可以跟玟玟執秘簡報技能換學分。</p>
   </section>
 
@@ -292,6 +305,20 @@ const AV = [
   {name:'Kevin',full:'張凱文',g:'男',skin:'#f3cdb4',hair:'#4a3226',style:'quiffR',top:'#e8dcc7',inner:'#d0573f',glasses:true},
   {name:'阿德',full:'林德安',g:'男',skin:'#ebc19f',hair:'#2b2420',style:'curtain',top:'#7d9a68',inner:'#7d9a68'},
   {name:'布萊恩',full:'黃柏恩',g:'男',skin:'#e9bf9e',hair:'#7a5536',style:'quiffL',top:'#47597a',inner:'#dfe6ef',glasses:true},
+  {name:'糖糖',full:'唐語棠',g:'女',skin:'#f7d6c4',hair:'#5a3626',style:'pony',top:'#e9a0a6',inner:'#fff4f4'},
+  {name:'小薰',full:'許芷薰',g:'女',skin:'#f6d4c0',hair:'#9a6a46',style:'longwave',top:'#b9a6d6',inner:'#f6f2fa'},
+  {name:'Vivi',full:'王薇薇',g:'女',skin:'#f3cdb6',hair:'#231d1c',style:'tuck',top:'#2f2f35',inner:'#efe9e2'},
+  {name:'阿慈',full:'劉慈恩',g:'女',skin:'#f5d2bd',hair:'#1f1a19',style:'long',top:'#7d9a68',inner:'#f1eadd',glasses:true},
+  {name:'品妤',full:'蔡品妤',g:'女',skin:'#f6d3bd',hair:'#6b4430',style:'bun',top:'#e8c45a',inner:'#fff8e4'},
+  {name:'小葵',full:'周向葵',g:'女',skin:'#efc9ae',hair:'#3a2a22',style:'pixie',top:'#e0884a',inner:'#fff2e6'},
+  {name:'小安',full:'江安妮',g:'女',skin:'#f7d8c6',hair:'#7a4a2c',style:'curly',top:'#c9574a',inner:'#fbeee8'},
+  {name:'阿翔',full:'李宇翔',g:'男',skin:'#e9bf9e',hair:'#1f1b19',style:'sweep',top:'#c5463b',inner:'#2b2b2b'},
+  {name:'柏宇',full:'吳柏宇',g:'男',skin:'#f0caa9',hair:'#4a3226',style:'mushroom',top:'#e3d7c1',inner:'#7a8f6a',glasses:true},
+  {name:'Leo',full:'楊立歐',g:'男',skin:'#e6b996',hair:'#6b4a32',style:'wavyshort',top:'#5f7fa8',inner:'#e9eef5'},
+  {name:'小傑',full:'謝承傑',g:'男',skin:'#ddae88',hair:'#1c1a19',style:'shortcrop',top:'#4f8a6a',inner:'#4f8a6a'},
+  {name:'阿豪',full:'陳家豪',g:'男',skin:'#e4b893',hair:'#231d1a',style:'fluffy',top:'#3a4a6b',inner:'#d8dee8'},
+  {name:'冠廷',full:'鄭冠廷',g:'男',skin:'#efc6a6',hair:'#2e2522',style:'wavymid',top:'#8a6c93',inner:'#f1ecf4',glasses:true},
+  {name:'Ethan',full:'林以森',g:'男',skin:'#ebc19f',hair:'#5a3b28',style:'quiff',top:'#2f2f35',inner:'#d0573f'},
 ];
 const TEACH = [
   {name:'艾瑞克',style:'品牌行銷學',av:{skin:'#e9be9b',hair:'#2f2620',style:'spiky',top:'#a9c6e6',inner:'#f7fafd',glasses:true}},
@@ -303,6 +330,23 @@ const TEACH = [
   {name:'阿明',style:'會計學',av:{skin:'#efc6a6',hair:'#1f1c1b',style:'fringe',top:'#c9dcea',inner:'#8fb0d6',glasses:true,v:'r'}},
   {name:'玟玟',style:'系上執秘・行政支援',av:{skin:'#f7d8c6',hair:'#5a3a2c',style:'bangbob',top:'#b39bc1',inner:'#f8f3fa'}},
 ];
+const T_INTRO={
+  '艾瑞克':'「品牌就是讓人記住你的理由！」艾瑞克老師是運動與休閒管理博士，專長城市行銷、運動觀光與媒體公關，曾任高雄市政府運動發展局主任秘書，也操盤過國際自由車環台賽的行銷企劃。上他的品牌行銷學，第一件事就是學會把自己當成品牌來經營。',
+  '仲哥':'國企系系主任，曾任商學與資訊學院院長。管理學博士，專長國際品牌與廣告、通路與零售管理、消費者心理學，還主持過高雄商圈輔導計畫。仲哥老師在企業倫理課常說：企業賺錢之前，要先想清楚什麼是對的事。',
+  '武哥':'成大數學系畢業，取得美國田納西大學企管碩士與財務金融博士，當過福特六和財務授信部經理，也在德國福茲堡科技大學客座任教。所以他的統計學全英文授課，心情好還會來一首德文歌。數字會說話，武哥老師教你聽懂它。',
+  '阿金':'從高雄海專輪機科一路讀到中山大學企管博士，專長新產品研發、品質管理與供應鏈。阿金老師最愛用生活例子講經濟學：颱風一來菜價漲、演唱會門票秒殺，背後都是供給和需求在拔河。',
+  '阿明':'會計與資訊碩士、中山大學博士，專長國際企業財務會計、公司治理、商業資料分析與 AI 應用，也當過記帳事務所顧問。阿明老師教會計總是笑咪咪：「資產等於負債加權益，帳一平，心就安。」',
+  '雙慧':'日本早稻田大學商學碩士，曾在佐川航空、日產汽車擔任商品企劃分析師，也當過國企系副主任。雙慧老師的日文課不只教語言，還會分享日本職場與商業禮儀，讓你開口說日文，也懂日本人做生意的眉角。',
+  '英子':'來自韓國的英子老師，是國企系的韓籍教師。她的韓文課從打招呼教起，帶大家認識韓國文化、流行音樂和商業往來。認真上完一學期，追劇不用看字幕的日子就不遠了！',
+  '玟玟':'國企系辦的大總管，選課、獎學金、實習和各種表單都找她。玟玟執秘最喜歡看到同學跨系學新技能，每學年回到報到處記得到系辦跟她簡報，還能換到額外學分喔！',
+};
+async function showTeacherIntro(){
+  await sheet({tag:'開學第一天',title:'認識國企系老師',body:`<p class="note">修課、學技能、拿學分，都會遇到這幾位。點「開始大學生活」就出發！</p>`+
+    TEACH.map(t=>{const c=COURSES.find(c=>c.t===t.name);return `<div style="display:flex;gap:10px;align-items:flex-start;border-top:1px dashed var(--line);padding-top:8px">
+      <div style="flex:0 0 56px">${avatar(t.av)}</div><div style="min-width:0"><b style="font-family:var(--display);font-size:17px">${t.name}${t.name==='玟玟'?' 執秘':'老師'}</b>
+      <small class="note" style="display:block">${c?'授課：'+c.n:t.style}</small><p style="margin:2px 0 0;font-size:14px">${T_INTRO[t.name]||''}</p></div></div>`}).join(''),
+    buttons:[{l:'開始大學生活',v:1,p:1}]});
+}
 const T_BY=n=>TEACH.find(t=>t.name===n);
 
 const CRUSHES = [
@@ -504,6 +548,18 @@ const COMBOS = [
 ];
 
 /* ---------- 地圖 ---------- */
+const CLUB_INTRO={
+  '學生會':'全校學生的代言人，負責反映同學意見、爭取權益，也主辦迎新、校慶園遊會等大型活動。想練領導力和溝通協調，學生會就是最好的舞台。',
+  '吉他社':'零基礎或自彈自唱高手都歡迎。社課從和弦教起，期末有成果發表，草地上的夜間彈唱更是內門山上最浪漫的風景。',
+  '康輔社':'帶動跳、營火晚會、團康遊戲樣樣來，寒暑假還會出隊帶營隊。在這裡學會炒熱氣氛、照顧小朋友，也會交到一群一起熬夜的夥伴。',
+  '系學會':'國企系學會負責迎新宿營、系烤、聖誕晚會和送舊，是學長姐和學弟妹之間的橋樑。想認識全系的人，加入系學會準沒錯。',
+  '熱音社':'有自己的練團室和器材，吉他、貝斯、鼓、鍵盤和主唱都找得到團員。每學期的成果大公演，是站上舞台、被全校看見的機會。',
+  '籃研社':'籃球研究社，從基本動作練到戰術，也常和外校打友誼賽。球場上一起流汗的隊友，常常就是大學四年最好的朋友。',
+  '羽球社':'新手老手都歡迎，社課依程度分組練球，還有校內盃和大專盃比賽。下課後到體育館殺幾球，是最好的紓壓方式。',
+  '攝影社':'從相機操作、構圖教到後製，還會外拍旗山老街、美濃湖和內門山區。用鏡頭記錄大學生活，也能幫各種活動拍出好照片。',
+  '宋江陣':'實踐高雄校區的招牌社團，傳承內門最具代表性的傳統陣頭。社員練兵器與陣法、跟著廟會出陣，還常受邀到國內外表演。',
+  '熱舞社':'Hip-hop、Locking、Jazz、K-pop 都有人跳，社課從基本律動教起。期末成果發表和校外比賽，是舞者們最熱血的時刻。',
+};
 const CLUBS = [
  {n:'學生會',s:'學生會',d:'替全校同學爭取權益，辦活動也辦座談。'},
  {n:'吉他社',s:'吉他',d:'草地上的木吉他和自彈自唱的夜晚。'},
@@ -536,7 +592,7 @@ function tileInfo(code){
   if(code==='ch') return {type:'chance',n:'機會',s:'機會',d:'抽一張機會卡，多半是好事。',code};
   if(code==='fa') return {type:'fate',n:'命運',s:'命運',d:'抽一張命運卡，好壞都有可能。',code};
   const k=code[0], i=+code.slice(1);
-  if(k==='k') return {type:'course',idx:i,...COURSES[i],code,d:`${COURSES[i].t}${COURSES[i].t.endsWith('哥')?'':'老師'}的「${COURSES[i].n}」。課堂任務：${TASK_HINT[COURSES[i].task]}完成任務拿 4 學分。`};
+  if(k==='k') return {type:'course',idx:i,...COURSES[i],code,d:`${COURSES[i].t}老師的「${COURSES[i].n}」。課堂任務：${TASK_HINT[COURSES[i].task]}完成任務拿 4 學分。`};
   if(k==='d') return {type:'dept',idx:i,...DEPTS[i],code,d:`到${DEPTS[i].n}跨系學習，可習得：${DEPTS[i].sk.join('、')}。`};
   if(k==='c') return {type:'club',idx:i,...CLUBS[i],code};
   return {type:'spot',idx:i,...SPOTS[i],code};
@@ -597,7 +653,7 @@ const FATE = [
  {t:'校慶擺攤賺翻，還和攤位夥伴變熟',fx:[['club',1],['love',1]]},
  {t:'颱風停課，在宿舍躺平一天',fx:[]},
 ];
-const TARGETS = [{v:20,n:'輕鬆'},{v:28,n:'標準'},{v:40,n:'挑戰'}];
+const TARGETS = [{v:28,n:'標準'},{v:36,n:'進階'},{v:60,n:'挑戰'}];
 const YEAR = y => y<=4 ? ['','大一','大二','大三','大四'][y] : `延畢第${y-4}年`;
 const TK = ['var(--red)','var(--blue)','var(--leaf)','var(--mustard)'];
 
@@ -614,19 +670,19 @@ const stage=pt=>Math.floor(pt/2);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
 /* ---------- 開場 ---------- */
-let setup={n:1,t:28,pl:[0,3,1,4].map(av=>({name:AV[av].name,av}))};
+let setup={n:1,t:20,pl:[0,3,1,4].map(av=>({name:AV[av].name,av}))};
 function renderSetup(){
   $('#cover').innerHTML=coverSVG();
   $('#segN').innerHTML=[1,2,3,4].map(n=>`<button aria-pressed="${setup.n===n}" data-n="${n}">${n} 人</button>`).join('');
   $('#segT').innerHTML=TARGETS.map(t=>`<button aria-pressed="${setup.t===t.v}" data-t="${t.v}">${t.n}・${t.v} 學分</button>`).join('');
-  $('#tNote').textContent=`學分夠了就能領畢業證書。${setup.t} 學分大約要玩 ${Math.round(setup.t/1.15)} 回合。`;
+  setup.t=20; $('#tNote').textContent='展示試玩固定 20 學分，大約玩 17 回合就能領畢業證書。';
   $('#plSetup').innerHTML=setup.pl.slice(0,setup.n).map((p,i)=>`
     <div class="pl-setup">
       ${setup.n>1?`<div class="label">玩家 ${i+1}</div>`:''}
       <div class="avpick">${AV.map((a,j)=>`<button aria-pressed="${p.av===j}" data-p="${i}" data-av="${j}" aria-label="${a.full}（${a.name}）">${avatar(a)}<span>${a.name}</span><small>${a.g}・${a.full}</small></button>`).join('')}</div>
       <input type="text" id="nm${i}" value="${esc(p.name)}" maxlength="8" aria-label="玩家${i+1}暱稱" data-p="${i}">
     </div>`).join('');
-  $('#teach').innerHTML=TEACH.map(t=>`<div>${avatar(t.av)}<span>${t.name}</span><small>${t.style}</small></div>`).join('');
+  $('#teach').innerHTML=TEACH.map(t=>`<div>${avatar(t.av)}<span>${t.name}${t.name==='玟玟'?'':'老師'}</span><small>${t.style}</small></div>`).join('');
 }
 document.addEventListener('click',e=>{
   const b=e.target.closest('button'); if(!b) return;
@@ -636,7 +692,7 @@ document.addEventListener('click',e=>{
 });
 document.addEventListener('input',e=>{const t=e.target;if(t.dataset.p!==undefined&&t.tagName==='INPUT')setup.pl[+t.dataset.p].name=t.value});
 
-$('#btnStart').onclick=()=>{newGame();save();startGame()};
+$('#btnStart').onclick=()=>{setup.t=20;newGame();save();startGame()};
 function newGame(){
   const used=new Set();
   S={target:setup.t,cur:0,over:false,finish:[],log:['國企系新生入學！擲骰子開始大學生活。'],
@@ -714,7 +770,7 @@ $('#board').addEventListener('click',e=>{
   const kind={course:'國企系課程',dept:t.c==='biz'?'商學與資訊學院':'文化與創意學院',club:'社團',spot:'景點・約會地點',chance:'機會',fate:'命運',corner:'特殊格'}[t.type];
   let extra='';
   if(t.type==='dept'){const got=t.sk.filter(s=>P.skills.includes(s));extra=`<p class="note">${esc(P.name)} 已學會：${got.length?got.join('、'):'還沒有'}</p>`}
-  if(t.type==='club') extra='<p class="note">還沒入社的人可以在這裡加入；已入社的人在自己的社團推進社團支線。</p>';
+  if(t.type==='club') extra=`<p>${CLUB_INTRO[t.n]||''}</p>`+'<p class="note">還沒入社的人可以在這裡加入；已入社的人在自己的社團推進社團支線。</p>';
   if(t.type==='spot') extra='<p class="note">停在景點會推進戀愛支線。</p>';
   sheet({tag:kind,title:t.n,body:`<p>${t.d||''}</p>${extra}`,buttons:[{l:'知道了',v:1,p:1}]});
 });
@@ -728,7 +784,7 @@ function sheet({tag='',title='',art='',body='',buttons=[],onOpen}){
       <div class="opts">${buttons.map((b,i)=>`<button class="btn ${b.p?'primary':''}" data-i="${i}">${b.l}</button>`).join('')}</div>`;
     $('#scrim').hidden=false;
     el.querySelectorAll('[data-i]').forEach(b=>b.onclick=()=>{$('#scrim').hidden=true;res(buttons[+b.dataset.i].v)});
-    const first=el.querySelector('[data-i]'); first&&first.focus();
+    const first=el.querySelector("[data-i]"); first&&first.focus({preventScroll:true}); el.scrollTop=0;
     onOpen&&onOpen(el);
   });
 }
@@ -861,11 +917,11 @@ function statsQ(){
 }
 const TASKS={
   stats:p=>{const q=statsQ();return {
-    intro:`武哥全英授課：「${q.en}」<br><small class="note">（${q.zh}）</small>`,
+    intro:`武哥老師全英授課：「${q.en}」<br><small class="note">（${q.zh}）</small>`,
     fields:[{id:'a',label:'Your answer',type:'number',ph:'輸入數字'}],
     check:v=>v.a.trim()===''?{retry:'先輸入答案再提交。'}:{ok:Math.abs(+v.a-q.ans)<1e-9,final:1},
-    win:()=>`Excellent! 武哥開心地唱起德文歌，全班跟著打拍子，你也上台合唱了一段（社團 +1）。`,fx:[['club',1]],
-    lose:`正確答案是 ${q.ans}。武哥說：「Never give up!」`,say:v=>`答案 ${v.a}`}},
+    win:()=>`Excellent! 武哥老師開心地唱起德文歌，全班跟著打拍子，你也上台合唱了一段（社團 +1）。`,fx:[['club',1]],
+    lose:`正確答案是 ${q.ans}。武哥老師說：「Never give up!」`,say:v=>`答案 ${v.a}`}},
   intro:p=>({
     intro:'艾瑞克老師：「品牌行銷的第一課，就是行銷你自己！請向全班自我介紹，說說你的名字、興趣和你的亮點。」',
     fields:[{id:'a',label:'自我介紹（至少 20 字）',type:'textarea',ph:`大家好，我是${p.name}，我喜歡…`}],
@@ -873,10 +929,10 @@ const TASKS={
     win:()=>'艾瑞克老師：「很好！你已經懂得把自己當成品牌經營了。」台下有人默默記住了你（戀愛 +1）。',fx:[['love',1]],
     say:v=>v.a}),
   ethics:p=>({
-    intro:'系主任仲哥：「企業不只要賺錢，也要做對的事。請舉一家形象正面的知名企業，並說出你欣賞它的理由。」',
+    intro:'系主任仲哥老師：「企業不只要賺錢，也要做對的事。請舉一家形象正面的知名企業，並說出你欣賞它的理由。」',
     fields:[{id:'c',label:'企業名稱',type:'text',ph:'例如：某某公司'},{id:'r',label:'為什麼它形象正面？',type:'textarea',ph:'它做了什麼好事…'}],
     check:v=>v.c.trim().length<2?{retry:'請寫出企業名稱。'}:v.r.trim().length<6?{retry:'理由再多寫一點（至少 6 字）。'}:{ok:1},
-    win:v=>`系主任仲哥點點頭：「${esc(v.c.trim())} 的確是很好的例子，企業社會責任就是這樣。」`,
+    win:v=>`系主任仲哥老師點點頭：「${esc(v.c.trim())} 的確是很好的例子，企業社會責任就是這樣。」`,
     say:v=>`${v.c}：${v.r}`}),
   jp:p=>({
     intro:'雙慧老師：「今天每個人都要開口說一句日文！說完把它寫下來。」',
@@ -928,7 +984,7 @@ function taskSheet({tag,title,art,intro,fields}){
 }
 async function doCourse(p,t){
   const c=COURSES[t.idx], T=T_BY(c.t), art=avatar(T.av), spec=TASKS[c.task](p);
-  const who=`${T.name}${T.name.endsWith('哥')?'':'老師'}${T.name==='仲哥'?'（系主任）':''}`;
+  const who=`${T.name}老師${T.name==='仲哥'?'（系主任）':''}`;
   const tag=`國企系課程・${c.n}`;
   $('#sheet')._check=spec.check;
   const r=await taskSheet({tag,title:`${who}的課`,art,intro:spec.intro,fields:spec.fields});
@@ -979,6 +1035,9 @@ async function doSkill(p,t,free){
 
 async function doClub(p,t){
   const art=avatar(AV[p.av]), tag=`社團・${t.n}`;
+  p.seenClubs=p.seenClubs||[];
+  if(!p.seenClubs.includes(t.idx)){p.seenClubs.push(t.idx);
+    await sheet({tag:'第一次來到這個社團',title:t.n,art:sprig('sprig'),body:`<p>${CLUB_INTRO[t.n]||t.d}</p>`,buttons:[{l:'繼續',v:1,p:1}]})}
   if(p.club===null){
     const v=await sheet({tag,title:`${t.n} 招生中`,art,body:`<p>${t.d}</p><p>要加入嗎？加入後，停在這裡就能推進社團支線。</p>`,buttons:[{l:`加入${t.n}`,v:1,p:1},{l:'再看看',v:0}]});
     if(v){p.club=t.idx;log(`${esc(p.name)} 加入了${t.n}`);addBr(p,'club',2-(p.clubPt%2));renderDynamic()}
@@ -1112,11 +1171,39 @@ const sess={get(){try{return JSON.parse(localStorage.getItem('usc-online-sess'))
   set(v){try{localStorage.setItem('usc-online-sess',JSON.stringify(v))}catch(e){}},clear(){try{localStorage.removeItem('usc-online-sess')}catch(e){}}};
 const roomUrl=code=>location.origin+location.pathname+'?room='+code;
 function show(sel){['#setup','#game','#waiting','#teacher'].forEach(x=>$(x).hidden=x!==sel)}
+function fbApp(){if(!FB_OK) throw new Error('尚未設定 Firebase');if(!fb){firebase.initializeApp(CFG);fb=firebase.database()}}
+let authReady=null;
+function currentUser(){fbApp();if(!authReady)authReady=new Promise(r=>{const off=firebase.auth().onAuthStateChanged(u=>{off();r(u)})});return authReady}
 async function fbInit(){
-  if(!FB_OK) throw new Error('尚未設定 Firebase');
-  if(!fb){firebase.initializeApp(CFG);fb=firebase.database()}
-  if(!uid){const c=await firebase.auth().signInAnonymously();uid=c.user.uid}
+  fbApp();
+  if(!uid){const u=await currentUser(); if(u) uid=u.uid; else {const c=await firebase.auth().signInAnonymously();uid=c.user.uid}}
 }
+const isTeacher=()=>{try{const u=firebase.auth().currentUser;return !!(u&&!u.isAnonymous)}catch(e){return false}};
+async function teacherSignIn(){
+  fbApp(); await currentUser();
+  if(isTeacher()){uid=firebase.auth().currentUser.uid;return}
+  const email=$('#tEmail').value.trim(), pw=$('#tPw').value;
+  if(!email||!pw) throw new Error('請輸入老師帳號和密碼。');
+  try{const c=await firebase.auth().signInWithEmailAndPassword(email,pw);uid=c.user.uid}
+  catch(e){const m={'auth/invalid-credential':'帳號或密碼錯誤。','auth/wrong-password':'帳號或密碼錯誤。','auth/user-not-found':'帳號或密碼錯誤。','auth/invalid-email':'帳號格式不對，請輸入電子郵件。',
+    'auth/operation-not-allowed':'Firebase 還沒開啟「電子郵件/密碼」登入方式。','auth/too-many-requests':'嘗試太多次，請稍後再試。','auth/unauthorized-domain':'這個網址還沒加入 Firebase 的「已授權網域」。'}[e.code];
+    throw new Error(m||e.message)}
+  try{localStorage.setItem('usc-teacher-email',email)}catch(e){}
+  $('#tPw').value='';
+}
+async function renderTeacherAuth(){
+  if(!FB_OK) return;
+  try{await currentUser()}catch(e){return}
+  const t=isTeacher();
+  $('#tLogin').hidden=t; $('#tWho').hidden=!t;
+  if(t) $('#tWhoTxt').textContent='已登入：'+firebase.auth().currentUser.email;
+  try{if(!$('#tEmail').value)$('#tEmail').value=localStorage.getItem('usc-teacher-email')||''}catch(e){}
+}
+function errMsg(e){const m=String(e&&(e.code||e.message)||e);
+  if(/PERMISSION_DENIED|permission[_ -]denied/i.test(m)) return '權限不足。請確認 Firebase 的資料庫規則已換成最新版並按「發布」，且已開啟「匿名」和「電子郵件/密碼」登入。';
+  if(/admin-restricted|operation-not-allowed/i.test(m)) return 'Firebase 還沒開啟這種登入方式（學生用「匿名」，老師用「電子郵件/密碼」）。';
+  if(/network|offline|Failed to fetch/i.test(m)) return '連不上網路或 Firebase，請檢查網路後重新整理。';
+  return (e&&e.message)||m;}
 function listen(ref,ev,fn){ref.on(ev,fn);liveOff.push(()=>ref.off(ev,fn))}
 function stopLive(){liveOff.forEach(f=>f());liveOff=[]}
 function toast(t){const el=$('#toast');el.textContent=t;el.hidden=false;clearTimeout(toast._t);toast._t=setTimeout(()=>el.hidden=true,4000)}
@@ -1141,13 +1228,13 @@ function podiumHTML(list){
 async function createRoom(){
   const err=$('#tErr'); err.hidden=true; $('#btnCreate').disabled=true;
   try{
-    await fbInit();
+    await teacherSignIn(); renderTeacherAuth();
     let code=null;
     for(let k=0;k<30;k++){const c=String(1000+rnd(9000));const sn=await fb.ref('rooms/'+c+'/host').get();if(!sn.exists()){code=c;break}}
     if(!code) throw new Error('暫時找不到空的教室代碼，請再試一次');
     await fb.ref('rooms/'+code).set({host:uid,target:teacherT,status:'open',createdAt:TS()});
     sess.set({role:'teacher',code}); openTeacher(code);
-  }catch(e){err.textContent='開教室失敗：'+(e.message||e);err.hidden=false}
+  }catch(e){err.textContent='開教室失敗：'+errMsg(e);err.hidden=false}
   $('#btnCreate').disabled=false;
 }
 function openTeacher(code){
@@ -1160,8 +1247,8 @@ function openTeacher(code){
   let first=true;
   const fref=ref.child('finish'); const t0=Date.now();
   listen(fref,'child_added',sn=>{const f=sn.val()||{}; if((f.at||0)>t0-3000) toast(`${f.name} 第 ${f.place} 名畢業！`)});
-  $('#btnTStart').onclick=()=>ref.child('status').set('playing');
-  $('#btnTEnd').onclick=async()=>{const v=await sheet({tag:'確認',title:'結束比賽並頒獎？',body:'<p>全班手機都會看到前三名。沒畢業的同學依學分排名。</p>',buttons:[{l:'結束並頒獎',v:1,p:1},{l:'再等等',v:0}]});if(v)ref.child('status').set('ended')};
+  $('#btnTStart').onclick=()=>ref.child('status').set('playing').catch(e=>toast('開始失敗：'+errMsg(e)));
+  $('#btnTEnd').onclick=async()=>{const v=await sheet({tag:'確認',title:'結束比賽並頒獎？',body:'<p>全班手機都會看到前三名。沒畢業的同學依學分排名。</p>',buttons:[{l:'結束並頒獎',v:1,p:1},{l:'再等等',v:0}]});if(v)ref.child('status').set('ended').catch(e=>toast('結束失敗：'+errMsg(e)))};
 }
 function renderTeacher(r){
   const list=rankList(r.players), n=list.length, fin=list.filter(p=>p.place).length;
@@ -1201,7 +1288,7 @@ async function joinRoom(){
     S.players[0].name=name; S.players[0].av=join.av; save();
     await fb.ref(`rooms/${code}/players/${uid}`).update({name,av:join.av,cr:S.players[0].cr,year:S.players[0].year,turns:S.players[0].turns,skills:S.players[0].skills.length,done:!!S.players[0].done,joinedAt:TS()});
     sess.set({role:'student',code}); enterStudent(code);
-  }catch(e){err.textContent='加入失敗：'+(e.message||e);err.hidden=false}
+  }catch(e){err.textContent='加入失敗：'+errMsg(e);err.hidden=false}
   $('#btnJoin').disabled=false;
 }
 function enterStudent(code){
@@ -1232,7 +1319,7 @@ function renderLive(){
   const ended=S.roomStatus==='ended'||(fin>=Math.min(3,list.length)&&list.length>0);
   $('#liveTitle').textContent=`全班即時排名（${list.length} 人）`;
   $('#liveBanner').innerHTML=ended?`<p style="margin:0 0 6px;font-weight:700">${S.roomStatus==='ended'?'比賽結束！':'前三名出爐！'}</p>${podiumHTML(list)}`:'';
-  $('#liveList').innerHTML=liveItems(list.slice(0,10),S.target,uid);
+  $('#liveList').innerHTML=liveItems(list.slice(0,20),S.target,uid);
 }
 function syncMe(){
   if(!S||!S.online||!fb) return;
@@ -1255,6 +1342,7 @@ function setMode(m){
   $('#noFb').hidden=FB_OK||m==='local';
   $('#btnJoin').disabled=!FB_OK; $('#btnCreate').disabled=!FB_OK;
   const saved=load(); $('#resume').hidden=!(m==='local'&&saved&&!saved.over&&!saved.online);
+  if(m==='teacher') renderTeacherAuth();
 }
 function renderTT(){$('#segTT').innerHTML=TARGETS.map(t=>`<button aria-pressed="${teacherT===t.v}" data-tt="${t.v}">${t.n}・${t.v} 學分</button>`).join('')}
 document.addEventListener('click',e=>{
@@ -1263,14 +1351,21 @@ document.addEventListener('click',e=>{
   if(b.dataset.tt){teacherT=+b.dataset.tt;renderTT()}
   if(b.dataset.jav!==undefined){const old=AV[join.av].name;join.av=+b.dataset.jav;if(!$('#jName').value||$('#jName').value===old)$('#jName').value=AV[join.av].name;renderJoin()}
 });
+$('#btnDemo').onclick=()=>{setMode('local');$('#mLocal').scrollIntoView({behavior:'smooth'})};
+$('#btnDemoQR').onclick=()=>{const u=location.origin+location.pathname+'?demo=1';
+  sheet({tag:'展示試玩',title:'掃碼直接試玩',body:'<div class="qrbox" id="dqr"></div><p class="note" style="word-break:break-all;text-align:center">'+u+'</p><p class="note">掃這個 QR Code 會直接進到展示試玩，不用教室代碼、不用登入。</p>',buttons:[{l:'關閉',v:1,p:1}],
+    onOpen:el=>{const box=el.querySelector('#dqr');if(window.QRCode)new QRCode(box,{text:u,width:280,height:280,colorDark:'#2b241f',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M});else box.textContent=u}})};
 $('#btnJoin').onclick=joinRoom; $('#btnCreate').onclick=createRoom;
+$('#tPw').addEventListener('keydown',e=>{if(e.key==='Enter')createRoom()});
+$('#btnTOut').onclick=async()=>{try{await firebase.auth().signOut()}catch(e){} uid=null; authReady=null; sess.clear(); renderTeacherAuth()};
 $('#btnTLeave').onclick=async()=>{const v=await sheet({tag:'確認',title:'關閉教室畫面？',body:'<p>同學的遊戲不受影響。之後用同一支手機或電腦重新打開網址，就會回到這間教室。</p>',buttons:[{l:'關閉',v:1,p:1},{l:'取消',v:0}]});if(v){stopLive();sess.clear();show('#setup')}};
 $('#btnWLeave').onclick=()=>backToSetup();
 async function boot(){
   renderJoin(); renderTT();
   const q=new URLSearchParams(location.search).get('room');
   if(q&&/^\d{4}$/.test(q)) $('#jCode').value=q;
-  setMode(FB_OK?(q?'student':'student'):'local');
+  const demo=new URLSearchParams(location.search).has('demo');
+  setMode(!FB_OK||demo?'local':'student');
   const ss=sess.get();
   if(!FB_OK||!ss) return;
   try{
@@ -1282,7 +1377,7 @@ async function boot(){
 }
 
 /* ---------- 啟動 ---------- */
-function startGame(){show('#game');renderBoard();scrollTo(0,0);if(S.online){$('#livePanel').hidden=false;renderLive()}}
+function startGame(){show('#game');renderBoard();scrollTo(0,0);if(!S.introShown){S.introShown=true;save();setTimeout(showTeacherIntro,250)}if(S.online){$('#livePanel').hidden=false;renderLive()}}
 renderSetup();
 boot();
 </script>
