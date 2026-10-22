@@ -291,7 +291,7 @@ input[type=text]{font-family:var(--body);font-size:15px;color:var(--ink);backgro
     <button class="btn primary" id="btnStart" style="align-self:center;padding:12px 34px;font-size:17px">入學報到 →</button>
     </div>
     <div class="panel"><div class="label">國企系老師與執秘</div><div class="teach" id="teach"></div></div>
-    <p class="note" style="text-align:center;font-size:11px;opacity:.7">版本 2026-10-22 v17（角色不重複・異性戀愛線）</p>
+    <p class="note" style="text-align:center;font-size:11px;opacity:.7">版本 2026-10-22 v22（阿珊、Leo 造型）</p>
     <p class="note" style="text-align:center">紅色格是國企系老師的課，要真的完成課堂任務才拿得到學分；走到其他系的格子可以學到該系的特殊技能，集滿三個有獎勵；每年回到報到處，可以跟玟玟執秘簡報技能換學分。</p>
   </section>
 
@@ -357,34 +357,34 @@ input[type=text]{font-family:var(--body);font-size:15px;color:var(--ink);backgro
 <script>
 /* ---------- 似顏繪角色 ---------- */
 const AV = [
-  {name:'阿珊',full:'陳珊珊',g:'女',skin:'#f6d3bd',hair:'#2f2b2b',style:'chinwave',top:'#f6f3ee',inner:'#e3e9f2',glasses:true,collar:true,cord:true,slim:true,earring:true},
-  {name:'Mia',full:'林米亞',g:'女',skin:'#f7d6c2',hair:'#8a4f33',style:'bangs',top:'#f5f0e6',inner:'#f5f0e6'},
-  {name:'小羽',full:'于小羽',g:'女',skin:'#f5d0b8',hair:'#7a4a2c',style:'braids',top:'#d9822b',inner:'#f2f2f0',collar:true},
-  {name:'Kevin',full:'張凱文',g:'男',skin:'#f3cdb4',hair:'#4a3226',style:'quiffR',top:'#e8dcc7',inner:'#d0573f',glasses:true},
+  {name:'阿珊',full:'陳珊珊',g:'女',skin:'#f6d3bd',hair:'#2f2b2b',style:'chinwave',top:'#f6f3ee',inner:'#e3e9f2',collar:true,cord:true,slim:true},
+  {name:'Mia',full:'林米亞',g:'女',eyes:'open',skin:'#f7d6c2',hair:'#8a4f33',style:'bangs',top:'#f5f0e6',inner:'#f5f0e6'},
+  {name:'小羽',full:'于小羽',g:'女',skin:'#f5d0b8',hair:'#1f1b1a',style:'braids',top:'#d9822b',inner:'#f2f2f0',collar:true},
+  {name:'Kevin',full:'張凱文',g:'男',eyes:'open',skin:'#f3cdb4',hair:'#4a3226',style:'quiffR',top:'#e8dcc7',inner:'#d0573f',glasses:true},
   {name:'阿德',full:'林德安',g:'男',skin:'#ebc19f',hair:'#2b2420',style:'curtain',top:'#7d9a68',inner:'#7d9a68'},
-  {name:'布萊恩',full:'黃柏恩',g:'男',skin:'#e9bf9e',hair:'#7a5536',style:'quiffL',top:'#47597a',inner:'#dfe6ef',glasses:true},
-  {name:'糖糖',full:'唐語棠',g:'女',skin:'#f7d6c4',hair:'#5a3626',style:'pony',top:'#e9a0a6',inner:'#fff4f4'},
+  {name:'布萊恩',full:'黃柏恩',g:'男',eyes:'open',skin:'#e9bf9e',hair:'#7a5536',style:'quiffL',top:'#47597a',inner:'#dfe6ef',glasses:true},
+  {name:'糖糖',full:'唐語棠',g:'女',eyes:'open',skin:'#f7d6c4',hair:'#6b4430',style:'long',top:'#e9a0a6',inner:'#fff4f4'},
   {name:'小薰',full:'許芷薰',g:'女',skin:'#f6d4c0',hair:'#9a6a46',style:'longwave',top:'#b9a6d6',inner:'#f6f2fa'},
-  {name:'Vivi',full:'王薇薇',g:'女',skin:'#f3cdb6',hair:'#231d1c',style:'tuck',top:'#2f2f35',inner:'#efe9e2'},
-  {name:'阿慈',full:'劉慈恩',g:'女',skin:'#f5d2bd',hair:'#1f1a19',style:'long',top:'#7d9a68',inner:'#f1eadd',glasses:true},
+  {name:'Vivi',full:'王薇薇',g:'女',eyes:'open',skin:'#f3cdb6',hair:'#231d1c',style:'tuck',top:'#2f2f35',inner:'#efe9e2'},
+  {name:'阿慈',full:'劉慈恩',g:'女',eyes:'open',skin:'#f5d2bd',hair:'#1f1a19',style:'long',top:'#7d9a68',inner:'#f1eadd',glasses:true},
   {name:'品妤',full:'蔡品妤',g:'女',skin:'#f6d3bd',hair:'#6b4430',style:'bun',top:'#e8c45a',inner:'#fff8e4'},
-  {name:'小葵',full:'周向葵',g:'女',skin:'#efc9ae',hair:'#3a2a22',style:'pixie',top:'#e0884a',inner:'#fff2e6'},
+  {name:'小葵',full:'周向葵',g:'女',eyes:'open',skin:'#efc9ae',hair:'#3a2a22',style:'pixie',top:'#e0884a',inner:'#fff2e6'},
   {name:'小安',full:'江安妮',g:'女',skin:'#f7d8c6',hair:'#7a4a2c',style:'curly',top:'#c9574a',inner:'#fbeee8'},
-  {name:'阿翔',full:'李宇翔',g:'男',skin:'#e9bf9e',hair:'#1f1b19',style:'sweep',top:'#c5463b',inner:'#2b2b2b'},
+  {name:'阿翔',full:'李宇翔',g:'男',eyes:'open',skin:'#e9bf9e',hair:'#1f1b19',style:'sweep',top:'#c5463b',inner:'#2b2b2b'},
   {name:'柏宇',full:'吳柏宇',g:'男',skin:'#f0caa9',hair:'#4a3226',style:'mushroom',top:'#e3d7c1',inner:'#7a8f6a',glasses:true},
-  {name:'Leo',full:'楊立歐',g:'男',skin:'#e6b996',hair:'#6b4a32',style:'wavyshort',top:'#5f7fa8',inner:'#e9eef5'},
+  {name:'Leo',full:'楊立歐',g:'男',eyes:'open',skin:'#e6b996',hair:'#1f1b19',style:'buzz',top:'#5f7fa8',inner:'#e9eef5'},
   {name:'小傑',full:'謝承傑',g:'男',skin:'#ddae88',hair:'#1c1a19',style:'shortcrop',top:'#4f8a6a',inner:'#4f8a6a'},
   {name:'阿豪',full:'陳家豪',g:'男',skin:'#e4b893',hair:'#231d1a',style:'fluffy',top:'#3a4a6b',inner:'#d8dee8'},
-  {name:'冠廷',full:'鄭冠廷',g:'男',skin:'#efc6a6',hair:'#2e2522',style:'wavymid',top:'#8a6c93',inner:'#f1ecf4',glasses:true},
+  {name:'冠廷',full:'鄭冠廷',g:'男',eyes:'open',skin:'#efc6a6',hair:'#2e2522',style:'wavymid',top:'#8a6c93',inner:'#f1ecf4',glasses:true},
   {name:'Ethan',full:'林以森',g:'男',skin:'#ebc19f',hair:'#5a3b28',style:'quiff',top:'#2f2f35',inner:'#d0573f'},
 ];
 const TEACH = [
   {name:'艾瑞克',style:'品牌行銷學',av:{skin:'#e9be9b',hair:'#2f2620',style:'spiky',top:'#a9c6e6',inner:'#f7fafd',glasses:true}},
-  {name:'阿金',style:'經濟學',av:{skin:'#efc3a0',hair:'#3d3430',style:'buzz',top:'url(#navystripe)',inner:'#2f3a57',glasses:true,v:'r'}},
+  {name:'阿金',style:'經濟學',av:{skin:'#efc3a0',hair:'#3d3430',style:'buzz',top:'url(#navystripe)',inner:'#2f3a57',glasses:true,glassColor:'#c9a24a',v:'r'}},
   {name:'武哥',style:'統計學・全英授課・愛唱德文歌',av:{skin:'#e6b996',hair:'#1c1a19',style:'sidepart',top:'#d6d2c8',inner:'#6d2433',glasses:true,turtle:true,mic:true}},
   {name:'仲哥',style:'系主任・企業倫理',av:{skin:'#e6b996',hair:'#35312e',style:'crew',top:'#4a4b4f',inner:'#3c3d41',glasses:true,mood:'calm'}},
-  {name:'雙慧',style:'日文',av:{skin:'#f4cfb8',hair:'#4e3428',style:'wavebob',top:'#dca33a',inner:'#fff8ea',glasses:true,mood:'calm'}},
-  {name:'英子',style:'韓文',av:{skin:'#f6d3bf',hair:'#3a2a22',style:'sleekbob',top:'#e39a92',inner:'#fff3ef'}},
+  {name:'雙慧',style:'日文',av:{skin:'#f4cfb8',hair:'#4e3428',style:'jpbob',top:'#dca33a',inner:'#fff8ea',glasses:true,mood:'calm'}},
+  {name:'英子',style:'韓文',av:{skin:'#f6d3bf',hair:'#3a2a22',style:'frenchbob',top:'#e39a92',inner:'#fff3ef'}},
   {name:'阿明',style:'會計學',av:{skin:'#efc6a6',hair:'#1f1c1b',style:'fringe',top:'#c9dcea',inner:'#8fb0d6',glasses:true,v:'r'}},
   {name:'玟玟',style:'系上執秘・行政支援',av:{skin:'#f7d8c6',hair:'#5a3a2c',style:'bangbob',top:'#b39bc1',inner:'#f8f3fa'}},
 ];
@@ -423,6 +423,30 @@ const QF=(m)=>{const X=x=>m?100-x:x;
   return {b:h=>`<path d="M26 52 C21 26 79 24 74 52 C72 47 28 47 26 52Z" fill="${h}"/>`,
     f:h=>`<path d="${f}" fill="${h}"/><path d="${hl}" stroke="#fff" stroke-opacity=".25" stroke-width="1.4" fill="none" stroke-linecap="round"/>`}};
 const HAIR={
+  cornrow:{b:h=>`<path d="M26 54 C21 24 79 22 74 54 C72 48 28 48 26 54Z" fill="${h}"/>`,
+    f:h=>{let o=`<path d="M27 50 C25 28 36 21.5 50 21.5 C64 21.5 75 28 73 50 C71 44 66 40 60 39 L40 39 C34 40 29 44 27 50Z" fill="#6b5148"/>
+      <path d="M27 50 C26.5 46 27.5 43 29.5 41 L30.5 54 C29 53 27.5 52 27 50Z M73 50 C73.5 46 72.5 43 70.5 41 L69.5 54 C71 53 72.5 52 73 50Z" fill="${h}" opacity=".6"/>`;
+      [31.5,38,44.3,50.5,56.7,63,69.5].forEach((x,ri)=>{const top=ri===0||ri===6?30:24;
+        for(let y=39,k=0;y>top;y-=2.3,k++){const xx=x+(x-50)*(39-y)*-.014, rot=k%2?32:-32;
+          o+=`<ellipse cx="${xx}" cy="${y}" rx="2.7" ry="1.35" transform="rotate(${rot} ${xx} ${y})" fill="${h}"/>`}
+      });
+      return o}},
+  boxbraids:{b:h=>{const st=(x,y0,y1,dx)=>{let o='';for(let y=y0;y<y1;y+=4.2)o+=`<ellipse cx="${x+(y-y0)*dx}" cy="${y}" rx="2.1" ry="2.5" fill="${h}"/>`;return o};
+      let o=`<path d="M24 56 C16 14 84 14 76 56Z" fill="${h}"/>`;
+      [[22,46,84,-.04],[26,50,88,-.02],[30,56,90,0],[70,56,90,0],[74,50,88,.02],[78,46,84,.04],[19,40,76,-.06],[81,40,76,.06]].forEach(a=>o+=st(...a));
+      return o},
+    f:h=>{let o=`<path d="M27 48 C24 24 76 22 73 48 C70 41 62 37 50 37 C38 37 30 41 27 48Z" fill="${h}"/>`;
+      const row=(pts)=>pts.map(([x,y])=>`<ellipse cx="${x}" cy="${y}" rx="2.2" ry="1.7" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width=".8"/>`).join('');
+      [[34,44,31],[42,40,28],[50,39,27],[58,40,28],[66,44,31]].forEach(([x,y0,y1])=>{const pts=[];for(let y=y0;y>y1;y-=3.6)pts.push([x+(x-50)*(y0-y)*.02,y]);o+=row(pts)});
+      [[28,48,70],[72,48,70]].forEach(([x,y0,y1])=>{for(let y=y0;y<y1;y+=4.2)o+=`<ellipse cx="${x}" cy="${y}" rx="2" ry="2.4" fill="${h}"/>`});
+      return o+`<rect x="26.5" y="70" width="3" height="2" rx="1" fill="#e6b354"/><rect x="70.5" y="70" width="3" height="2" rx="1" fill="#e6b354"/>`}},
+  smallwave:{b:h=>`<path d="M24 50 C16 16 84 16 76 50 q4 4 2 8 q4 4 2 8 q4 4 2 8 q4 4 1 8 L17 82 q-4 -4 1 -8 q-4 -4 2 -8 q-4 -4 2 -8 q-4 -4 2 -8Z" fill="${h}"/>`,
+    f:h=>`<path d="M26 56 C21 22 60 17 66 25 C73 29 77 40 74 56 C70 43 64 36 58 34 C50 38 38 41 26 56Z" fill="${h}"/>`+HL('M20 62 q3 -3 0 -6 M20 74 q3 -3 0 -6 M80 62 q-3 -3 0 -6 M80 74 q-3 -3 0 -6 M40 24 q10 -6 20 -2',.28)},
+  jpbob:{b:h=>`<path d="M22 54 C14 14 86 14 78 54 C80 60 78 66 74 68 C70 70 66 69 64 67 L36 67 C34 69 30 70 26 68 C22 66 20 60 22 54Z" fill="${h}"/>`,
+    f:h=>`<path d="M25 56 C21 18 79 18 75 56 C74 49 72 45.5 68 45 C62 43.5 56 44.5 50 43.8 C44 44.5 38 43.5 32 45 C28 46 26 50 25 56Z" fill="${h}"/>`+HL('M36 26 q14 -6 28 0 M24 62 q2 4 6 5 M76 62 q-2 4 -6 5',.24)},
+  frenchbob:{b:h=>`<path d="M23 52 C18 15 82 15 77 52 L79 80 C70 82 30 82 21 80Z" fill="${h}"/>`,
+    f:h=>`<path d="M26 57 C21 21 79 21 74 57 C73 50 71 47.5 67 46.5 C62 45.5 57 43.5 53.5 40.5 L50 38 L46.5 40.5 C43 43.5 38 45.5 33 46.5 C29 47.5 27 51 26 57Z" fill="${h}"/>
+      <path d="M40 30 q-3 8 -6 15 M46 30 q-1 7 -3 12 M60 30 q3 8 6 15 M54 30 q1 7 3 12" stroke="#fff" stroke-opacity=".18" stroke-width="1.1" fill="none" stroke-linecap="round"/>`+HL('M30 42 q-3 16 -3 34 M70 42 q3 16 3 34',.16)},
   chinwave:{b:h=>`<path d="M23 52 C15 16 85 16 77 52 C82 58 78 64 82 70 C78 74 74 71 72 69 C68 73 64 71 63 70 L37 70 C36 71 32 73 28 69 C26 71 22 74 18 70 C22 64 18 58 23 52Z" fill="${h}"/>`,
     f:h=>`<path d="M27 58 C21 22 54 16 58 24 C66 20 79 28 73 58 C71 44 66 36 60 32 C58.5 30.5 58 28 58 26 C54 34 40 38 33 46 C30 50 28 54 27 58Z" fill="${h}"/>`+HL('M56 22 q-12 2 -22 12 M62 24 q8 2 12 10 M19 68 q4 -3 2 -8 q-3 -4 1 -8 M81 68 q-4 -3 -2 -8 q3 -4 -1 -8',.25)},
   layerfringe:{b:h=>HAIR.layerbob.b(h),
@@ -515,13 +539,15 @@ function avatar(a,cls='av',attrs=''){
   else if(a.style==='pony'){front=`<path d="M27 50 C24 22 76 20 74 50 C68 36 56 30 46 34 C40 38 32 40 27 50Z" fill="${h}"/>`}
   else if(a.style==='spiky'){front=`<path d="M27 50 C22 30 30 22 34 24 L38 16 L44 22 L50 13 L56 22 L63 16 L66 25 C74 26 78 36 73 50 C68 38 56 34 46 36 C38 38 32 42 27 50Z" fill="${h}"/>`}
   else if(!front){front=`<path d="M26 52 C25 20 75 20 75 52 C70 40 60 36 54 30 C48 40 36 42 26 52Z" fill="${h}"/>`}
-  const eyes = m==='happy'
+  const eyes = a.eyes==='open'
+    ? `<ellipse cx="42" cy="53.5" rx="2.7" ry="3.3" fill="#3a2b25"/><ellipse cx="59" cy="53.5" rx="2.7" ry="3.3" fill="#3a2b25"/><circle cx="43" cy="52.3" r="1" fill="#fff"/><circle cx="60" cy="52.3" r="1" fill="#fff"/>`+(a.g==='女'?`<path d="M38.6 51 l-1.6 -1.2 M62.4 51 l1.6 -1.2" stroke="#3a2b25" stroke-width="1.2" stroke-linecap="round"/>`:'')
+    : m==='happy'
     ? `<path d="M37 53 q5 -5 10 0 M54 53 q5 -5 10 0" stroke="#3a2b25" stroke-width="2.2" fill="none" stroke-linecap="round"/>`
     : `<circle cx="42" cy="53" r="2.3" fill="#3a2b25"/><circle cx="59" cy="53" r="2.3" fill="#3a2b25"/>`;
   const mouth = m==='happy'
     ? `<path d="M43 63 q7 8 14 0 q-7 2 -14 0Z" fill="#a8463c"/><path d="M44.5 63.6 q5.5 1.6 11 0 l-.6 1.6 q-5 1.2 -9.8 0Z" fill="#fff"/>`
     : `<path d="M44 63 q6 5 12 0" stroke="#7a3d33" stroke-width="2.2" fill="none" stroke-linecap="round"/>`;
-  const glasses = a.glasses ? `<g fill="none" stroke="#2a2220" stroke-width="2"><rect x="33" y="47" width="15" height="11" rx="4"/><rect x="52" y="47" width="15" height="11" rx="4"/><path d="M48 52 h4"/></g>`:'';
+  const glasses = a.glasses ? `<g fill="none" stroke="${a.glassColor||'#2a2220'}" stroke-width="${a.glassColor?2.2:2}"><rect x="33" y="47" width="15" height="11" rx="4"/><rect x="52" y="47" width="15" height="11" rx="4"/><path d="M48 52 h4"/></g>`:'';
   let arm='';
   if(a.v){
     const f=x=>a.v==='r'?100-x:x;
