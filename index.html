@@ -1,0 +1,1289 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>我是大學生</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=Caveat:wght@500;700&display=swap">
+<style>
+[hidden]{display:none!important}
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+/* Layout: 水彩紙底 + 12×12 大富翁棋盤（中央為操作區），下方玩家卡；事件以底部彈出卡呈現 */
+:root{
+  --paper:#f2ece1; --paper-2:#e9e1d2; --ink:#4a4038; --ink-soft:#7d7064;
+  --blue:#7fa3cf; --red:#d0573f; --mustard:#dca33a; --leaf:#6e8f58; --rose:#e39a92; --plum:#8a6c93;
+  --card:#fbf8f2; --line:#d8cdbb;
+  --display:"LXGW WenKai TC","Kaiti TC","STKaiti","PingFang TC","Microsoft JhengHei",serif;
+  --body:"LXGW WenKai TC","PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;
+  --script:"Caveat","Segoe Print",cursive;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#26221d; --paper-2:#302a24; --ink:#efe6d6; --ink-soft:#b8aa97;
+  --blue:#8fb2dc; --red:#e2735c; --mustard:#e6b354; --leaf:#8fb077; --rose:#e9aaa2; --plum:#b495bd;
+  --card:#2f2923; --line:#4a4138; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --paper:#26221d; --paper-2:#302a24; --ink:#efe6d6; --ink-soft:#b8aa97;
+  --blue:#8fb2dc; --red:#e2735c; --mustard:#e6b354; --leaf:#8fb077; --rose:#e9aaa2; --plum:#b495bd;
+  --card:#2f2923; --line:#4a4138; color-scheme:dark }
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.6;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:12px 40px}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;opacity:.35;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .45 0 0 0 0 .4 0 0 0 .22 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.wrap{max-width:700px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;font-weight:700}
+button{font-family:var(--body);font-size:15px;cursor:pointer;color:var(--ink)}
+button:focus-visible,input:focus-visible{outline:2px dashed var(--red);outline-offset:2px}
+.btn{border:1.5px solid var(--ink);background:var(--card);border-radius:999px;padding:9px 18px;font-weight:700}
+.btn.primary{background:var(--red);border-color:var(--red);color:#fff8f0}
+.btn:disabled{opacity:.4;cursor:default}
+.svgdefs{position:absolute;width:0;height:0}
+
+/* 開場 */
+#setup{display:flex;flex-direction:column;gap:14px}
+.hero{display:flex;flex-direction:column;align-items:center;text-align:center;gap:2px}
+.hero .group{width:100%;max-width:520px;height:auto;display:block}
+.hero .script{font-family:var(--script);font-size:22px;color:var(--ink-soft);letter-spacing:.06em}
+.hero h1{font-size:clamp(40px,11vw,60px);letter-spacing:.08em;line-height:1.1}
+.hero p{margin:0;color:var(--ink-soft);font-size:14px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:12px}
+.label{font-size:12px;letter-spacing:.12em;color:var(--ink-soft)}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg button{border:1.5px solid var(--line);background:transparent;border-radius:999px;padding:6px 14px}
+.seg button[aria-pressed="true"]{border-color:var(--ink);background:var(--ink);color:var(--paper)}
+.pl-setup{border-top:1px dashed var(--line);padding-top:12px;display:flex;flex-direction:column;gap:8px}
+.pl-setup:first-child{border-top:0;padding-top:0}
+.pl-setup input[type=text]{flex:none}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+input[type=text]{font-family:var(--body);font-size:15px;color:var(--ink);background:var(--paper);border:1.5px solid var(--line);border-radius:10px;padding:7px 10px;min-width:0;flex:1 1 120px}
+.avpick{display:grid;grid-template-columns:repeat(6,1fr);gap:4px}
+.avpick button{border:2px solid transparent;background:transparent;border-radius:12px;padding:2px 0 4px;display:flex;flex-direction:column;align-items:center;font-size:12px;line-height:1.2;min-width:0}
+.avpick button[aria-pressed="true"]{border-color:var(--red);background:var(--paper-2)}
+.avpick svg{width:100%;max-width:56px;height:auto;display:block}
+.avpick small{color:var(--ink-soft);font-size:10px}
+.note{font-size:13px;color:var(--ink-soft);margin:0}
+.teach{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.teach div{display:flex;flex-direction:column;align-items:center;font-size:12px;text-align:center;line-height:1.25;min-width:0}
+.teach svg{width:100%;max-width:52px;height:auto}
+.teach small{color:var(--ink-soft);font-size:10px}
+
+/* 棋盤 */
+.board{display:grid;grid-template-columns:repeat(12,1fr);grid-template-rows:repeat(12,1fr);width:100%;aspect-ratio:1;max-width:100%;
+  border:1.5px solid var(--ink);border-radius:10px;overflow:hidden;background:var(--paper)}
+.tile{position:relative;border:.5px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;
+  font-size:clamp(7.5px,2.1vw,12px);line-height:1.05;text-align:center;padding:1px;background:transparent;border-radius:0;min-width:0;overflow:hidden}
+.tile::before{content:"";position:absolute;inset:0;opacity:.28;background:var(--tc,transparent)}
+.tile .nm{position:relative;font-weight:700;word-break:keep-all}
+.tile .ic{position:relative;font-size:.85em;color:var(--ink-soft)}
+.tile.corner{font-size:clamp(8px,2.4vw,13px)}
+.tile.corner::before{opacity:.45}
+.tile.dept-biz{--tc:var(--blue)} .tile.dept-cul{--tc:var(--mustard)} .tile.club{--tc:var(--leaf)} .tile.course{--tc:var(--red)}
+.tile.course::before{opacity:.38}
+.tile.spot{--tc:var(--rose)} .tile.chance{--tc:var(--mustard)} .tile.fate{--tc:var(--plum)} .tile.corner{--tc:var(--paper-2)}
+.tile.mine .nm{text-decoration:underline wavy var(--red) 1px;text-underline-offset:2px}
+.tile .got{position:absolute;top:1px;right:2px;font-size:.8em;color:var(--leaf);font-weight:700}
+.tile.flash{animation:flash .5s ease 2}
+@keyframes flash{50%{box-shadow:inset 0 0 0 3px var(--red)}}
+.tokens{position:absolute;inset:auto 1px 1px 1px;display:flex;flex-wrap:wrap;justify-content:center;pointer-events:none}
+.tok{width:46%;max-width:18px;aspect-ratio:1;border-radius:50%;background:var(--card);box-shadow:0 0 0 1.5px var(--tk);overflow:hidden;margin:-1px}
+.tok svg{width:100%;height:100%;display:block}
+.center{grid-area:2/2/12/12;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(2px,1.2vw,8px);padding:clamp(4px,2vw,14px);text-align:center;position:relative;min-width:0}
+.center .ttl{font-family:var(--display);font-size:clamp(20px,6vw,34px);letter-spacing:.1em;line-height:1}
+.center .sub{font-family:var(--script);color:var(--ink-soft);font-size:clamp(12px,3.4vw,17px);line-height:1}
+.center .who{display:flex;align-items:center;gap:8px}
+.center .who svg{width:clamp(40px,12vw,64px);height:auto}
+.center .who b{font-family:var(--display);font-size:clamp(14px,4vw,19px)}
+.center .who small{display:block;color:var(--ink-soft);font-size:clamp(10px,2.8vw,13px)}
+.dice{display:flex;gap:8px}
+.die{width:clamp(28px,8vw,40px);aspect-ratio:1;border:1.5px solid var(--ink);border-radius:9px;background:var(--card);display:grid;place-items:center;
+  font-family:var(--script);font-weight:700;font-size:clamp(18px,5vw,26px)}
+.die.roll{animation:wob .12s linear infinite}
+@keyframes wob{50%{transform:rotate(12deg) translateY(-2px)}}
+.log{list-style:none;margin:0;padding:0;font-size:clamp(10px,2.7vw,13px);color:var(--ink-soft);max-width:100%;line-height:1.35}
+.log li:first-child{color:var(--ink)}
+.center .sprig{position:absolute;bottom:2px;width:clamp(22px,7vw,40px);height:auto;opacity:.9}
+.center .sprig.l{left:4px}.center .sprig.r{right:4px;transform:scaleX(-1)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 12px;font-size:12px;color:var(--ink-soft)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:4px;vertical-align:-1px;opacity:.7}
+
+/* 玩家卡 */
+.players{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:10px}
+.pc{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.pc.on{border-color:var(--ink);box-shadow:3px 3px 0 var(--tk)}
+.pc-h{display:flex;gap:10px;align-items:center}
+.pc-h svg{width:48px;height:53px;flex:0 0 auto}
+.pc-h b{font-family:var(--display);font-size:17px}
+.pc-h small{display:block;color:var(--ink-soft);font-size:12px;line-height:1.3}
+.track{display:flex;flex-direction:column;gap:3px}
+.track .th{display:flex;justify-content:space-between;font-size:12px;gap:8px}
+.track .th span:last-child{color:var(--ink-soft);text-align:right}
+.bar{height:8px;border-radius:99px;background:var(--paper-2);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--blue);border-radius:99px;transition:width .5s}
+.dots{display:flex;gap:3px}
+.dots i{flex:1;height:8px;border-radius:99px;background:var(--paper-2);transition:background .4s}
+.dots.club i.y{background:var(--leaf)} .dots.love i.y{background:var(--rose)} .dots.skill i.y{background:var(--mustard)}
+.five{display:flex;gap:4px;flex-wrap:wrap}
+.five span{font-size:11px;border:1px solid var(--line);border-radius:99px;padding:0 8px}
+.five span.y{background:var(--red);border-color:var(--red);color:#fff8f0}
+.chips{display:flex;flex-wrap:wrap;gap:4px}
+.chips span{font-size:11px;background:var(--paper-2);border-radius:99px;padding:1px 8px}
+.num{font-variant-numeric:tabular-nums}
+
+/* 事件卡 */
+#scrim[hidden]{display:none}
+#scrim{position:fixed;inset:0;background:rgba(40,32,24,.35);z-index:20;display:flex;align-items:flex-end;justify-content:center;
+  padding:0 max(10px,env(safe-area-inset-right,0px)) 0 max(10px,env(safe-area-inset-left,0px))}
+.sheet{width:100%;max-width:520px;background:var(--card);border:1.5px solid var(--ink);border-bottom:0;border-radius:20px 20px 0 0;
+  padding:16px 18px calc(18px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:10px;max-height:88vh;overflow-y:auto;animation:up .25s ease}
+@keyframes up{from{transform:translateY(30px);opacity:.4}}
+.sheet .tag{font-size:12px;letter-spacing:.14em;color:var(--ink-soft)}
+.sheet h2{font-size:24px}
+.sheet .art{display:flex;gap:12px;align-items:center}
+.sheet .art svg{width:76px;height:84px;flex:0 0 auto}
+.sheet p{margin:0}
+.sheet .opts{display:flex;flex-direction:column;gap:8px}
+.sheet .opts .btn{text-align:left;border-radius:12px}
+.sheet .opts .btn.primary{text-align:center}
+.chk{display:flex;align-items:center;gap:12px;background:var(--paper);border-radius:12px;padding:10px 12px}
+.ach{border:1.5px dashed var(--mustard);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:2px}
+.ach b{font-family:var(--display);font-size:17px}
+.ach small{color:var(--ink-soft)}
+.skillcard{border:1.5px solid var(--mustard);border-radius:12px;padding:12px;text-align:center;background:var(--paper)}
+.skillcard b{font-family:var(--display);font-size:22px;display:block}
+.fx{font-size:13px;color:var(--red)}
+.good{color:var(--leaf);font-weight:700}.bad{color:var(--red);font-weight:700}
+
+/* 畢業證書 */
+.cert{border:2px solid var(--ink);outline:1px solid var(--ink);outline-offset:4px;border-radius:6px;padding:18px 14px;margin:6px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px;background:var(--paper)}
+.cert .ct{font-family:var(--display);font-size:30px;letter-spacing:.3em}
+.cert svg.av{width:90px;height:99px}
+.cert .badges{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+.cert .badges span{border:1px solid var(--line);border-radius:99px;padding:2px 10px;font-size:13px;background:var(--card)}
+.podium{display:grid;grid-template-columns:repeat(3,1fr);align-items:end;gap:6px;text-align:center}
+.podium div{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:0}
+.podium svg{width:100%;max-width:84px;height:auto}
+.podium .step{width:100%;border:1.5px solid var(--ink);border-bottom:0;border-radius:8px 8px 0 0;background:var(--paper-2);font-family:var(--display);font-weight:700;padding-top:4px}
+.podium .p1 .step{height:70px;background:var(--mustard);color:#3a2b14}.podium .p2 .step{height:48px}.podium .p3 .step{height:32px}
+.podium b{font-family:var(--display);font-size:16px}
+.qrbox{display:grid;place-items:center;background:#fff;border-radius:12px;padding:14px}
+.qrbox img,.qrbox canvas{width:min(70vw,280px)!important;height:auto!important}
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.tabs button{border:1.5px solid var(--line);background:var(--card);border-radius:12px;padding:8px 4px;font-weight:700;line-height:1.3}
+.tabs button small{display:block;font-weight:400;font-size:11px;color:var(--ink-soft)}
+.tabs button[aria-pressed="true"]{border-color:var(--red);background:var(--red);color:#fff8f0}
+.tabs button[aria-pressed="true"] small{color:#fff8f0}
+.warn{background:var(--paper-2);border-radius:10px;padding:10px 12px;font-size:13px;margin:0}
+.bigcode{font-family:var(--script);font-size:64px;letter-spacing:.12em;color:var(--red);line-height:1}
+.tgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:12px}
+.live{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.live li{display:grid;grid-template-columns:28px 40px 1fr auto;gap:8px;align-items:center;background:var(--paper);border-radius:10px;padding:6px 10px;min-width:0}
+.live li.me{box-shadow:inset 0 0 0 2px var(--red)}
+.live li.gold{background:color-mix(in srgb,var(--mustard) 30%,var(--paper))}
+.live .rk{font-family:var(--script);font-size:22px;font-weight:700;text-align:center}
+.live svg{width:40px;height:44px}
+.live .nm{min-width:0;line-height:1.3}
+.live .nm b{font-family:var(--display);display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.live .nm small{color:var(--ink-soft);font-size:11px}
+.live .cr{font-variant-numeric:tabular-nums;font-size:13px;text-align:right}
+#toast{position:fixed;left:50%;top:calc(12px + env(safe-area-inset-top,0px));transform:translateX(-50%);z-index:40;background:var(--ink);color:var(--paper);
+  border-radius:999px;padding:8px 18px;font-weight:700;box-shadow:0 4px 14px rgba(0,0,0,.2);max-width:calc(100% - 32px);text-align:center}
+.cert .seal{font-family:var(--script);color:var(--red);font-size:20px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head><body>
+<svg class="svgdefs" aria-hidden="true"><defs>
+  <filter id="wc" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="4" result="t"/><feDisplacementMap in="SourceGraphic" in2="t" scale="2.2"/></filter>
+  <pattern id="navystripe" width="8" height="8" patternUnits="userSpaceOnUse"><rect width="8" height="8" fill="#2f3a57"/><rect y="5" width="8" height="1.6" fill="#7f8db0"/></pattern>
+  <pattern id="gingham" width="6" height="6" patternUnits="userSpaceOnUse"><rect width="6" height="6" fill="#a9c2e2"/><rect width="3" height="6" fill="#7fa3cf" opacity=".55"/><rect width="6" height="3" fill="#7fa3cf" opacity=".55"/></pattern>
+</defs></svg>
+
+<div class="wrap">
+  <section id="setup">
+    <div class="hero">
+      <div id="cover" style="width:100%;display:flex;justify-content:center"></div>
+      <span class="script">Shih Chien · Kaohsiung · IBM</span>
+      <h1>我是大學生</h1>
+      <p>國際企業管理學系・大學生活體驗大富翁</p>
+    </div>
+    <div class="panel" id="resume" hidden>
+      <p style="margin:0">上次的遊戲還沒結束。</p>
+      <div class="row"><button class="btn primary" id="btnResume">繼續上次的遊戲</button><button class="btn" id="btnDiscard">重新開始</button></div>
+    </div>
+    <div class="tabs" id="tabs">
+      <button data-mode="student">學生<small>加入教室</small></button>
+      <button data-mode="teacher">老師<small>開新教室</small></button>
+      <button data-mode="local">單機<small>同一支手機</small></button>
+    </div>
+    <p class="warn" id="noFb" hidden>線上教室還沒設定好：請依照「設定說明」把 Firebase 設定填進 firebase-config.js。在那之前只能用「單機」模式。</p>
+    <div id="mStudent" class="panel">
+      <div class="label">加入教室</div>
+      <input type="text" id="jCode" inputmode="numeric" maxlength="4" placeholder="輸入 4 位數教室代碼" autocomplete="off" style="font-size:22px;letter-spacing:.3em;text-align:center">
+      <div class="label">選擇你的國企系新生</div>
+      <div class="avpick" id="jPick"></div>
+      <input type="text" id="jName" maxlength="8" placeholder="你的暱稱" autocomplete="off">
+      <p class="bad" id="jErr" style="margin:0;font-size:13px" hidden></p>
+      <button class="btn primary" id="btnJoin" style="align-self:center;padding:12px 34px;font-size:17px">加入教室 →</button>
+    </div>
+    <div id="mTeacher" class="panel" hidden>
+      <div class="label">開一間新教室</div>
+      <div><div class="label">畢業門檻學分</div><div class="seg" id="segTT"></div></div>
+      <p class="note">開好後畫面會顯示教室代碼和 QR Code，投影給全班掃。大家加入後按「開始比賽」，最先拿到畢業證書的前三名獲勝，排名即時更新。</p>
+      <p class="bad" id="tErr" style="margin:0;font-size:13px" hidden></p>
+      <button class="btn primary" id="btnCreate" style="align-self:center;padding:12px 34px;font-size:17px">開新教室 →</button>
+    </div>
+    <div id="mLocal" style="display:flex;flex-direction:column;gap:14px" hidden>
+    <div class="panel">
+      <div><div class="label">玩家人數（同一支手機輪流玩）</div><div class="seg" id="segN"></div></div>
+      <div><div class="label">畢業門檻學分</div><div class="seg" id="segT"></div><p class="note" id="tNote"></p></div>
+    </div>
+    <div class="panel"><div class="label">選擇你的國企系新生</div><div id="plSetup" style="display:flex;flex-direction:column;gap:12px"></div></div>
+    <button class="btn primary" id="btnStart" style="align-self:center;padding:12px 34px;font-size:17px">入學報到 →</button>
+    </div>
+    <div class="panel"><div class="label">國企系老師與執秘</div><div class="teach" id="teach"></div></div>
+    <p class="note" style="text-align:center">紅色格是國企系老師的課，要真的完成課堂任務才拿得到學分；走到其他系的格子可以學到該系的特殊技能，集滿三個有獎勵；每年回到報到處，可以跟玟玟執秘簡報技能換學分。</p>
+  </section>
+
+  <section id="game" hidden>
+    <div class="board" id="board"></div>
+    <div class="legend">
+      <span><i style="background:var(--red)"></i>國企系課程（課堂任務）</span><span><i style="background:var(--blue)"></i>商資學院學系（學技能）</span><span><i style="background:var(--mustard)"></i>文創學院學系（學技能）</span>
+      <span><i style="background:var(--leaf)"></i>社團</span><span><i style="background:var(--rose)"></i>景點（約會）</span><span><i style="background:var(--plum)"></i>命運</span>
+      <span>點格子看介紹</span>
+    </div>
+    <div class="panel" id="livePanel" hidden><div class="label" id="liveTitle">全班即時排名</div><div id="liveBanner"></div><ol class="live" id="liveList"></ol></div>
+    <div class="players" id="players"></div>
+    <div class="row" style="justify-content:center"><button class="btn" id="btnQuit">結束這局，回到開場</button></div>
+  </section>
+
+  <section id="waiting" hidden style="display:flex;flex-direction:column;gap:14px;align-items:center;text-align:center">
+    <div id="wAv" style="width:120px"></div>
+    <h2 style="font-size:26px">已加入教室 <span id="wCode" class="num"></span></h2>
+    <p class="note">等老師按下「開始比賽」就會自動開始，不用重新整理。</p>
+    <div class="panel" style="width:100%"><div class="label">已經到教室的同學（<span id="wCount">0</span> 人）</div><div class="chips" id="wList"></div></div>
+    <button class="btn" id="btnWLeave">離開教室</button>
+  </section>
+
+  <section id="teacher" hidden style="display:flex;flex-direction:column;gap:14px">
+    <div style="text-align:center"><span class="label">教室代碼</span><div class="bigcode num" id="tCode"></div><p id="tStatus" style="margin:0;font-weight:700"></p></div>
+    <div class="tgrid">
+      <div class="panel" style="align-items:center"><div class="qrbox" id="tQR"></div><p class="note" id="tUrl" style="word-break:break-all;text-align:center"></p></div>
+      <div class="panel"><div class="label">比賽控制</div>
+        <div class="row"><button class="btn primary" id="btnTStart">開始比賽</button><button class="btn" id="btnTEnd">結束並頒獎</button></div>
+        <p class="note" id="tInfo"></p></div>
+    </div>
+    <div class="panel" id="tPodium" hidden></div>
+    <div class="panel"><div class="label">全班即時排名（<span id="tCount">0</span> 人）</div><ol class="live" id="tList"></ol></div>
+    <button class="btn" id="btnTLeave" style="align-self:center">關閉教室，回到開場</button>
+  </section>
+</div>
+<div id="toast" hidden></div>
+<div id="scrim" hidden><div class="sheet" id="sheet" role="dialog" aria-modal="true"></div></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script>
+/* ---------- 似顏繪角色 ---------- */
+const AV = [
+  {name:'阿珊',full:'陳珊珊',g:'女',skin:'#f6d3bd',hair:'#2f2b2b',style:'chinwave',top:'#f6f3ee',inner:'#e3e9f2',glasses:true,collar:true,cord:true,slim:true,earring:true},
+  {name:'Mia',full:'林米亞',g:'女',skin:'#f7d6c2',hair:'#8a4f33',style:'bangs',top:'#f5f0e6',inner:'#f5f0e6'},
+  {name:'小羽',full:'于小羽',g:'女',skin:'#f5d0b8',hair:'#7a4a2c',style:'braids',top:'#d9822b',inner:'#f2f2f0',collar:true},
+  {name:'Kevin',full:'張凱文',g:'男',skin:'#f3cdb4',hair:'#4a3226',style:'quiffR',top:'#e8dcc7',inner:'#d0573f',glasses:true},
+  {name:'阿德',full:'林德安',g:'男',skin:'#ebc19f',hair:'#2b2420',style:'curtain',top:'#7d9a68',inner:'#7d9a68'},
+  {name:'布萊恩',full:'黃柏恩',g:'男',skin:'#e9bf9e',hair:'#7a5536',style:'quiffL',top:'#47597a',inner:'#dfe6ef',glasses:true},
+];
+const TEACH = [
+  {name:'艾瑞克',style:'品牌行銷學',av:{skin:'#e9be9b',hair:'#2f2620',style:'spiky',top:'#a9c6e6',inner:'#f7fafd',glasses:true}},
+  {name:'阿金',style:'經濟學',av:{skin:'#efc3a0',hair:'#3d3430',style:'buzz',top:'url(#navystripe)',inner:'#2f3a57',glasses:true,v:'r'}},
+  {name:'武哥',style:'統計學・全英授課・愛唱德文歌',av:{skin:'#e6b996',hair:'#1c1a19',style:'sidepart',top:'#d6d2c8',inner:'#6d2433',glasses:true,turtle:true,mic:true}},
+  {name:'仲哥',style:'系主任・企業倫理',av:{skin:'#e6b996',hair:'#35312e',style:'crew',top:'#4a4b4f',inner:'#3c3d41',glasses:true,mood:'calm'}},
+  {name:'雙慧',style:'日文',av:{skin:'#f4cfb8',hair:'#4e3428',style:'wavebob',top:'#dca33a',inner:'#fff8ea',glasses:true,mood:'calm'}},
+  {name:'英子',style:'韓文',av:{skin:'#f6d3bf',hair:'#3a2a22',style:'sleekbob',top:'#e39a92',inner:'#fff3ef'}},
+  {name:'阿明',style:'會計學',av:{skin:'#efc6a6',hair:'#1f1c1b',style:'fringe',top:'#c9dcea',inner:'#8fb0d6',glasses:true,v:'r'}},
+  {name:'玟玟',style:'系上執秘・行政支援',av:{skin:'#f7d8c6',hair:'#5a3a2c',style:'bangbob',top:'#b39bc1',inner:'#f8f3fa'}},
+];
+const T_BY=n=>TEACH.find(t=>t.name===n);
+
+const CRUSHES = [
+  {name:'阿澈',g:'男',skin:'#f0c9ab',hair:'#2a221f',style:'short',top:'#e3dccd',inner:'#7fa3cf'},
+  {name:'語彤',g:'女',skin:'#f7d8c6',hair:'#5a3626',style:'long',top:'#e39a92',inner:'#fff4ef'},
+  {name:'宥廷',g:'男',skin:'#ebc4a3',hair:'#1f1b19',style:'spiky',top:'#6e8f58',inner:'#f1eadd',glasses:true},
+  {name:'芷晴',g:'女',skin:'#f6d1bb',hair:'#3b2a22',style:'bob',top:'#dca33a',inner:'#fff8ea'},
+  {name:'浩宇',g:'男',skin:'#e8bc98',hair:'#3a2a20',style:'curly',top:'#8a6c93',inner:'#f3eef6'},
+  {name:'小夏',g:'女',skin:'#f5d4bf',hair:'#6b4430',style:'pony',top:'#a9c2e2',inner:'#fff'},
+];
+const HL=(d,o=.22)=>`<path d="${d}" stroke="#fff" stroke-opacity="${o}" stroke-width="1.4" fill="none" stroke-linecap="round"/>`;
+const QF=(m)=>{const X=x=>m?100-x:x;
+  const P=[[27,48],'C',[24,36],[26,28],[31,24],'L',[30,17],[37,20],[40,12],[47,17],[52,9],[57,15],[65,8],[66,16],[75,14],[72,22],'C',[77,28],[77,38],[73,48],'C',[71,40],[64,34],[54,33],'C',[44,33],[34,38],[27,48]];
+  const f='M'+P.map(q=>typeof q==='string'?q:`${X(q[0])} ${q[1]}`).join(' ')+'Z';
+  const hl=[[[36,22],[44,15]],[[45,24],[55,13]],[[55,24],[66,13]],[[62,28],[72,20]]].map(([a,b])=>`M${X(a[0])} ${a[1]} L${X(b[0])} ${b[1]}`).join(' ');
+  return {b:h=>`<path d="M26 52 C21 26 79 24 74 52 C72 47 28 47 26 52Z" fill="${h}"/>`,
+    f:h=>`<path d="${f}" fill="${h}"/><path d="${hl}" stroke="#fff" stroke-opacity=".25" stroke-width="1.4" fill="none" stroke-linecap="round"/>`}};
+const HAIR={
+  chinwave:{b:h=>`<path d="M23 52 C15 16 85 16 77 52 C82 58 78 64 82 70 C78 74 74 71 72 69 C68 73 64 71 63 70 L37 70 C36 71 32 73 28 69 C26 71 22 74 18 70 C22 64 18 58 23 52Z" fill="${h}"/>`,
+    f:h=>`<path d="M27 58 C21 22 54 16 58 24 C66 20 79 28 73 58 C71 44 66 36 60 32 C58.5 30.5 58 28 58 26 C54 34 40 38 33 46 C30 50 28 54 27 58Z" fill="${h}"/>`+HL('M56 22 q-12 2 -22 12 M62 24 q8 2 12 10 M19 68 q4 -3 2 -8 q-3 -4 1 -8 M81 68 q-4 -3 -2 -8 q3 -4 -1 -8',.25)},
+  layerfringe:{b:h=>HAIR.layerbob.b(h),
+    f:h=>`<path d="M27 57 C21 21 79 20 73 57 C72 50 70 46.5 67 46.5 L63.5 43.5 L60 46.5 L56 43 L52 46.5 L48 43 L44 46.5 L40.5 43.5 L37 46.5 L33.5 45 C30 47 28 51 27 57Z" fill="${h}"/>`+HL('M40 24 q10 -5 22 0 M18 72 q4 -6 4 -14 M82 72 q-4 -6 -4 -14',.22)},
+  braids:{b:h=>`<path d="M25 52 C18 16 82 16 75 52Z" fill="${h}"/>`,
+    f:h=>{const br=x=>[0,1,2,3,4,5].map(i=>`<ellipse cx="${x+(i%2?1.6:-1.6)}" cy="${68+i*7}" rx="4.8" ry="4.4" fill="${h}"/><path d="M${x-3.5} ${66+i*7} q4 3 8 0" stroke="#000" stroke-opacity=".18" stroke-width="1" fill="none"/>`).join('')+
+        `<rect x="${x-3}" y="107" width="6" height="2.6" rx="1.2" fill="#b5651d"/>`;
+      return `<path d="M26 58 C21 20 79 20 74 58 C72 45 63 37.5 53 37 L50 33 L47 37 C37 37.5 28 45 26 58Z" fill="${h}"/>
+        <path d="M27 50 C25 56 24 60 25 64 M73 50 C75 56 76 60 75 64" stroke="${h}" stroke-width="3.5" fill="none" stroke-linecap="round"/>`+br(25)+br(75)+HL('M50 33 q-10 2 -18 12 M50 33 q10 2 18 12',.22)}},
+  layerbob:{b:h=>`<path d="M22 52 C15 15 85 15 78 52 C80 62 80 70 84 76 C78 78 76 74 74 72 C70 78 66 76 64 74 L36 74 C34 76 30 78 26 72 C24 74 22 78 16 76 C20 70 20 62 22 52Z" fill="${h}"/>`,
+    f:h=>`<path d="M26 57 C21 22 40 16 44 24 C50 15 79 20 74 57 C72 42 64 32 52 30 C48 30 46 28 44 25 C40 32 30 42 26 57Z" fill="${h}"/>`+HL('M44 24 q-8 6 -12 18 M52 22 q12 2 18 14 M18 72 q4 -6 4 -14 M82 72 q-4 -6 -4 -14',.22)},
+  tuck:{b:h=>`<path d="M24 52 C17 16 83 16 76 52 C79 58 79 64 82 68 C78 70 74 69 72 67 L28 67 C26 69 22 70 20 68 C22 64 21 58 24 52Z" fill="${h}"/>`,
+    f:h=>`<path d="M26 56 C22 30 30 20 40 18 C54 14 72 18 76 34 C78 42 76 50 74 56 C72 44 66 36 56 34 C50 33 44 30 41 24 C38 32 32 42 26 56Z" fill="${h}"/>
+      <path d="M29 44 C26.5 52 27.5 60 31 67 M71.5 42 C74 50 73.5 57 70.5 63" stroke="${h}" stroke-width="1.6" fill="none" stroke-linecap="round"/>`+HL('M48 22 q12 -3 22 6 M80 66 q-3 -4 -3 -9',.2)},
+  quiffR:QF(false), quiffL:QF(true),
+  longwave:{b:h=>`<path d="M24 52 C16 18 84 18 76 52 C82 62 77 72 83 82 C88 92 82 102 78 106 L22 106 C18 102 12 92 17 82 C23 72 18 62 24 52Z" fill="${h}"/>`,
+    f:h=>`<path d="M27 56 C22 22 47 20 50 29 C53 20 78 22 73 56 C71 42 62 33 50 31 C38 33 29 42 27 56Z" fill="${h}"/>`+HL('M20 84 q4 -6 0 -12 M80 84 q-4 -6 0 -12 M40 24 q-6 4 -9 12')},
+  bangs:{b:h=>`<path d="M23 50 C18 16 82 16 77 50 L80 102 L20 102Z" fill="${h}"/>`,
+    f:h=>`<path d="M25 54 C22 20 78 20 75 54 C74 48 72 45 70 46 L65 43.5 L60 46 L55 43.5 L50 46 L45 43.5 L40 46 L35 43.5 L30 46 C28 47 26 50 25 54Z" fill="${h}"/>`+HL('M38 26 q10 -5 22 0',.2)},
+  bun:{b:h=>`<circle cx="74" cy="72" r="10" fill="${h}"/><path d="M26 56 C18 18 82 18 74 56Z" fill="${h}"/>`,
+    f:h=>`<path d="M26 58 C21 22 56 18 62 28 C70 30 77 40 74 54 C70 42 62 35 54 34 C44 36 34 42 26 58Z" fill="${h}"/>
+      <path d="M28 52 C25 60 26 68 30 74" stroke="${h}" stroke-width="2" fill="none" stroke-linecap="round"/>`+HL('M68 70 q6 -2 8 4')},
+  mushroom:{b:h=>`<path d="M21 60 C13 14 87 12 79 60 C74 52 26 52 21 60Z" fill="${h}"/>`,
+    f:h=>`<path d="M23 54 C18 16 82 14 77 54 C75 48 71 45.5 66 46.5 C61 44 56 46 51 44.5 C46 46 41 44 36 46.5 C30 45 26 48 23 54Z" fill="${h}"/>`+HL('M34 26 q8 -6 18 -5 M56 22 q8 2 12 8 M40 36 q4 -3 8 -3',.2)},
+  curtain:{b:h=>`<path d="M24 56 C17 18 83 18 76 56 C72 48 28 48 24 56Z" fill="${h}"/>`,
+    f:h=>`<path d="M25 52 C20 17 80 17 75 52 C72 46 68 44 64 46 C60 40 55 34 50 33 C45 34 40 40 36 46 C32 44 28 46 25 52Z" fill="${h}"/>`+HL('M44 22 q-8 4 -12 14 M56 22 q8 4 12 14')},
+  sweep:{b:h=>`<path d="M25 54 C19 20 81 18 75 54 C72 46 28 46 25 54Z" fill="${h}"/>`,
+    f:h=>`<path d="M24 52 C19 20 76 12 77 46 C73 38 66 34 58 35 C51 38 43 43 35 45 C30 46 26 49 24 52Z" fill="${h}"/>`+HL('M36 24 q14 -6 28 2 M44 32 q8 -3 16 -2')},
+  slick:{b:h=>`<path d="M25 52 C19 18 81 14 75 52 C72 44 28 44 25 52Z" fill="${h}"/>`,
+    f:h=>`<path d="M26 47 C24 26 36 15 52 15 C68 15 78 25 75 47 C72 36 66 31 58 31 C50 30 42 31 36 29 L35 25 C30 31 28 38 26 47Z" fill="${h}"/>`+HL('M37 24 q12 -6 30 0 M38 28 q12 -4 26 -1',.25)},
+  quiff:{b:h=>`<path d="M25 54 C19 22 81 20 75 54 C72 46 28 46 25 54Z" fill="${h}"/>`,
+    f:h=>`<path d="M26 48 C22 30 28 22 35 21 C40 12 60 8 70 16 C77 20 80 30 75 48 C72 38 66 34 58 34 C50 32 42 34 36 36 C32 38 28 42 26 48Z" fill="${h}"/>`+HL('M42 20 q10 -8 24 -3 M46 25 q8 -5 18 -2')},
+  crew:{b:h=>`<path d="M26 52 C20 20 80 18 74 52 C72 46 28 46 26 52Z" fill="${h}"/>`,
+    f:h=>`<path d="M27 48 C25 26 40 18 52 19 C66 20 76 28 73 48 C70 40 64 36 56 36 L44 33.5 C38 34 30 40 27 48Z" fill="${h}"/>
+      <path d="M44 33.5 C46 28 50 24 56 22" stroke="#000" stroke-opacity=".18" stroke-width="1.2" fill="none"/>`+HL('M54 24 q8 0 14 6')},
+  fluffy:{b:h=>`<path d="M21 60 C12 12 88 10 79 60 C73 52 27 52 21 60Z" fill="${h}"/>`,
+    f:h=>`<path d="M23 54 C17 14 83 12 77 54 L73 45 L69 48 L65 42 L59 46 L55 40 L49 45 L44 40 L39 46 L34 42 L30 48 L27 46Z" fill="${h}"/>`+HL('M32 28 q6 -8 16 -9 M58 20 q10 2 14 10 M44 32 q4 -4 10 -4')},
+  wavebob:{b:h=>`<path d="M22 52 C14 16 86 16 78 52 C84 60 79 68 84 76 C86 83 80 87 76 84 L24 84 C20 87 14 83 16 76 C21 68 16 60 22 52Z" fill="${h}"/>`,
+    f:h=>`<path d="M26 56 C21 22 60 17 66 25 C73 29 77 40 74 56 C70 43 64 36 58 34 C50 38 38 41 26 56Z" fill="${h}"/>`+HL('M18 74 q5 -5 2 -11 M82 74 q-5 -5 -2 -11 M40 24 q10 -6 20 -2')},
+  sleekbob:{b:h=>`<path d="M23 52 C18 15 82 15 77 52 L79 81 C70 83 30 83 21 81Z" fill="${h}"/>`,
+    f:h=>`<path d="M26 57 C21 21 46 19 50 28 C54 19 79 21 74 57 C72 43 62 33 50 31 C38 33 28 43 26 57Z" fill="${h}"/>`+HL('M30 40 q-4 18 -4 36 M70 40 q4 18 4 36 M44 23 q-6 4 -8 10',.18)},
+  bald:{b:h=>'',
+    f:h=>`<path d="M27.5 60 C25 52 26 45 30 41 C31 47 31 54 31 60Z M72.5 60 C75 52 74 45 70 41 C69 47 69 54 69 60Z" fill="${h}"/>
+      <ellipse cx="43" cy="37" rx="8" ry="3.4" fill="#fff" opacity=".35" transform="rotate(-18 43 37)"/>`},
+  crop:{b:h=>`<path d="M26 54 C20 22 80 20 74 54 C72 46 28 46 26 54Z" fill="${h}"/>`,
+    f:h=>`<path d="M27 50 C25 30 32 22 40 21 C46 17 58 17 64 21 C72 24 76 32 73 50 C71 42 66 38 60 37 C54 35 46 35 40 37 C34 39 29 44 27 50Z" fill="${h}"/>`+HL('M40 24 q10 -4 22 0 M44 29 q8 -3 16 0',.2)},
+  fringe:{b:h=>`<path d="M25 54 C19 18 81 18 75 54 C72 46 28 46 25 54Z" fill="${h}"/>`,
+    f:h=>`<path d="M26 50 C22 20 78 18 75 50 C74 45 71 42 67 42 C62 41 57 43 52 42 C47 41 42 43 37 42 C31 42 28 45 26 50Z" fill="${h}"/>`+HL('M36 28 q12 -6 26 -2 M42 36 q6 -2 12 -1')},
+  shaved:{b:h=>'',
+    f:h=>`<path d="M27 54 C23 22 77 22 73 54 C70 36 30 36 27 54Z" fill="${h}" opacity=".14"/>
+      <ellipse cx="43" cy="36" rx="8" ry="3.4" fill="#fff" opacity=".38" transform="rotate(-18 43 36)"/>`},
+  wavyshort:{b:h=>`<path d="M24 54 C17 18 83 18 76 54 C72 46 28 46 24 54Z" fill="${h}"/>
+      <circle cx="31" cy="33" r="5" fill="${h}"/><circle cx="42" cy="26" r="5.5" fill="${h}"/><circle cx="56" cy="25" r="5.5" fill="${h}"/><circle cx="68" cy="31" r="5" fill="${h}"/>`,
+    f:h=>`<path d="M25 50 C20 20 80 18 75 50 q-3 -6 -7 -3 q-3 -6 -8 -2 q-4 -5 -9 -1 q-4 -5 -9 -1 q-4 -5 -8 2 q-4 -2 -9 5Z" fill="${h}"/>`+HL('M34 30 q4 -4 8 0 q4 -4 8 0 q4 -4 8 0 M38 38 q4 -3 8 0 q4 -3 8 0')},
+  buzz:{b:h=>`<path d="M26 50 C22 27 78 27 74 50 C72 44 28 44 26 50Z" fill="${h}"/>`,
+    f:h=>`<path d="M27 47 C25 31 37 25.5 50 25.5 C63 25.5 75 31 73 47 C71 42 66 40 60 39.5 L40 39.5 C34 40 29 42 27 47Z" fill="${h}"/>`+[[36,31],[42,29],[48,28.5],[54,28.5],[60,29.5],[66,32],[39,35],[51,33],[62,35]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r=".7" fill="#fff" opacity=".25"/>`).join('')},
+  sidepart:{b:h=>`<path d="M25 54 C19 20 81 18 75 54 C72 46 28 46 25 54Z" fill="${h}"/>`,
+    f:h=>`<path d="M26 50 C24 30 30 21 40 19 C52 14 70 16 75 30 C77 36 76 44 74 50 C72 42 66 37 58 36 C50 35 44 32 41 26 C38 32 32 40 26 50Z" fill="${h}"/>
+      <path d="M40.5 19.5 L41 26" stroke="#fff" stroke-opacity=".35" stroke-width="1.2"/>`+HL('M46 22 q12 -4 24 6 M48 28 q10 -2 18 4',.22)},
+  shortcrop:{b:h=>`<path d="M26 52 C21 24 79 22 74 52 C72 46 28 46 26 52Z" fill="${h}"/>`,
+    f:h=>`<path d="M27 48 C24 28 36 21 50 21 C64 21 76 28 73 48 C71 42 66 39 60 38.5 C56 37 53 38.5 50 37 C47 38.5 44 37 40 38.5 C34 39 29 43 27 48Z" fill="${h}"/>`+HL('M38 27 q12 -4 24 0',.2)},
+  wavymid:{b:h=>`<path d="M24 52 C16 16 84 16 76 52 C79 56 76 60 78 64 C76 66 74 65 73 63 L27 63 C26 65 24 66 22 64 C24 60 21 56 24 52Z" fill="${h}"/>`,
+    f:h=>`<path d="M25 52 C20 18 80 16 75 52 q-3 -6 -8 -4 q-3 -5 -9 -2 q-4 -4 -9 -1 q-4 -4 -9 -1 q-4 -4 -8 2 q-3 -1 -7 6Z" fill="${h}"/>`+HL('M34 28 q4 -4 8 0 q4 -4 8 0 q4 -4 8 0 M23 60 q2 -3 0 -6 M77 60 q-2 -3 0 -6')},
+  bangbob:{b:h=>`<path d="M22 54 C15 15 85 15 78 54 L80 73 C82 79 76 81 72 77 C60 79 40 79 28 77 C24 81 18 79 20 73Z" fill="${h}"/>`,
+    f:h=>`<path d="M25 54 C21 21 79 21 75 54 C74 48 72 45 69 46 L65 43 L61 46.5 L57 43 L53 46.5 L49 43 L45 46.5 L41 43 L37 46.5 L33 43 L30 46 C27 47 26 50 25 54Z" fill="${h}"/>`+HL('M38 27 q12 -5 24 0',.2)},
+};
+function avatar(a,cls='av',attrs=''){
+  const m=a.mood||'happy', h=a.hair;
+  let back='',front='';
+  const hs=HAIR[a.style]; if(hs){back=hs.b(h);front=hs.f(h)}
+  if(a.style==='long'){back=`<path d="M24 50 C18 18 82 18 76 50 C80 70 84 88 80 100 L20 100 C16 88 20 70 24 50Z" fill="${h}"/>`}
+  if(a.style==='curly'){back=`<path d="M24 50 C18 18 82 18 76 50 C82 66 86 84 80 98 L20 98 C14 84 18 66 24 50Z" fill="${h}"/>`+
+    [[20,62],[18,78],[22,92],[80,62],[82,78],[78,92],[26,40],[74,40]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="8" fill="${h}"/>`).join('')}
+  if(a.style==='bob'){back=`<path d="M23 54 C18 14 82 14 77 54 L79 72 C70 76 30 76 21 72Z" fill="${h}"/>`}
+  if(a.style==='mop'){back=`<path d="M24 56 C16 12 84 12 76 56 L76 64 C66 60 34 60 24 64Z" fill="${h}"/>`}
+  if(a.style==='pony'){back=`<circle cx="78" cy="34" r="11" fill="${h}"/><path d="M80 40 C92 52 88 70 80 80 C84 64 80 52 74 46Z" fill="${h}"/>`}
+  if(a.style==='short'||a.style==='side'){back=`<path d="M21 60 C10 6 90 2 79 60 C74 48 26 48 21 60Z" fill="${h}"/>`}
+  if(a.style==='suit'){back=`<path d="M25 52 C19 16 81 12 75 52 C72 42 28 42 25 52Z" fill="${h}"/>`;
+    front=`<path d="M26 49 C21 22 38 11 56 13 C72 15 81 26 76 47 C72 37 62 31 50 31 C45 31 41 29 38 26 C34 32 30 40 26 49Z" fill="${h}"/>
+      <path d="M38 26 C41 20 46 16 53 15" stroke="#ffffff" stroke-opacity=".28" stroke-width="1.6" fill="none"/>
+      <path d="M44 22 C54 18 66 20 72 30" stroke="#ffffff" stroke-opacity=".15" stroke-width="1.4" fill="none"/>`}
+  if(a.style==='mcurly'){const r=a.big?9.5:8.5;
+    back=[[27,46],[73,46],[25,36],[75,36],[31,26],[69,26],[40,19],[60,19],[50,16]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="${r}" fill="${h}"/>`).join('');
+    front=[[32,38],[41,33],[50,31],[59,33],[68,38]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="${r-2.5}" fill="${h}"/>`).join('')+
+      [[38,26],[50,22],[62,26],[44,30],[56,30]].map(([x,y])=>`<path d="M${x-3} ${y} q3 -3 6 0" stroke="#ffffff" stroke-opacity=".22" stroke-width="1.3" fill="none"/>`).join('')}
+  if(a.style==='pixie'){back=`<path d="M22 62 C14 16 86 16 78 62 C72 52 28 52 22 62Z" fill="${h}"/>`}
+  if(a.style==='short'){front=`<path d="M24 50 C18 14 82 10 77 50 C72 40 62 36 54 39 C46 35 36 40 24 50Z" fill="${h}"/>`}
+  else if(a.style==='side'){front=`<path d="M23 50 C16 12 84 8 78 54 C70 42 58 36 44 39 C36 41 30 44 23 50Z" fill="${h}"/>`}
+  else if(a.style==='pixie'){front=`<path d="M25 54 C22 20 78 18 76 54 C72 42 62 34 48 36 C40 38 30 44 25 54Z" fill="${h}"/>`}
+  else if(a.style==='pony'){front=`<path d="M27 50 C24 22 76 20 74 50 C68 36 56 30 46 34 C40 38 32 40 27 50Z" fill="${h}"/>`}
+  else if(a.style==='spiky'){front=`<path d="M27 50 C22 30 30 22 34 24 L38 16 L44 22 L50 13 L56 22 L63 16 L66 25 C74 26 78 36 73 50 C68 38 56 34 46 36 C38 38 32 42 27 50Z" fill="${h}"/>`}
+  else if(!front){front=`<path d="M26 52 C25 20 75 20 75 52 C70 40 60 36 54 30 C48 40 36 42 26 52Z" fill="${h}"/>`}
+  const eyes = m==='happy'
+    ? `<path d="M37 53 q5 -5 10 0 M54 53 q5 -5 10 0" stroke="#3a2b25" stroke-width="2.2" fill="none" stroke-linecap="round"/>`
+    : `<circle cx="42" cy="53" r="2.3" fill="#3a2b25"/><circle cx="59" cy="53" r="2.3" fill="#3a2b25"/>`;
+  const mouth = m==='happy'
+    ? `<path d="M43 63 q7 8 14 0 q-7 2 -14 0Z" fill="#a8463c"/><path d="M44.5 63.6 q5.5 1.6 11 0 l-.6 1.6 q-5 1.2 -9.8 0Z" fill="#fff"/>`
+    : `<path d="M44 63 q6 5 12 0" stroke="#7a3d33" stroke-width="2.2" fill="none" stroke-linecap="round"/>`;
+  const glasses = a.glasses ? `<g fill="none" stroke="#2a2220" stroke-width="2"><rect x="33" y="47" width="15" height="11" rx="4"/><rect x="52" y="47" width="15" height="11" rx="4"/><path d="M48 52 h4"/></g>`:'';
+  let arm='';
+  if(a.v){
+    const f=x=>a.v==='r'?100-x:x;
+    arm=`<path d="M${f(26)} 100 L${f(11)} 66" stroke="${a.top}" stroke-width="11" stroke-linecap="round"/>
+      <circle cx="${f(10)}" cy="61" r="5.5" fill="${a.skin}"/>
+      <path d="M${f(8)} 58 L${f(4)} 45 M${f(12)} 57 L${f(15)} 44" stroke="${a.skin}" stroke-width="3.8" stroke-linecap="round"/>`;
+  }
+  return `<svg class="${cls}" viewBox="0 0 100 110" ${attrs} aria-hidden="true"><g filter="url(#wc)">
+    ${back}
+    <path d="M14 110 C14 88 30 79 50 79 C70 79 86 88 86 110Z" fill="${a.top}"/>
+    <path d="M40 80 L50 96 L60 80Z" fill="${a.inner||a.top}"/>
+    <rect x="44" y="70" width="12" height="12" rx="4" fill="${a.skin}"/>${a.collar?`<path d="M38 81 L50 91 L44 98 L33 86Z M62 81 L50 91 L56 98 L67 86Z" fill="#fff" stroke="#c9c4ba" stroke-width="1"/>${a.cord?`<path d="M45 85 C46.5 93 47 101 47 110 M55 85 C53.5 92 53 98 53 103" stroke="#222" stroke-width="1.6" fill="none"/><rect x="51.5" y="102" width="3" height="7" rx="1" fill="#c9a24a"/>`:``}`:''}${a.turtle?`<path d="M30 92 L50 82 L70 92 L62 110 L38 110Z" fill="${a.inner}"/><rect x="40" y="72" width="20" height="13" rx="6" fill="${a.inner}"/><path d="M41 77 h18 M41 80.5 h18" stroke="#000" stroke-opacity=".15" stroke-width="1"/>`:''}
+    <ellipse cx="50" cy="54" rx="${a.slim?20.5:23}" ry="${a.slim?23.5:24}" fill="${a.skin}"/>
+    ${front}
+    <ellipse cx="${a.slim?37:35}" cy="62" rx="5.5" ry="3.4" fill="#ec8f86" opacity=".55"/><ellipse cx="${a.slim?63:65}" cy="62" rx="5.5" ry="3.4" fill="#ec8f86" opacity=".55"/>
+    ${a.earring?`<circle cx="28.5" cy="64" r="2" fill="#f4efe6" stroke="#bdb5a8" stroke-width=".6"/><circle cx="71.5" cy="64" r="2" fill="#f4efe6" stroke="#bdb5a8" stroke-width=".6"/>`:''}${eyes}${mouth}${glasses}${arm}${a.mic?`<g transform="rotate(-28 70 86)"><rect x="66" y="74" width="8" height="26" rx="3.5" fill="#2b2b2e"/><circle cx="70" cy="72" r="6.5" fill="#6b6e75"/><path d="M64.5 70 h11 M64 73 h12" stroke="#9aa0a8" stroke-width=".8"/><ellipse cx="70" cy="92" rx="6.5" ry="5" fill="${a.skin}"/></g>`:''}
+  </g></svg>`;
+}
+function sprigG(c1='#e0913a',c2='#e8b84a'){
+  return `<g filter="url(#wc)" stroke-linecap="round">
+    <path d="M25 100 C24 70 18 50 14 22 M25 100 C28 74 34 56 38 34 M24 80 C18 74 10 72 6 66" stroke="#6e8f58" stroke-width="2" fill="none"/>
+    <path d="M20 70 q-8 -4 -10 -12 q8 2 10 12Z M30 64 q8 -4 10 -12 q-8 2 -10 12Z M22 50 q-7 -2 -9 -9 q7 1 9 9Z" fill="#7d9a68"/>
+    <circle cx="14" cy="20" r="6" fill="${c1}"/><circle cx="14" cy="20" r="2" fill="#8a5a2a"/>
+    <circle cx="38" cy="32" r="5" fill="${c2}"/><circle cx="6" cy="64" r="4" fill="${c2}"/><circle cx="31" cy="12" r="2.5" fill="${c1}"/></g>`;
+}
+const sprig=(cls='sprig',c1,c2)=>`<svg class="${cls}" viewBox="0 0 50 100" aria-hidden="true">${sprigG(c1,c2)}</svg>`;
+function coverSVG(){
+  const back=[{...CRUSHES[1]},{...AV[3]},{...CRUSHES[2]},{...AV[1]}],
+        front=[{...AV[0],v:'l'},{...AV[4]},{...AV[5]},{...AV[2],v:'r'}];
+  let s='';
+  back.forEach((a,i)=>{s+=avatar(a,'',`x="${70+i*92}" y="20" width="104" height="114"`)});
+  front.forEach((a,i)=>{s+=avatar(a,'',`x="${22+i*104}" y="80" width="122" height="134"`)});
+  return `<svg class="group" viewBox="0 0 500 236" role="img" aria-label="八位國企系同學的似顏繪團體照">
+    <g transform="translate(-6 100) scale(.95)">${sprigG()}</g><g transform="translate(462 104) scale(.9)">${sprigG('#e8b84a','#e0913a')}</g>
+    <g transform="translate(18 150) scale(.6)">${sprigG('#e39a92','#e8b84a')}</g><g transform="translate(456 150) scale(.6)">${sprigG('#e8b84a','#e39a92')}</g>
+    ${s}
+    <path d="M90 222 q80 -8 150 -2 M270 224 q70 -6 140 0" stroke="#c9b48a" stroke-width="6" stroke-linecap="round" fill="none" opacity=".55"/>
+  </svg>`;
+}
+
+/* ---------- 課程與技能 ---------- */
+const COURSES = [
+ {n:'統計學',s:'統計',t:'武哥',task:'stats'},
+ {n:'品牌行銷學',s:'品牌',t:'艾瑞克',task:'intro'},
+ {n:'企業倫理',s:'倫理',t:'仲哥',task:'ethics'},
+ {n:'日文',s:'日文',t:'雙慧',task:'jp'},
+ {n:'經濟學',s:'經濟',t:'阿金',task:'econ'},
+ {n:'韓文',s:'韓文',t:'英子',task:'kr'},
+ {n:'會計學',s:'會計',t:'阿明',task:'acct'},
+];
+const TASK_HINT={stats:'用英文出的算數題，算出答案。',intro:'寫一段至少 20 字的自我介紹。',ethics:'舉一家形象正面的知名企業，說出理由。',
+  jp:'說（打）一句日文，要有平假名或片假名。',econ:'舉一個供需變化讓東西漲價或降價的生活例子。',acct:'用會計恆等式算出答案。',kr:'說（打）一句韓文。'};
+const DEPTS = [
+ {n:'資訊管理學系',s:'資管',c:'biz',sk:['Python 資料分析','ERP 系統操作','SQL 資料庫']},
+ {n:'數位多媒體遊戲設計學系',s:'遊戲',c:'biz',sk:['遊戲企劃書','Unity 關卡設計','角色原畫']},
+ {n:'資訊科技與通訊學系',s:'資通',c:'biz',sk:['無人機專業證照','手機 App 設計','網路架設']},
+ {n:'電腦動畫學士學位學程',s:'動畫',c:'biz',sk:['3D 建模','動態分鏡','短影音剪輯']},
+ {n:'金融管理學系',s:'金管',c:'biz',sk:['投資理財規劃','金融證照','保險規劃']},
+ {n:'會計暨稅務學系',s:'會稅',c:'biz',sk:['財報分析','記帳實務','報稅技巧']},
+ {n:'行銷管理學系',s:'行銷',c:'biz',sk:['社群小編','品牌企劃','直播帶貨']},
+ {n:'東南亞智慧商務學士學位學程',s:'東南亞',c:'biz',sk:['越南語會話','跨境電商開店','印尼市場調查']},
+ {n:'服飾設計與經營學系',s:'服經',c:'cul',sk:['打版製衣','服裝陳列','品牌採購']},
+ {n:'時尚設計學系',s:'時尚',c:'cul',sk:['彩妝技巧','攝影技巧','劇場服裝設計']},
+ {n:'觀光管理學系',s:'觀光',c:'cul',sk:['領隊導遊證照','遊程規劃','旅館櫃檯接待']},
+ {n:'應用日文學系',s:'應日',c:'cul',sk:['日檢 N1','日式待客禮儀','日文商業書信']},
+ {n:'休閒產業管理學系',s:'休閒',c:'cul',sk:['SUP 立槳','獨木舟','EMT-1 證照']},
+];
+const SET_REWARDS = [
+ {n:'跨域學習證明',d:'集滿三項跨系技能，系辦頒給你跨域學習證明。',fx:[['cr',2]]},
+ {n:'斜槓青年',d:'技能多到可以接案，社團和人緣都跟著加分。',fx:[['club',1],['love',1]]},
+ {n:'跨領域微學程',d:'修完跨領域微學程，學分直接抵免。',fx:[['cr',3]]},
+ {n:'海外實習推薦',d:'系上推薦你參加海外企業實習，履歷超亮眼。',fx:[['cr',2],['club',1]]},
+ {n:'跨域達人',d:'你已經是全校最會跨域的人。',fx:[['cr',2]]},
+];
+const COMBOS = [
+ {n:'空拍影像工作室',need:['無人機專業證照','攝影技巧','短影音剪輯'],d:'接下觀光局的空拍宣傳案。',fx:[['cr',2],['club',1]]},
+ {n:'東南亞跨境創業家',need:['越南語會話','跨境電商開店','直播帶貨'],d:'在越南開了第一家網路商店。',fx:[['cr',3]]},
+ {n:'生態旅遊領隊',need:['SUP 立槳','獨木舟','領隊導遊證照'],d:'帶外國旅客玩遍美濃湖和內門山林。',fx:[['love',1],['club',1]]},
+ {n:'時尚品牌經理',need:['彩妝技巧','服裝陳列','品牌企劃'],d:'幫學姐的服飾品牌辦了一場快閃店。',fx:[['cr',2],['love',1]]},
+ {n:'金融科技分析師',need:['財報分析','投資理財規劃','Python 資料分析'],d:'寫出自己的選股模型。',fx:[['cr',3]]},
+ {n:'日系服務專家',need:['日檢 N1','日式待客禮儀','旅館櫃檯接待'],d:'拿到日本飯店的實習機會。',fx:[['cr',2],['club',1]]},
+];
+
+/* ---------- 地圖 ---------- */
+const CLUBS = [
+ {n:'學生會',s:'學生會',d:'替全校同學爭取權益，辦活動也辦座談。'},
+ {n:'吉他社',s:'吉他',d:'草地上的木吉他和自彈自唱的夜晚。'},
+ {n:'康輔社',s:'康輔',d:'帶動跳、營隊、小隊呼，嗓子永遠是啞的。'},
+ {n:'系學會',s:'系學會',d:'國企系迎新、系烤、送舊，大小事都歸你管。'},
+ {n:'熱音社',s:'熱音',d:'練團室裡的爆音和期末成果大公演。'},
+ {n:'籃研社',s:'籃研',d:'球場鬥牛打到天黑，再一起去吃宵夜。'},
+ {n:'羽球社',s:'羽球',d:'體育館裡此起彼落的殺球聲。'},
+ {n:'攝影社',s:'攝影',d:'背著相機掃街，內門山景、旗山老街都是題材。'},
+ {n:'宋江陣',s:'宋江',d:'實踐高雄的招牌傳統陣頭，跟著廟會一起出陣。'},
+ {n:'熱舞社',s:'熱舞',d:'鏡子前的八拍，跳到地板發燙。'},
+];
+const SPOTS = [
+ {n:'旗山老街',s:'旗山街',d:'巴洛克立面的老街，來一碗香蕉冰。'},
+ {n:'旗山車站',s:'旗山站',d:'糖鐵時代留下的老車站，拍照很好看。'},
+ {n:'內門紫竹寺',s:'紫竹寺',d:'香火鼎盛的觀音廟，大家都來求考試順利。'},
+ {n:'內門順賢宮',s:'順賢宮',d:'宋江陣出陣的熱鬧廟埕。'},
+ {n:'美濃湖',s:'美濃湖',d:'湖畔騎單車，等一場夕陽。'},
+ {n:'美濃油紙傘',s:'紙傘',d:'客家油紙傘工坊，可以親手彩繪一把傘。'},
+];
+// 44 格（12×12 外圈）：0 報到、11 圖書館、22 宿舍、33 期末考週
+const LAYOUT = ['S','k0','d0','c0','k5','d1','s0','d2','c1','d3','fa',
+                'L','k1','d4','c2','s1','d5','c3','ch','d6','c4','k2',
+                'R','d7','fa','c5','s2','d8','c6','k3','d9','s3','d10',
+                'F','c7','d11','ch','c8','s4','k4','d12','k6','c9','s5'];
+const CORNERS = {S:{n:'入學報到・國企系辦',s:'報到',d:'每經過一次就升上一個年級。新學年註冊時，可以向玟玟執秘簡報新學會的跨系技能，換取額外學分。'},L:{n:'圖書館閉關',s:'圖書館',d:'被送來閉關要暫停一回合；路過只是來借書。'},
+  R:{n:'學生宿舍',s:'宿舍',d:'宿舍夜談：自己選要讀書、顧社團，還是聊心事。'},F:{n:'期末考週',s:'期末週',d:'熬夜 K 書！拿 1 學分，然後去圖書館閉關一回合。'}};
+function tileInfo(code){
+  if(CORNERS[code]) return {type:'corner',...CORNERS[code],code};
+  if(code==='ch') return {type:'chance',n:'機會',s:'機會',d:'抽一張機會卡，多半是好事。',code};
+  if(code==='fa') return {type:'fate',n:'命運',s:'命運',d:'抽一張命運卡，好壞都有可能。',code};
+  const k=code[0], i=+code.slice(1);
+  if(k==='k') return {type:'course',idx:i,...COURSES[i],code,d:`${COURSES[i].t}${COURSES[i].t.endsWith('哥')?'':'老師'}的「${COURSES[i].n}」。課堂任務：${TASK_HINT[COURSES[i].task]}完成任務拿 4 學分。`};
+  if(k==='d') return {type:'dept',idx:i,...DEPTS[i],code,d:`到${DEPTS[i].n}跨系學習，可習得：${DEPTS[i].sk.join('、')}。`};
+  if(k==='c') return {type:'club',idx:i,...CLUBS[i],code};
+  return {type:'spot',idx:i,...SPOTS[i],code};
+}
+const N=LAYOUT.length;
+const TILES = LAYOUT.map(tileInfo);
+const posOf = code => LAYOUT.indexOf(code);
+
+/* ---------- 支線 ---------- */
+const CLUB_ST = [
+ {n:'社團招生',d:'在招生攤位簽下名字，正式入社。',fx:[]},
+ {n:'參加聯誼',d:'跨校聯誼認識了好多人。',fx:[['love',1]]},
+ {n:'擔任幹部',d:'接下活動長，時間管理大升級。',fx:[['cr',1]]},
+ {n:'社團評鑑',d:'熬夜做評鑑資料，拿到優等。',fx:[['cr',1]]},
+ {n:'成果發表會',d:'台上的你閃閃發亮，台下有人一直看著你。',fx:[['love',1]]},
+ {n:'擔任社長（會長）',d:'眾望所歸，接下社長（會長）。',fx:[['cr',2],['love',1]]},
+ {n:'獲選大專青年楷模',d:'全國大專優秀青年，實踐之光。',fx:[['cr',3]]},
+];
+const LOVE_ST = [
+ {n:'曖昧',d:'訊息聊到凌晨兩點，誰都沒有說破。',fx:[['club',1]]},
+ {n:'暗戀',d:'發現自己每天都在找對方的身影。',fx:[['cr',1]]},
+ {n:'告白',d:'終於說出口了！',fx:[['club',1]]},
+ {n:'熱戀',d:'一起上課、一起去圖書館，成績也跟著變好。',fx:[['cr',1]]},
+ {n:'出軌',d:'限動裡出現了另一個人，心碎一地。',fx:[['cr',-1]]},
+ {n:'爭吵',d:'冷戰三天，誰都不肯先低頭。',fx:[['club',-1]]},
+ {n:'復合',d:'把話說開，決定再給彼此一次機會。',fx:[['cr',1],['club',1]]},
+ {n:'成為模範CP',d:'全系公認的模範情侶。',fx:[['cr',2],['club',1]]},
+];
+const ACAD = [
+ {at:.25,n:'期中過關',d:'第一次期中全過，開始有同學來問你功課。',fx:[['love',1]]},
+ {at:.5,n:'書卷獎',d:'拿到書卷獎，社團學弟妹都來請教。',fx:[['club',1]]},
+ {at:.75,n:'國企專題競賽得獎',d:'國企整合專題拿下校內競賽，全系都知道你了。',fx:[['love',1],['club',1]]},
+];
+const FXNAME = {cr:'學分',club:'社團',love:'戀愛'};
+const fxText = fx => fx.map(([k,v])=>`${FXNAME[k]} ${v>0?'+':''}${v}`).join('、');
+
+const CHANCE = [
+ {t:'學長姐送你考古題',fx:[['cr',2]]},
+ {t:'期中考猜題全中',fx:[['cr',2]]},
+ {t:'社團招生攤位大爆滿',fx:[['club',1]]},
+ {t:'在圖書館遇到心動的人',fx:[['love',1]]},
+ {t:'國企系迎新晚會玩得超嗨',fx:[['love',1],['club',1]]},
+ {t:'阿明老師幫你補救教學',fx:[['cr',2]]},
+ {t:'拿到獎學金，心情大好',fx:[['cr',1],['club',1]]},
+ {t:'搭校車到旗山吃香蕉冰',move:'s0'},
+ {t:'宋江陣邀請你一起出陣',move:'c8'},
+ {t:'週末去美濃湖騎單車',move:'s4'},
+ {t:'跨系工作坊開放報名，免費多學一項技能',skill:true},
+];
+const FATE = [
+ {t:'睡過頭錯過校車（內門山上真的遠）',skip:1},
+ {t:'電腦當機，期末報告全沒了',fx:[['cr',-1]]},
+ {t:'被室友揪去打電動到天亮',fx:[['cr',-1],['club',1]]},
+ {t:'社團經費被砍一半',fx:[['club',-1]]},
+ {t:'曖昧對象已讀不回',fx:[['love',-1]]},
+ {t:'選課系統當機，往回走 3 格',back:3},
+ {t:'熬夜趕行銷企劃，直接去圖書館閉關',jail:true},
+ {t:'校慶擺攤賺翻，還和攤位夥伴變熟',fx:[['club',1],['love',1]]},
+ {t:'颱風停課，在宿舍躺平一天',fx:[]},
+];
+const TARGETS = [{v:20,n:'輕鬆'},{v:28,n:'標準'},{v:40,n:'挑戰'}];
+const YEAR = y => y<=4 ? ['','大一','大二','大三','大四'][y] : `延畢第${y-4}年`;
+const TK = ['var(--red)','var(--blue)','var(--leaf)','var(--mustard)'];
+
+/* ---------- 狀態 ---------- */
+let S=null;
+const KEY='usc-ibm-v7';
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+const load=()=>{try{return JSON.parse(localStorage.getItem(KEY))}catch(e){return null}};
+const clear=()=>{try{localStorage.removeItem(KEY)}catch(e){}};
+const $=s=>document.querySelector(s);
+const rnd=n=>Math.floor(Math.random()*n);
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const stage=pt=>Math.floor(pt/2);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* ---------- 開場 ---------- */
+let setup={n:1,t:28,pl:[0,3,1,4].map(av=>({name:AV[av].name,av}))};
+function renderSetup(){
+  $('#cover').innerHTML=coverSVG();
+  $('#segN').innerHTML=[1,2,3,4].map(n=>`<button aria-pressed="${setup.n===n}" data-n="${n}">${n} 人</button>`).join('');
+  $('#segT').innerHTML=TARGETS.map(t=>`<button aria-pressed="${setup.t===t.v}" data-t="${t.v}">${t.n}・${t.v} 學分</button>`).join('');
+  $('#tNote').textContent=`學分夠了就能領畢業證書。${setup.t} 學分大約要玩 ${Math.round(setup.t/1.15)} 回合。`;
+  $('#plSetup').innerHTML=setup.pl.slice(0,setup.n).map((p,i)=>`
+    <div class="pl-setup">
+      ${setup.n>1?`<div class="label">玩家 ${i+1}</div>`:''}
+      <div class="avpick">${AV.map((a,j)=>`<button aria-pressed="${p.av===j}" data-p="${i}" data-av="${j}" aria-label="${a.full}（${a.name}）">${avatar(a)}<span>${a.name}</span><small>${a.g}・${a.full}</small></button>`).join('')}</div>
+      <input type="text" id="nm${i}" value="${esc(p.name)}" maxlength="8" aria-label="玩家${i+1}暱稱" data-p="${i}">
+    </div>`).join('');
+  $('#teach').innerHTML=TEACH.map(t=>`<div>${avatar(t.av)}<span>${t.name}</span><small>${t.style}</small></div>`).join('');
+}
+document.addEventListener('click',e=>{
+  const b=e.target.closest('button'); if(!b) return;
+  if(b.dataset.n){setup.n=+b.dataset.n;renderSetup()}
+  if(b.dataset.t){setup.t=+b.dataset.t;renderSetup()}
+  if(b.dataset.av!==undefined&&b.dataset.p!==undefined){const p=setup.pl[+b.dataset.p];if(p.name===AV[p.av].name)p.name=AV[+b.dataset.av].name;p.av=+b.dataset.av;renderSetup()}
+});
+document.addEventListener('input',e=>{const t=e.target;if(t.dataset.p!==undefined&&t.tagName==='INPUT')setup.pl[+t.dataset.p].name=t.value});
+
+$('#btnStart').onclick=()=>{newGame();save();startGame()};
+function newGame(){
+  const used=new Set();
+  S={target:setup.t,cur:0,over:false,finish:[],log:['國企系新生入學！擲骰子開始大學生活。'],
+    players:setup.pl.slice(0,setup.n).map((p,i)=>{
+      const want=AV[p.av].g==='男'?'女':'男';const pool=CRUSHES.map((x,k)=>k).filter(k=>CRUSHES[k].g===want);
+      const free=pool.filter(k=>!used.has(k));const c=(free.length?free:pool)[rnd((free.length?free:pool).length)]; used.add(c);
+      return {name:(p.name||'').trim()||AV[p.av].name,av:p.av,pos:0,year:1,cr:0,club:null,clubPt:0,lovePt:0,clubMax:0,loveMax:0,acad:0,
+        skip:0,crush:c,tk:i,turns:0,done:false,skills:[],presented:[],sets:0,combos:[],passed:[0,0,0,0,0,0,0]}})};
+}
+$('#btnResume').onclick=()=>{S=load();startGame()};
+$('#btnDiscard').onclick=()=>{clear();$('#resume').hidden=true};
+$('#btnQuit').onclick=async()=>{
+  const v=await sheet({tag:'確認',title:S&&S.online?'離開教室？':'結束這一局？',body:S&&S.online?'<p>你的進度會留在排行榜上，但這支手機會回到開場畫面。</p>':'<p>進度會被清除，回到開場畫面。</p>',buttons:[{l:'結束並回到開場',v:1,p:1},{l:'繼續玩',v:0}]});
+  if(v) backToSetup();
+};
+function backToSetup(){clear();S=null;stopLive();sess.clear();show('#setup');$('#resume').hidden=true;renderSetup();scrollTo(0,0)}
+
+/* ---------- 棋盤 ---------- */
+function gridPos(i){
+  if(i<=11) return [12,12-i];
+  if(i<=22) return [12-(i-11),1];
+  if(i<=33) return [1,1+(i-22)];
+  return [1+(i-33),12];
+}
+function renderBoard(){
+  let h='';
+  TILES.forEach((t,i)=>{
+    const [r,c]=gridPos(i);
+    const cls='tile '+(t.type==='dept'?'dept-'+t.c:t.type);
+    const ic = t.type==='course'?'課堂':t.type==='chance'?'?':t.type==='fate'?'!':'';
+    h+=`<button class="${cls}" style="grid-area:${r}/${c}" data-tile="${i}" aria-label="${t.n}">${ic?`<span class="ic">${ic}</span>`:''}<span class="nm">${t.s}</span><span class="got" id="g${i}"></span><span class="tokens" id="tk${i}"></span></button>`;
+  });
+  h+=`<div class="center">
+    <div class="ttl">我是大學生</div><div class="sub">IBM life at Shih Chien</div>
+    <div class="who" id="who"></div>
+    <div class="dice"><div class="die" id="d1">?</div><div class="die" id="d2">?</div></div>
+    <button class="btn primary" id="btnRoll">擲骰子</button>
+    <ul class="log" id="log"></ul>
+    ${sprig('sprig l')}${sprig('sprig r','#e8b84a','#e0913a')}
+  </div>`;
+  $('#board').innerHTML=h;
+  $('#btnRoll').onclick=takeTurn;
+  if(S.over) $('#btnRoll').disabled=true;
+  renderDynamic();
+}
+function renderDynamic(){
+  const P=S.players[S.cur];
+  document.querySelectorAll('.tokens').forEach(e=>e.innerHTML='');
+  S.players.forEach(p=>{const el=$('#tk'+p.pos); if(el) el.insertAdjacentHTML('beforeend',`<span class="tok" style="--tk:${TK[p.tk]}">${avatar(AV[p.av])}</span>`)});
+  document.querySelectorAll('.tile').forEach(el=>{const t=TILES[+el.dataset.tile];
+    el.classList.toggle('mine',t.type==='club'&&P.club===t.idx);
+    const g=el.querySelector('.got');
+    if(t.type==='dept'){const n=t.sk.filter(s=>P.skills.includes(s)).length;g.textContent=n?'•'.repeat(n):''}
+    if(t.type==='course'){g.textContent=P.passed[t.idx]?'✓':''}
+  });
+  $('#who').innerHTML=`${avatar(AV[P.av])}<div style="text-align:left"><b>${esc(P.name)}</b><small>國企系・${YEAR(P.year)}</small><small class="num">${P.cr} / ${S.target} 學分・技能 ${P.skills.length}</small></div>`;
+  $('#log').innerHTML=S.log.slice(0,3).map(l=>`<li>${l}</li>`).join('');
+  $('#players').innerHTML=S.players.map((p,i)=>{
+    const cs=stage(p.clubPt), ls=stage(p.lovePt), r=p.skills.length%3;
+    return `<div class="pc ${i===S.cur&&!S.over?'on':''}" style="--tk:${TK[p.tk]}">
+      <div class="pc-h">${avatar(AV[p.av])}<div style="min-width:0"><b>${esc(p.name)}</b><small>國際企業管理學系・${p.done?`<b style="color:var(--red)">第 ${S.finish.indexOf(i)+1} 名畢業</b>`:YEAR(p.year)}</small><small>心儀對象：${CRUSHES[p.crush].name}${p.club!==null?'・'+CLUBS[p.club].n:''}</small></div></div>
+      <div class="track"><div class="th"><span>學業</span><span class="num">${p.cr} / ${S.target} 學分${p.acad?'・'+ACAD[p.acad-1].n:''}</span></div><div class="bar"><i style="width:${Math.min(100,p.cr/S.target*100)}%"></i></div>
+        <div class="five">${COURSES.map((c,k)=>`<span class="${p.passed[k]?'y':''}">${c.s}${p.passed[k]>1?'×'+p.passed[k]:''}</span>`).join('')}</div></div>
+      <div class="track"><div class="th"><span>跨系技能</span><span class="num">${p.skills.length} 項（已向玟玟簡報 ${p.presented.length}）・獎勵還差 ${3-r}</span></div><div class="dots skill">${[0,1,2].map(k=>`<i class="${k<r?'y':''}"></i>`).join('')}</div>
+        ${p.skills.length?`<div class="chips">${p.skills.map(s=>`<span>${s}</span>`).join('')}</div>`:''}</div>
+      <div class="track"><div class="th"><span>社團</span><span>${cs?CLUB_ST[cs-1].n:'尚未入社'}</span></div><div class="dots club">${CLUB_ST.map((_,k)=>`<i class="${k<cs?'y':''}"></i>`).join('')}</div></div>
+      <div class="track"><div class="th"><span>戀愛</span><span>${ls?LOVE_ST[ls-1].n:'還沒開始'}</span></div><div class="dots love">${LOVE_ST.map((_,k)=>`<i class="${k<ls?'y':''}"></i>`).join('')}</div></div>
+    </div>`}).join('');
+}
+function log(t){S.log.unshift(t);S.log=S.log.slice(0,12)}
+
+$('#board').addEventListener('click',e=>{
+  const b=e.target.closest('[data-tile]'); if(!b||busy) return;
+  const t=TILES[+b.dataset.tile], P=S.players[S.cur];
+  const kind={course:'國企系課程',dept:t.c==='biz'?'商學與資訊學院':'文化與創意學院',club:'社團',spot:'景點・約會地點',chance:'機會',fate:'命運',corner:'特殊格'}[t.type];
+  let extra='';
+  if(t.type==='dept'){const got=t.sk.filter(s=>P.skills.includes(s));extra=`<p class="note">${esc(P.name)} 已學會：${got.length?got.join('、'):'還沒有'}</p>`}
+  if(t.type==='club') extra='<p class="note">還沒入社的人可以在這裡加入；已入社的人在自己的社團推進社團支線。</p>';
+  if(t.type==='spot') extra='<p class="note">停在景點會推進戀愛支線。</p>';
+  sheet({tag:kind,title:t.n,body:`<p>${t.d||''}</p>${extra}`,buttons:[{l:'知道了',v:1,p:1}]});
+});
+
+/* ---------- 事件卡 ---------- */
+function sheet({tag='',title='',art='',body='',buttons=[],onOpen}){
+  return new Promise(res=>{
+    const el=$('#sheet'); el._res=res;
+    el.innerHTML=`<div class="tag">${tag}</div>${art?`<div class="art">${art}<h2>${title}</h2></div>`:`<h2>${title}</h2>`}
+      <div style="display:flex;flex-direction:column;gap:8px">${body}</div>
+      <div class="opts">${buttons.map((b,i)=>`<button class="btn ${b.p?'primary':''}" data-i="${i}">${b.l}</button>`).join('')}</div>`;
+    $('#scrim').hidden=false;
+    el.querySelectorAll('[data-i]').forEach(b=>b.onclick=()=>{$('#scrim').hidden=true;res(buttons[+b.dataset.i].v)});
+    const first=el.querySelector('[data-i]'); first&&first.focus();
+    onOpen&&onOpen(el);
+  });
+}
+async function diceCheck({tag,title,art,text,need}){
+  const chk=`<p>${text}</p><div class="chk"><div class="die" id="cd">?</div><div id="cdt">擲出 <b>${need}</b> 點以上就成功</div></div>`;
+  await sheet({tag,title,art,body:chk,buttons:[{l:'擲骰挑戰',v:1,p:1}]});
+  const n=1+rnd(6);
+  await sheet({tag,title,art,body:chk,buttons:[],onOpen:async el=>{
+    const d=el.querySelector('#cd'); d.classList.add('roll');
+    for(let k=0;k<8;k++){d.textContent=1+rnd(6);await sleep(70)}
+    d.classList.remove('roll'); d.textContent=n;
+    el.querySelector('#cdt').innerHTML=n>=need?`<span class="good">${n} 點，成功！</span>`:`<span class="bad">${n} 點，失敗了…</span>`;
+    el.querySelector('.opts').innerHTML='<button class="btn primary" id="cdok">繼續</button>';
+    const ok=el.querySelector('#cdok'); ok.focus(); ok.onclick=()=>{$('#scrim').hidden=true;el._res(1)};
+  }});
+  return n>=need;
+}
+
+/* ---------- 支線與成就 ---------- */
+let pending=[];
+function addCr(p,d){
+  p.cr=Math.max(0,p.cr+d);
+  while(p.acad<ACAD.length && p.cr>=Math.ceil(S.target*ACAD[p.acad].at)){
+    const a=ACAD[p.acad]; p.acad++;
+    pending.push({br:'學業成就',n:a.n,d:a.d,fx:a.fx}); applyFx(p,a.fx);
+  }
+}
+function addBr(p,br,d){
+  const key=br+'Pt', maxKey=br+'Max', list=br==='club'?CLUB_ST:LOVE_ST;
+  p[key]=Math.max(0,Math.min(list.length*2,p[key]+d));
+  const s=stage(p[key]);
+  while(p[maxKey]<s){
+    const st=list[p[maxKey]]; p[maxKey]++;
+    if(br==='club'&&p.club===null){p.club=CLUBS.findIndex(c=>c.n==='系學會');pending.push({br:'社團',n:'系學會找上門',d:'國企系學會學長姐邀你入會，你就這樣成了系學會的一員。',fx:[]})}
+    pending.push({br:br==='club'?'社團成就':'戀愛成就',n:st.n,d:st.d,fx:st.fx}); applyFx(p,st.fx);
+  }
+}
+function applyFx(p,fx){fx.forEach(([k,v])=>k==='cr'?addCr(p,v):addBr(p,k,v))}
+async function flushPending(p){
+  if(!pending.length) return;
+  const list=pending; pending=[];
+  await sheet({tag:'階段成就解鎖',title:`${esc(p.name)} 的新成就`,art:avatar(AV[p.av]),
+    body:list.map(a=>`<div class="ach"><small>${a.br}</small><b>${a.n}</b><span>${a.d}</span>${a.fx.length?`<span class="fx">連動：${fxText(a.fx)}</span>`:''}</div>`).join(''),
+    buttons:[{l:'太好了',v:1,p:1}]});
+  list.forEach(a=>log(`${esc(p.name)} 解鎖「${a.n}」`));
+}
+function learnSkill(p,skill){
+  p.skills.push(skill);
+  if(p.skills.length%3===0){
+    const r=SET_REWARDS[Math.min(p.sets,SET_REWARDS.length-1)]; p.sets++;
+    pending.push({br:`集滿 ${p.skills.length} 項跨系技能`,n:r.n,d:r.d,fx:r.fx}); applyFx(p,r.fx);
+  }
+  COMBOS.forEach(c=>{
+    if(!p.combos.includes(c.n)&&c.need.every(s=>p.skills.includes(s))){
+      p.combos.push(c.n); pending.push({br:'技能組合',n:c.n,d:`${c.need.join(' + ')}：${c.d}`,fx:c.fx}); applyFx(p,c.fx);
+    }
+  });
+}
+
+/* ---------- 回合 ---------- */
+let busy=false;
+async function takeTurn(){
+  if(busy||S.over) return; busy=true; $('#btnRoll').disabled=true;
+  const p=S.players[S.cur];
+  if(p.skip>0){
+    p.skip--; log(`${esc(p.name)} 在圖書館閉關，暫停一回合`);
+    await sheet({tag:'圖書館閉關',title:'這回合要乖乖讀書',art:avatar(AV[p.av]),body:'<p>把落後的進度補一補，下回合再出發。</p>',buttons:[{l:'下一位',v:1,p:1}]});
+    return endTurn();
+  }
+  const a=1+rnd(6), b=1+rnd(6);
+  const d1=$('#d1'), d2=$('#d2'); d1.classList.add('roll'); d2.classList.add('roll');
+  for(let k=0;k<8;k++){d1.textContent=1+rnd(6);d2.textContent=1+rnd(6);await sleep(70)}
+  d1.classList.remove('roll'); d2.classList.remove('roll'); d1.textContent=a; d2.textContent=b;
+  p.turns++;
+  await moveSteps(p,a+b);
+  await resolve(p,0);
+  if(p._reg){delete p._reg;await doOffice(p)}
+  endTurn();
+}
+async function moveSteps(p,n){
+  const dir=n<0?-1:1;
+  for(let k=0;k<Math.abs(n);k++){
+    p.pos=(p.pos+dir+N)%N;
+    if(p.pos===0&&dir>0){p.year++;p._reg=1;log(`${esc(p.name)} 升上${YEAR(p.year)}！`)}
+    renderDynamic(); await sleep(140);
+  }
+  const el=document.querySelector(`[data-tile="${p.pos}"]`); el&&el.classList.add('flash'); setTimeout(()=>el&&el.classList.remove('flash'),1100);
+}
+async function jumpTo(p,code){await moveSteps(p,(posOf(code)-p.pos+N)%N)}
+async function endTurn(){
+  const p=S.players[S.cur];
+  await flushPending(p);
+  renderDynamic();
+  if(p.cr>=S.target&&!p.done&&S.online){
+    p.done=true; p.gradAt=new Date().toLocaleTimeString('zh-TW',{hour12:false}); S.over=true;
+    try{p.place=await claimPlace(p)}catch(e){p.place=null}
+    save(); syncMe(); renderBoard(); busy=false;
+    return graduate(p,p.place,true);
+  }
+  if(p.cr>=S.target&&!p.done){
+    const n=S.players.length, need=n===1?1:Math.min(3,n-1);
+    p.done=true; p.gradAt=new Date().toLocaleTimeString('zh-TW',{hour12:false}); S.finish.push(S.cur);
+    const final=S.finish.length>=need; if(final) S.over=true;
+    save(); renderDynamic();
+    await graduate(p,S.finish.length,final);
+    if(final){busy=false;renderBoard();return showPodium()}
+  }
+  do{S.cur=(S.cur+1)%S.players.length}while(S.players[S.cur].done);
+  syncMe(); save(); renderBoard(); busy=false;
+}
+async function resolve(p,depth){
+  const t=TILES[p.pos];
+  if(t.type==='course') return doCourse(p,t);
+  if(t.type==='dept') return doSkill(p,t);
+  if(t.type==='club') return doClub(p,t);
+  if(t.type==='spot') return doSpot(p,t);
+  if(t.type==='chance'||t.type==='fate') return doCard(p,t,depth);
+  return doCorner(p,t);
+}
+
+const qq=s=>`<blockquote style="margin:0;padding:8px 12px;border-left:3px solid var(--mustard);background:var(--paper);border-radius:0 8px 8px 0">${esc(s)}</blockquote>`;
+function statsQ(){
+  const k=rnd(3);
+  if(k===0){const a=[0,0,0].map(()=>50+rnd(50));const r=(4-a.reduce((x,y)=>x+y,0)%4)%4;a.push(60+r+4*rnd(8));
+    return {en:`What is the mean of ${a.join(', ')}?`,zh:'平均數',ans:a.reduce((x,y)=>x+y,0)/4}}
+  if(k===1){const a=[0,0,0,0,0].map(()=>10+rnd(90));const b=[...a].sort((x,y)=>x-y);
+    return {en:`What is the median of ${a.join(', ')}?`,zh:'中位數',ans:b[2]}}
+  const a=[0,0,0,0,0,0].map(()=>20+rnd(80));
+  return {en:`What is the range of ${a.join(', ')}?`,zh:'全距＝最大值－最小值',ans:Math.max(...a)-Math.min(...a)};
+}
+const TASKS={
+  stats:p=>{const q=statsQ();return {
+    intro:`武哥全英授課：「${q.en}」<br><small class="note">（${q.zh}）</small>`,
+    fields:[{id:'a',label:'Your answer',type:'number',ph:'輸入數字'}],
+    check:v=>v.a.trim()===''?{retry:'先輸入答案再提交。'}:{ok:Math.abs(+v.a-q.ans)<1e-9,final:1},
+    win:()=>`Excellent! 武哥開心地唱起德文歌，全班跟著打拍子，你也上台合唱了一段（社團 +1）。`,fx:[['club',1]],
+    lose:`正確答案是 ${q.ans}。武哥說：「Never give up!」`,say:v=>`答案 ${v.a}`}},
+  intro:p=>({
+    intro:'艾瑞克老師：「品牌行銷的第一課，就是行銷你自己！請向全班自我介紹，說說你的名字、興趣和你的亮點。」',
+    fields:[{id:'a',label:'自我介紹（至少 20 字）',type:'textarea',ph:`大家好，我是${p.name}，我喜歡…`}],
+    check:v=>v.a.trim().length<20?{retry:`再多說一點，目前 ${v.a.trim().length} 字，至少要 20 字。`}:{ok:1},
+    win:()=>'艾瑞克老師：「很好！你已經懂得把自己當成品牌經營了。」台下有人默默記住了你（戀愛 +1）。',fx:[['love',1]],
+    say:v=>v.a}),
+  ethics:p=>({
+    intro:'系主任仲哥：「企業不只要賺錢，也要做對的事。請舉一家形象正面的知名企業，並說出你欣賞它的理由。」',
+    fields:[{id:'c',label:'企業名稱',type:'text',ph:'例如：某某公司'},{id:'r',label:'為什麼它形象正面？',type:'textarea',ph:'它做了什麼好事…'}],
+    check:v=>v.c.trim().length<2?{retry:'請寫出企業名稱。'}:v.r.trim().length<6?{retry:'理由再多寫一點（至少 6 字）。'}:{ok:1},
+    win:v=>`系主任仲哥點點頭：「${esc(v.c.trim())} 的確是很好的例子，企業社會責任就是這樣。」`,
+    say:v=>`${v.c}：${v.r}`}),
+  jp:p=>({
+    intro:'雙慧老師：「今天每個人都要開口說一句日文！說完把它寫下來。」',
+    fields:[{id:'a',label:'你的日文句子',type:'text',ph:'例如：はじめまして'}],
+    check:v=>/[぀-ヿ]/.test(v.a)?{ok:1}:{retry:'句子裡要有平假名或片假名喔，例如「はじめまして」「ありがとうございます」。'},
+    win:()=>'雙慧老師：「すごい！發音很標準。」',say:v=>v.a}),
+  econ:p=>({
+    intro:'阿金老師：「經濟學就在生活裡！請舉一個因為供給或需求改變，讓某樣東西漲價或降價的例子。」',
+    fields:[{id:'g',label:'什麼東西？',type:'text',ph:'例如：高麗菜'},{id:'r',label:'發生什麼事、價格怎麼變？',type:'textarea',ph:'例如：颱風後產量變少，所以…'}],
+    check:v=>v.g.trim().length<1?{retry:'先寫是什麼東西。'}:v.r.trim().length<8?{retry:'原因再多寫一點（至少 8 字）。'}:
+      !/漲|跌|貴|便宜|降|升|高|低|價/.test(v.r)?{retry:'記得說出價格是變貴還是變便宜喔。'}:{ok:1},
+    win:v=>`阿金老師摸摸光頭笑說：「${esc(v.g.trim())} 這個例子很好，供需一變，價格就跟著動！」`,
+    say:v=>`${v.g}：${v.r}`}),
+  acct:p=>{const L=(2+rnd(18))*10, E=(3+rnd(20))*10, k=rnd(3);
+    const q=k===0?{t:`公司的負債是 ${L} 萬元，權益是 ${E} 萬元，資產是多少萬元？`,a:L+E}
+      :k===1?{t:`公司的資產是 ${L+E} 萬元，負債是 ${L} 萬元，權益是多少萬元？`,a:E}
+      :{t:`公司的資產是 ${L+E} 萬元，權益是 ${E} 萬元，負債是多少萬元？`,a:L};
+    return {
+    intro:`阿明老師：「會計第一課，資產 ＝ 負債 ＋ 權益。」<br>${q.t}`,
+    fields:[{id:'a',label:'答案（萬元）',type:'number',ph:'輸入數字'}],
+    check:v=>v.a.trim()===''?{retry:'先輸入答案再提交。'}:{ok:Math.abs(+v.a-q.a)<1e-9},
+    win:()=>'阿明老師笑著比 YA：「算得好！帳一平，心就安。」',
+    lose:`正確答案是 ${q.a} 萬元。阿明老師說：「沒關係，資產＝負債＋權益，多練幾次就熟了！」`,
+    say:v=>`${v.a} 萬元`}},
+  kr:p=>({
+    intro:'英子老師：「오늘은 한국어로 한마디！今天請用韓文說一句話，再把它寫下來。」',
+    fields:[{id:'a',label:'你的韓文句子',type:'text',ph:'用韓文字寫一句話'}],
+    check:v=>/[가-힣]/.test(v.a)?{ok:1}:{retry:'句子要用韓文字（한글）寫喔，例如打招呼的「안녕하세요」。'},
+    win:()=>'英子老師：「잘했어요！很有語感。」',say:v=>v.a}),
+};
+function taskSheet({tag,title,art,intro,fields}){
+  const body=`<p>${intro}</p><form id="tf" style="display:flex;flex-direction:column;gap:8px" novalidate>
+    ${fields.map(f=>`<label style="display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--ink-soft)">${f.label}
+      ${f.type==='textarea'?`<textarea id="tf_${f.id}" rows="3" placeholder="${esc(f.ph)}" style="font:inherit;font-size:15px;color:var(--ink);background:var(--paper);border:1.5px solid var(--line);border-radius:10px;padding:8px 10px;resize:vertical"></textarea>`
+      :`<input id="tf_${f.id}" type="${f.type==='number'?'text':'text'}" ${f.type==='number'?'inputmode="decimal"':''} placeholder="${esc(f.ph)}" autocomplete="off">`}</label>`).join('')}
+    <p id="tmsg" class="bad" style="font-size:13px" hidden></p>
+    <button class="btn primary" type="submit">提交</button>
+    <button class="btn" type="button" id="tgive">這次先放棄（學分 +0）</button></form>`;
+  return sheet({tag,title,art,body,buttons:[],onOpen:el=>{
+    const first=el.querySelector('input,textarea'); first&&first.focus();
+    el.querySelector('#tgive').onclick=()=>{$('#scrim').hidden=true;el._res(null)};
+    el.querySelector('#tf').onsubmit=e=>{e.preventDefault();
+      const v={}; fields.forEach(f=>v[f.id]=el.querySelector('#tf_'+f.id).value);
+      const r=el._check(v);
+      if(r.retry){const m=el.querySelector('#tmsg');m.textContent=r.retry;m.hidden=false;return}
+      $('#scrim').hidden=true; el._res({ok:!!r.ok,v});
+    };
+  }});
+}
+async function doCourse(p,t){
+  const c=COURSES[t.idx], T=T_BY(c.t), art=avatar(T.av), spec=TASKS[c.task](p);
+  const who=`${T.name}${T.name.endsWith('哥')?'':'老師'}${T.name==='仲哥'?'（系主任）':''}`;
+  const tag=`國企系課程・${c.n}`;
+  $('#sheet')._check=spec.check;
+  const r=await taskSheet({tag,title:`${who}的課`,art,intro:spec.intro,fields:spec.fields});
+  let got, msg='', said='';
+  if(!r){got=0;msg='這次先放棄，下次停在這裡再挑戰。'}
+  else{
+    said=spec.say(r.v);
+    if(r.ok){got=4;msg=spec.win(r.v);p.passed[t.idx]++;if(spec.fx)applyFx(p,spec.fx);
+      if(c.task==='kr'&&!p.skills.includes('韓語會話')){learnSkill(p,'韓語會話');msg+='<br>你學會了外語技能「韓語會話」，也算一項跨系技能！'}}
+    else{got=1;msg=spec.lose||'差一點，補救拿 1 學分。'}
+  }
+  addCr(p,got);
+  log(`${esc(p.name)} 在${c.s}課${said?`：「${esc(said.length>22?said.slice(0,22)+'…':said)}」`:'先放棄了'}${got?`（+${got} 學分）`:''}`);
+  await sheet({tag,title:got===4?`任務完成 +4 學分`:got?`補救 +${got} 學分`:'這次沒拿到學分',art:avatar(AV[p.av]),
+    body:`${said?`<small class="note">${esc(p.name)} 的回答</small>${qq(said)}`:''}<p>${msg}</p><p class="note num">目前 ${p.cr} / ${S.target} 學分</p>`,
+    buttons:[{l:'繼續',v:1,p:1}]});
+}
+
+async function doOffice(p){
+  const T=T_BY('玟玟'), art=avatar(T.av), todo=p.skills.filter(s=>!p.presented.includes(s));
+  if(!todo.length) return;
+  const n=todo.length, bonus=n>=3?1:0;
+  const v=await sheet({tag:'國企系辦・新學年註冊',title:'玟玟執秘找你',art,
+    body:`<p>「學期跨系學到的技能，來系辦做個簡報吧！每項技能可以換 1 學分，一次簡報三項以上再多送 1 學分喔。」</p>
+      <div class="chips">${todo.map(s=>`<span>${s}</span>`).join('')}</div>`,
+    buttons:[{l:`簡報這 ${n} 項技能（學分 +${n+bonus}）`,v:1,p:1},{l:'下次再說',v:0}]});
+  if(!v) return;
+  p.presented.push(...todo); addCr(p,n+bonus);
+  log(`${esc(p.name)} 向玟玟簡報 ${n} 項技能，學分 +${n+bonus}`);
+  await sheet({tag:'國企系辦',title:`簡報完成 +${n+bonus} 學分`,art,body:'<p>玟玟執秘幫你把成果登錄進系統，還拍了照要放系網。</p>',buttons:[{l:'繼續',v:1,p:1}]});
+}
+
+async function doSkill(p,t,free){
+  const left=t.sk.filter(s=>!p.skills.includes(s)), tag=free?'跨系工作坊':`跨系學習・${t.n}`;
+  if(!left.length){
+    addCr(p,1); log(`${esc(p.name)} 到${t.s}當小老師`);
+    return sheet({tag,title:`${t.s}技能全制霸`,art:avatar(AV[p.av]),body:`<p>${t.n}的三項技能你都學會了，這次回來當小老師，學分 +1。</p>`,buttons:[{l:'繼續',v:1,p:1}]});
+  }
+  const sk=left[rnd(left.length)];
+  learnSkill(p,sk); addCr(p,free?0:1);
+  log(`${esc(p.name)} 在${t.s}學會「${sk}」`);
+  const r=p.skills.length%3;
+  await sheet({tag,title:'習得特殊技能',art:avatar(AV[p.av]),
+    body:`<div class="skillcard"><small>${t.n}</small><b>${sk}</b></div>
+      <p>${free?'':'跨系選修也算學分，學分 +1。'}${r===0?'剛好集滿三項，有獎勵！':`再學 ${3-r} 項就能換一份獎勵。`}</p>`,
+    buttons:[{l:'繼續',v:1,p:1}]});
+}
+
+async function doClub(p,t){
+  const art=avatar(AV[p.av]), tag=`社團・${t.n}`;
+  if(p.club===null){
+    const v=await sheet({tag,title:`${t.n} 招生中`,art,body:`<p>${t.d}</p><p>要加入嗎？加入後，停在這裡就能推進社團支線。</p>`,buttons:[{l:`加入${t.n}`,v:1,p:1},{l:'再看看',v:0}]});
+    if(v){p.club=t.idx;log(`${esc(p.name)} 加入了${t.n}`);addBr(p,'club',2-(p.clubPt%2));renderDynamic()}
+    return;
+  }
+  if(p.club===t.idx){
+    const cs=stage(p.clubPt);
+    if(cs>=CLUB_ST.length){addCr(p,1);log(`${esc(p.name)} 回社團帶學弟妹`);
+      return sheet({tag,title:'傳承時間',art,body:'<p>你已經是傳說級前輩，回來帶學弟妹練習。學分 +1。</p>',buttons:[{l:'繼續',v:1,p:1}]})}
+    const next=CLUB_ST[cs], need=[2,2,3,3,3,4,5][cs];
+    const ok=await diceCheck({tag,title:`挑戰：${next.n}`,art,text:`在${t.n}努力中，目標是「${next.n}」。`,need});
+    addBr(p,'club',ok?2:1);
+    log(`${esc(p.name)} 在${t.n}${ok?`達成「${next.n}」`:'累積了一點經驗'}`);
+    if(!ok) await sheet({tag,title:'差一點點',art,body:'<p>雖然沒成功，還是累積了經驗（社團 +1）。</p>',buttons:[{l:'繼續',v:1,p:1}]});
+    return;
+  }
+  const love=Math.random()<.4;
+  addBr(p,'club',1); if(love) addBr(p,'love',1);
+  log(`${esc(p.name)} 和${t.n}跨社合作`);
+  await sheet({tag,title:'跨社交流',art,body:`<p>你的${CLUBS[p.club].n}和${t.n}一起辦活動。社團 +1${love?`，還在活動中和 ${CRUSHES[p.crush].name} 變熟了（戀愛 +1）`:''}。</p>`,buttons:[{l:'繼續',v:1,p:1}]});
+}
+
+async function doSpot(p,t){
+  const c=CRUSHES[p.crush], art=avatar(c), ls=stage(p.lovePt), tag=`約會景點・${t.n}`;
+  if(ls>=LOVE_ST.length){addCr(p,1);log(`${esc(p.name)} 和 ${c.name} 去${t.s}約會`);
+    return sheet({tag,title:'模範CP 約會日',art,body:`<p>${t.d} 心情好，讀書也順。學分 +1。</p>`,buttons:[{l:'繼續',v:1,p:1}]})}
+  const next=LOVE_ST[ls];
+  const story={
+    '曖昧':`在${t.n}巧遇 ${c.name}，聊著聊著就忘了時間。`,
+    '暗戀':`和 ${c.name} 一起逛${t.n}，你偷偷多看了好幾眼。`,
+    '告白':`${t.n}的氣氛剛剛好，你決定鼓起勇氣告白。`,
+    '熱戀':`在${t.n}約會，兩個人第一次牽手。`,
+    '出軌':`你在${t.n}撞見 ${c.name} 和別人走得很近……`,
+    '爭吵':`在${t.n}為了那件事吵起來，誰都不讓誰。`,
+    '復合':`回到第一次約會的${t.n}，你想把話說開。`,
+    '成為模範CP':`在${t.n}拍下兩人的合照，全系都在按讚。`,
+  }[next.n];
+  const need={'告白':3,'復合':3,'成為模範CP':4}[next.n];
+  let ok=true;
+  if(need) ok=await diceCheck({tag,title:`挑戰：${next.n}`,art,text:story,need});
+  else await sheet({tag,title:next.n,art,body:`<p>${story}</p><p class="note">${t.d}</p>`,buttons:[{l:'繼續',v:1,p:1}]});
+  addBr(p,'love',ok?2:1);
+  log(`${esc(p.name)} 在${t.s}：${ok?next.n:'還差一點勇氣'}`);
+  if(!ok) await sheet({tag,title:'時機還沒到',art,body:'<p>話到嘴邊又吞回去了，不過兩人的距離還是近了一點（戀愛 +1）。</p>',buttons:[{l:'繼續',v:1,p:1}]});
+}
+
+async function doCard(p,t,depth){
+  const deck=t.type==='chance'?CHANCE:FATE, c=deck[rnd(deck.length)];
+  let res='';
+  if(c.fx){res=c.fx.length?fxText(c.fx):'沒有變化';applyFx(p,c.fx)}
+  if(c.skip){p.skip+=c.skip;res='暫停一回合'}
+  if(c.back) res='往回走 3 格';
+  if(c.jail) res='前往圖書館閉關，暫停一回合';
+  if(c.move) res=`前往${TILES[posOf(c.move)].n}`;
+  if(c.skill) res='隨機習得一項跨系技能';
+  log(`${esc(p.name)} 抽到${t.n}：${c.t}`);
+  await sheet({tag:t.n+'卡',title:c.t,art:sprig('sprig'),body:`<p class="fx" style="font-size:15px">${res}</p>`,buttons:[{l:'繼續',v:1,p:1}]});
+  if(c.back){await moveSteps(p,-3); if(depth<1) await resolve(p,depth+1)}
+  if(c.jail){p.pos=posOf('L');p.skip=1;renderDynamic()}
+  if(c.move){await jumpTo(p,c.move); if(depth<1) await resolve(p,depth+1)}
+  if(c.skill){
+    const opts=TILES.filter(x=>x.type==='dept'&&x.sk.some(s=>!p.skills.includes(s)));
+    if(opts.length) await doSkill(p,opts[rnd(opts.length)],true);
+  }
+}
+
+async function doCorner(p,t){
+  const art=avatar(AV[p.av]);
+  if(t.code==='S') return sheet({tag:'報到處',title:'回到報到處',art,body:`<p>新學年開始！你現在是${YEAR(p.year)}。</p>${p.skills.some(s=>!p.presented.includes(s))?'<p class="note">玟玟執秘在系辦等你簡報跨系技能。</p>':''}`,buttons:[{l:'繼續',v:1,p:1}]});
+  if(t.code==='L') return sheet({tag:'圖書館',title:'只是來借書',art,body:'<p>路過圖書館，順便借了本管理學經典。</p>',buttons:[{l:'繼續',v:1,p:1}]});
+  if(t.code==='R'){
+    const v=await sheet({tag:'學生宿舍',title:'宿舍夜談',art,body:'<p>熄燈後大家都還醒著，今晚你想做什麼？</p>',buttons:[
+      {l:'挑燈夜讀（學分 +1）',v:'cr'},{l:'討論社團企劃（社團 +1）',v:'club'},{l:`跟室友聊 ${CRUSHES[p.crush].name}（戀愛 +1）`,v:'love'}]});
+    applyFx(p,[[v,1]]); log(`${esc(p.name)} 在宿舍夜談（${FXNAME[v]} +1）`); return;
+  }
+  if(t.code==='F'){
+    addCr(p,1);
+    await sheet({tag:'期末考週',title:'熬夜 K 書',art,body:'<p>拿到 1 學分，然後被送去圖書館閉關一回合。</p>',buttons:[{l:'前往圖書館',v:1,p:1}]});
+    p.pos=posOf('L'); p.skip=1; log(`${esc(p.name)} 期末週閉關中`); renderDynamic();
+  }
+}
+
+/* ---------- 畢業 ---------- */
+async function graduate(p,place,final){
+  const cs=stage(p.clubPt), ls=stage(p.lovePt);
+  const badges=[p.year<=4?`${YEAR(p.year)}如期畢業`:`${YEAR(p.year)}，終於畢業`];
+  if(p.passed.every(x=>x)) badges.push('七門課全修');
+  if(p.acad>=2) badges.push(ACAD[p.acad-1].n);
+  if(p.skills.length) badges.push(`跨系技能 ${p.skills.length} 項`);
+  p.combos.forEach(c=>badges.push(c));
+  if(cs) badges.push(CLUB_ST[cs-1].n+(p.club!==null?'・'+CLUBS[p.club].n:''));
+  if(ls) badges.push(`${LOVE_ST[ls-1].n}・${CRUSHES[p.crush].name}`);
+  const title = cs>=7&&ls>=8?'人生勝利組':cs>=7?'大專青年楷模':ls>=8?'校園模範CP':p.skills.length>=9?'跨域斜槓王':p.combos.length?p.combos[0]:cs>=5?'社團風雲人物':'認真的國企人';
+  const multi=S.players.length>1||!!S.online;
+  log(`${esc(p.name)} ${multi?`第 ${place} 個`:''}領到畢業證書！`); renderDynamic();
+  const v=await sheet({tag:'恭喜',title:'畢業典禮',body:`<div class="cert">
+      <div class="ct">畢業證書</div>${avatar({...AV[p.av],v:'r'})}
+      <div style="font-family:var(--display);font-size:22px">${esc(p.name)}</div>
+      <div>國際企業管理學系</div>
+      ${multi&&place?`<div style="font-family:var(--display);font-size:20px;color:var(--red)">${S.online?'全班':''}第 ${place} 名畢業</div>`:''}
+      <div class="note num">修滿 ${p.cr} 學分・共 ${p.turns} 回合・${p.gradAt} 畢業</div>
+      <div class="badges">${badges.map(b=>`<span>${b}</span>`).join('')}</div>
+      <div style="font-family:var(--display);font-size:18px;color:var(--red)">稱號：${title}</div>
+      <div class="seal">Shih Chien University · Kaohsiung</div>
+    </div>`,
+    buttons:S.online?[{l:'看全班即時排名',v:0,p:1}]:multi&&!final?[{l:'繼續，看下一位誰畢業',v:0,p:1}]:multi?[{l:'看頒獎台',v:0,p:1}]:[{l:'再玩一次',v:1,p:1},{l:'留在棋盤看看',v:0}]});
+  if(v) backToSetup();
+  if(S&&S.online){const lp=$('#livePanel');lp&&lp.scrollIntoView({behavior:'smooth'})}
+}
+function standings(){
+  const fin=S.finish.map(i=>S.players[i]);
+  const rest=S.players.filter(p=>!p.done).sort((a,b)=>b.cr-a.cr||a.turns-b.turns);
+  return [...fin,...rest];
+}
+async function showPodium(){
+  const st=standings(), lab=['冠軍','亞軍','季軍'];
+  const col=(p,k)=>p?`<div class="p${k+1}">${avatar({...AV[p.av],v:k===0?'r':undefined})}<b>${esc(p.name)}</b><small class="note num">${p.done?`${p.turns} 回合畢業`:`${p.cr} 學分`}</small><div class="step">${lab[k]}</div></div>`:'<div></div>';
+  const v=await sheet({tag:'頒獎典禮',title:'畢業前三名',body:`<div class="podium">${col(st[1],1)}${col(st[0],0)}${col(st[2],2)}</div>
+    ${st.length>3?`<p class="note">其他同學：${st.slice(3).map(p=>`${esc(p.name)}（${p.cr} 學分）`).join('、')}</p>`:''}`,
+    buttons:[{l:'再玩一次',v:1,p:1},{l:'留在棋盤看看',v:0}]});
+  if(v) backToSetup();
+}
+
+
+/* ---------- 線上教室（Firebase） ---------- */
+const CFG=window.FIREBASE_CONFIG||{};
+const FB_OK=!!(window.firebase&&CFG.apiKey&&!/貼上|PASTE/i.test(CFG.apiKey));
+let fb=null, uid=null, liveOff=[], livePlayers={}, enterAt=0, mode='student', teacherT=28;
+const TS=()=>firebase.database.ServerValue.TIMESTAMP;
+const sess={get(){try{return JSON.parse(localStorage.getItem('usc-online-sess'))}catch(e){return null}},
+  set(v){try{localStorage.setItem('usc-online-sess',JSON.stringify(v))}catch(e){}},clear(){try{localStorage.removeItem('usc-online-sess')}catch(e){}}};
+const roomUrl=code=>location.origin+location.pathname+'?room='+code;
+function show(sel){['#setup','#game','#waiting','#teacher'].forEach(x=>$(x).hidden=x!==sel)}
+async function fbInit(){
+  if(!FB_OK) throw new Error('尚未設定 Firebase');
+  if(!fb){firebase.initializeApp(CFG);fb=firebase.database()}
+  if(!uid){const c=await firebase.auth().signInAnonymously();uid=c.user.uid}
+}
+function listen(ref,ev,fn){ref.on(ev,fn);liveOff.push(()=>ref.off(ev,fn))}
+function stopLive(){liveOff.forEach(f=>f());liveOff=[]}
+function toast(t){const el=$('#toast');el.textContent=t;el.hidden=false;clearTimeout(toast._t);toast._t=setTimeout(()=>el.hidden=true,4000)}
+const avOf=i=>AV[Math.max(0,Math.min(AV.length-1,+i||0))];
+function rankList(players){
+  const arr=Object.entries(players||{}).map(([id,p])=>({id,...p}));
+  return arr.sort((a,b)=>(a.place||999)-(b.place||999)||(b.cr||0)-(a.cr||0)||(a.turns||0)-(b.turns||0));
+}
+function liveItems(list,target,meId){
+  return list.map((p,i)=>`<li class="${p.id===meId?'me':''} ${p.place&&p.place<=3?'gold':''}">
+    <span class="rk">${i+1}</span>${avatar(avOf(p.av))}
+    <span class="nm"><b>${esc(p.name||'同學')}</b><small>${p.place?`第 ${p.place} 名畢業・${p.turns||0} 回合`:`${YEAR(p.year||1)}・技能 ${p.skills||0}${p.club?'・'+esc(p.club):''}${p.love?'・'+esc(p.love):''}`}</small></span>
+    <span class="cr">${p.cr||0}/${target}</span></li>`).join('');
+}
+function podiumHTML(list){
+  const lab=['冠軍','亞軍','季軍'];
+  const col=(p,k)=>p?`<div class="p${k+1}">${avatar({...avOf(p.av),v:k===0?'r':undefined})}<b>${esc(p.name||'同學')}</b><small class="note num">${p.place?`${p.turns||0} 回合畢業`:`${p.cr||0} 學分`}</small><div class="step">${lab[k]}</div></div>`:'<div></div>';
+  return `<div class="podium">${col(list[1],1)}${col(list[0],0)}${col(list[2],2)}</div>`;
+}
+
+/* 老師端 */
+async function createRoom(){
+  const err=$('#tErr'); err.hidden=true; $('#btnCreate').disabled=true;
+  try{
+    await fbInit();
+    let code=null;
+    for(let k=0;k<30;k++){const c=String(1000+rnd(9000));const sn=await fb.ref('rooms/'+c+'/host').get();if(!sn.exists()){code=c;break}}
+    if(!code) throw new Error('暫時找不到空的教室代碼，請再試一次');
+    await fb.ref('rooms/'+code).set({host:uid,target:teacherT,status:'open',createdAt:TS()});
+    sess.set({role:'teacher',code}); openTeacher(code);
+  }catch(e){err.textContent='開教室失敗：'+(e.message||e);err.hidden=false}
+  $('#btnCreate').disabled=false;
+}
+function openTeacher(code){
+  show('#teacher'); scrollTo(0,0);
+  $('#tCode').textContent=code; $('#tUrl').textContent=roomUrl(code);
+  const box=$('#tQR'); box.innerHTML='';
+  if(window.QRCode) new QRCode(box,{text:roomUrl(code),width:300,height:300,colorDark:'#2b241f',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M});
+  const ref=fb.ref('rooms/'+code);
+  listen(ref,'value',sn=>renderTeacher(sn.val()||{}));
+  let first=true;
+  const fref=ref.child('finish'); const t0=Date.now();
+  listen(fref,'child_added',sn=>{const f=sn.val()||{}; if((f.at||0)>t0-3000) toast(`${f.name} 第 ${f.place} 名畢業！`)});
+  $('#btnTStart').onclick=()=>ref.child('status').set('playing');
+  $('#btnTEnd').onclick=async()=>{const v=await sheet({tag:'確認',title:'結束比賽並頒獎？',body:'<p>全班手機都會看到前三名。沒畢業的同學依學分排名。</p>',buttons:[{l:'結束並頒獎',v:1,p:1},{l:'再等等',v:0}]});if(v)ref.child('status').set('ended')};
+}
+function renderTeacher(r){
+  const list=rankList(r.players), n=list.length, fin=list.filter(p=>p.place).length;
+  $('#tCount').textContent=n;
+  const st={open:'等待同學加入中',playing:'比賽進行中',ended:'比賽結束'}[r.status]||'';
+  $('#tStatus').textContent=`${st}・畢業門檻 ${r.target||28} 學分`;
+  $('#btnTStart').disabled=r.status!=='open'; $('#btnTEnd').disabled=r.status==='ended';
+  $('#tInfo').textContent=r.status==='open'?'同學掃碼加入後會在下方出現，人到齊就按「開始比賽」。':r.status==='playing'?`已有 ${fin} 人畢業。前三名產生後頒獎台會自動出現。`:'比賽已結束，頒獎台在上方。';
+  $('#tList').innerHTML=list.length?liveItems(list,r.target||28,''):'<li style="display:block;color:var(--ink-soft)">還沒有同學加入。</li>';
+  const showPod=r.status==='ended'||fin>=Math.min(3,n)&&n>0;
+  const pod=$('#tPodium'); pod.hidden=!showPod;
+  if(showPod) pod.innerHTML=`<div class="label">頒獎台・畢業前三名</div>${podiumHTML(list)}`;
+}
+
+/* 學生端 */
+let join={av:0,name:''};
+function renderJoin(){
+  $('#jPick').innerHTML=AV.map((a,j)=>`<button aria-pressed="${join.av===j}" data-jav="${j}" aria-label="${a.full}（${a.name}）">${avatar(a)}<span>${a.name}</span><small>${a.g}</small></button>`).join('');
+  if(!join.name) $('#jName').value=AV[join.av].name;
+}
+async function joinRoom(){
+  const err=$('#jErr'); err.hidden=true;
+  const code=$('#jCode').value.trim(), name=($('#jName').value.trim()||AV[join.av].name).slice(0,8);
+  if(!/^\d{4}$/.test(code)){err.textContent='請輸入老師畫面上的 4 位數教室代碼。';err.hidden=false;return}
+  $('#btnJoin').disabled=true;
+  try{
+    await fbInit();
+    const sn=await fb.ref('rooms/'+code).get();
+    if(!sn.exists()) throw new Error('找不到這間教室，請確認代碼。');
+    const r=sn.val();
+    const old=load();
+    if(old&&old.online&&old.online.code===code&&old.online.uid===uid){S=old}
+    else{
+      setup={n:1,t:r.target||28,pl:[{name,av:join.av}]};
+      newGame(); S.online={code,uid};
+    }
+    S.players[0].name=name; S.players[0].av=join.av; save();
+    await fb.ref(`rooms/${code}/players/${uid}`).update({name,av:join.av,cr:S.players[0].cr,year:S.players[0].year,turns:S.players[0].turns,skills:S.players[0].skills.length,done:!!S.players[0].done,joinedAt:TS()});
+    sess.set({role:'student',code}); enterStudent(code);
+  }catch(e){err.textContent='加入失敗：'+(e.message||e);err.hidden=false}
+  $('#btnJoin').disabled=false;
+}
+function enterStudent(code){
+  enterAt=Date.now();
+  const ref=fb.ref('rooms/'+code);
+  $('#wCode').textContent=code; $('#wAv').innerHTML=avatar({...avOf(S.players[0].av),v:'r'});
+  listen(ref.child('status'),'value',sn=>{
+    const st=sn.val(); S.roomStatus=st;
+    if(st==='open'){ if($('#game').hidden) show('#waiting') }
+    else if($('#game').hidden) startGame();
+    renderLive();
+  });
+  listen(ref.child('target'),'value',sn=>{const t=sn.val();if(t&&S&&!S.over){S.target=t;save()}});
+  listen(ref.child('players'),'value',sn=>{
+    livePlayers=sn.val()||{};
+    const arr=Object.values(livePlayers);
+    $('#wCount').textContent=arr.length;
+    $('#wList').innerHTML=arr.map(p=>`<span>${esc(p.name||'同學')}</span>`).join('');
+    renderLive();
+  });
+  listen(ref.child('finish'),'child_added',sn=>{
+    const f=sn.val()||{}; if(sn.key!==uid&&(f.at||0)>enterAt-3000) toast(`${f.name} 第 ${f.place} 名畢業！`);
+  });
+}
+function renderLive(){
+  if(!S||!S.online) return;
+  const list=rankList(livePlayers), fin=list.filter(p=>p.place).length;
+  const ended=S.roomStatus==='ended'||(fin>=Math.min(3,list.length)&&list.length>0);
+  $('#liveTitle').textContent=`全班即時排名（${list.length} 人）`;
+  $('#liveBanner').innerHTML=ended?`<p style="margin:0 0 6px;font-weight:700">${S.roomStatus==='ended'?'比賽結束！':'前三名出爐！'}</p>${podiumHTML(list)}`:'';
+  $('#liveList').innerHTML=liveItems(list.slice(0,10),S.target,uid);
+}
+function syncMe(){
+  if(!S||!S.online||!fb) return;
+  const p=S.players[0], cs=stage(p.clubPt), ls=stage(p.lovePt);
+  fb.ref(`rooms/${S.online.code}/players/${uid}`).update({name:p.name,av:p.av,cr:p.cr,year:p.year,turns:p.turns,skills:p.skills.length,
+    club:cs?CLUB_ST[cs-1].n:'',love:ls?LOVE_ST[ls-1].n:'',done:!!p.done,place:p.place||null}).catch(()=>{});
+}
+async function claimPlace(p){
+  const code=S.online.code;
+  const res=await fb.ref(`rooms/${code}/finishCount`).transaction(v=>(v||0)+1);
+  const place=res.snapshot.val();
+  await fb.ref(`rooms/${code}/finish/${uid}`).set({place,name:p.name,av:p.av,turns:p.turns,at:TS()});
+  return place;
+}
+
+/* 開場分頁 */
+function setMode(m){
+  mode=m; document.querySelectorAll('#tabs button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.mode===m));
+  $('#mStudent').hidden=m!=='student'; $('#mTeacher').hidden=m!=='teacher'; $('#mLocal').hidden=m!=='local';
+  $('#noFb').hidden=FB_OK||m==='local';
+  $('#btnJoin').disabled=!FB_OK; $('#btnCreate').disabled=!FB_OK;
+  const saved=load(); $('#resume').hidden=!(m==='local'&&saved&&!saved.over&&!saved.online);
+}
+function renderTT(){$('#segTT').innerHTML=TARGETS.map(t=>`<button aria-pressed="${teacherT===t.v}" data-tt="${t.v}">${t.n}・${t.v} 學分</button>`).join('')}
+document.addEventListener('click',e=>{
+  const b=e.target.closest('button'); if(!b) return;
+  if(b.dataset.mode) setMode(b.dataset.mode);
+  if(b.dataset.tt){teacherT=+b.dataset.tt;renderTT()}
+  if(b.dataset.jav!==undefined){const old=AV[join.av].name;join.av=+b.dataset.jav;if(!$('#jName').value||$('#jName').value===old)$('#jName').value=AV[join.av].name;renderJoin()}
+});
+$('#btnJoin').onclick=joinRoom; $('#btnCreate').onclick=createRoom;
+$('#btnTLeave').onclick=async()=>{const v=await sheet({tag:'確認',title:'關閉教室畫面？',body:'<p>同學的遊戲不受影響。之後用同一支手機或電腦重新打開網址，就會回到這間教室。</p>',buttons:[{l:'關閉',v:1,p:1},{l:'取消',v:0}]});if(v){stopLive();sess.clear();show('#setup')}};
+$('#btnWLeave').onclick=()=>backToSetup();
+async function boot(){
+  renderJoin(); renderTT();
+  const q=new URLSearchParams(location.search).get('room');
+  if(q&&/^\d{4}$/.test(q)) $('#jCode').value=q;
+  setMode(FB_OK?(q?'student':'student'):'local');
+  const ss=sess.get();
+  if(!FB_OK||!ss) return;
+  try{
+    await fbInit();
+    if(ss.role==='teacher'){const h=await fb.ref('rooms/'+ss.code+'/host').get();if(h.val()===uid)return openTeacher(ss.code)}
+    if(ss.role==='student'&&(!q||q===ss.code)){const old=load();if(old&&old.online&&old.online.code===ss.code){S=old;S.online.uid=uid;enterStudent(ss.code);return}}
+  }catch(e){}
+  sess.clear();
+}
+
+/* ---------- 啟動 ---------- */
+function startGame(){show('#game');renderBoard();scrollTo(0,0);if(S.online){$('#livePanel').hidden=false;renderLive()}}
+renderSetup();
+boot();
+</script>
+</body></html>
