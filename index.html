@@ -30,6 +30,23 @@ body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:
 body::after{content:"";position:fixed;inset:0;pointer-events:none;opacity:.35;mix-blend-mode:multiply;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .45 0 0 0 0 .4 0 0 0 .22 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
 .wrap{max-width:700px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+body.wide .wrap{max-width:1400px}
+.proj{display:grid;grid-template-columns:minmax(0,1fr) minmax(260px,340px);gap:14px;align-items:start}
+@media (max-width:900px){.proj{grid-template-columns:1fr}}
+.proj .board{max-height:calc(100vh - 150px);max-width:calc(100vh - 150px);width:100%;margin:0 auto}
+.proj .tile{font-size:clamp(8px,1.05vw,15px)}
+.proj .tok{width:30%;max-width:28px}
+.proj .more{position:relative;font-size:.8em;font-weight:700;background:var(--ink);color:var(--paper);border-radius:99px;padding:0 4px;line-height:1.4}
+.pturn{display:flex;align-items:center;gap:12px;font-family:var(--display);font-size:clamp(18px,2.6vw,38px);line-height:1.15;text-align:left}
+.pturn svg{width:clamp(54px,7vw,110px);height:auto;flex:0 0 auto}
+.pturn small{display:block;font-family:var(--body);font-size:.45em;color:var(--ink-soft)}
+.plast{font-size:clamp(13px,1.6vw,22px);font-weight:700;max-width:92%;line-height:1.35;min-height:1.4em}
+.pfeed{font-size:clamp(11px,1vw,15px)!important}
+.paside{display:flex;flex-direction:column;gap:12px;min-width:0}
+.paside .live{max-height:62vh;overflow-y:auto}
+.tbar{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;justify-content:space-between}
+.tbar .codechip{font-family:var(--display);font-size:20px}
+.tbar .codechip b{font-family:var(--script);font-size:30px;color:var(--red);letter-spacing:.08em}
 h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;font-weight:700}
 button{font-family:var(--body);font-size:15px;cursor:pointer;color:var(--ink)}
 button:focus-visible,input:focus-visible{outline:2px dashed var(--red);outline-offset:2px}
@@ -233,7 +250,8 @@ input[type=text]{font-family:var(--body);font-size:15px;color:var(--ink);backgro
       </div>
       <div id="tWho" class="row" hidden><span class="note" id="tWhoTxt"></span><button class="btn" id="btnTOut" style="padding:4px 12px;font-size:13px">登出</button></div>
       <div><div class="label">畢業門檻學分</div><div class="seg" id="segTT"></div></div>
-      <p class="note">開好後畫面會顯示教室代碼和 QR Code，投影給全班掃。大家加入後按「開始比賽」，最先拿到畢業證書的前三名獲勝，排名即時更新。</p>
+      <div><div class="label">玩法</div><div class="seg" id="segMode"></div><p class="note" id="modeNote" style="margin-top:4px"></p></div>
+      <p class="note">開好後畫面會顯示教室代碼和 QR Code，投影給全班掃。大家加入後按「開始比賽」，投影畫面就會變成全班共用的大棋盤，最先拿到畢業證書的前三名獲勝。</p>
       <p class="bad" id="tErr" style="margin:0;font-size:13px" hidden></p>
       <button class="btn primary" id="btnCreate" style="align-self:center;padding:12px 34px;font-size:17px">開新教室 →</button>
     </div>
@@ -251,7 +269,7 @@ input[type=text]{font-family:var(--body);font-size:15px;color:var(--ink);backgro
     <button class="btn primary" id="btnStart" style="align-self:center;padding:12px 34px;font-size:17px">入學報到 →</button>
     </div>
     <div class="panel"><div class="label">國企系老師與執秘</div><div class="teach" id="teach"></div></div>
-    <p class="note" style="text-align:center;font-size:11px;opacity:.7">版本 2026-10-22 v10（老師登入・20 位學生・展示試玩）</p>
+    <p class="note" style="text-align:center;font-size:11px;opacity:.7">版本 2026-10-22 v11（大螢幕直播・輪流制）</p>
     <p class="note" style="text-align:center">紅色格是國企系老師的課，要真的完成課堂任務才拿得到學分；走到其他系的格子可以學到該系的特殊技能，集滿三個有獎勵；每年回到報到處，可以跟玟玟執秘簡報技能換學分。</p>
   </section>
 
@@ -276,15 +294,30 @@ input[type=text]{font-family:var(--body);font-size:15px;color:var(--ink);backgro
   </section>
 
   <section id="teacher" hidden style="display:flex;flex-direction:column;gap:14px">
-    <div style="text-align:center"><span class="label">教室代碼</span><div class="bigcode num" id="tCode"></div><p id="tStatus" style="margin:0;font-weight:700"></p></div>
-    <div class="tgrid">
-      <div class="panel" style="align-items:center"><div class="qrbox" id="tQR"></div><p class="note" id="tUrl" style="word-break:break-all;text-align:center"></p></div>
-      <div class="panel"><div class="label">比賽控制</div>
-        <div class="row"><button class="btn primary" id="btnTStart">開始比賽</button><button class="btn" id="btnTEnd">結束並頒獎</button></div>
-        <p class="note" id="tInfo"></p></div>
+    <div id="tOpen" style="display:flex;flex-direction:column;gap:14px">
+      <div style="text-align:center"><span class="label">教室代碼</span><div class="bigcode num" id="tCode"></div><p id="tStatus" style="margin:0;font-weight:700"></p></div>
+      <div class="tgrid">
+        <div class="panel" style="align-items:center"><div class="qrbox" id="tQR"></div><p class="note" id="tUrl" style="word-break:break-all;text-align:center"></p></div>
+        <div class="panel"><div class="label">比賽控制</div>
+          <div class="row"><button class="btn primary" id="btnTStart">開始比賽</button></div>
+          <p class="note" id="tInfo"></p></div>
+      </div>
+      <div class="panel"><div class="label">已加入的同學（<span id="tCount">0</span> 人）</div><ol class="live" id="tList"></ol></div>
     </div>
-    <div class="panel" id="tPodium" hidden></div>
-    <div class="panel"><div class="label">全班即時排名（<span id="tCount">0</span> 人）</div><ol class="live" id="tList"></ol></div>
+    <div id="tProj" hidden style="display:flex;flex-direction:column;gap:12px">
+      <div class="tbar">
+        <span class="codechip">教室代碼 <b class="num" id="pCode"></b></span>
+        <span id="pStatus" style="font-weight:700"></span>
+        <span class="row"><button class="btn" id="btnPQR">顯示 QR Code</button><button class="btn" id="btnPSkip" hidden>跳過這位</button><button class="btn primary" id="btnTEnd">結束並頒獎</button></span>
+      </div>
+      <div class="proj">
+        <div class="board" id="pBoard"></div>
+        <aside class="paside">
+          <div class="panel" id="tPodium" hidden></div>
+          <div class="panel"><div class="label">全班即時排名（<span id="pCount">0</span> 人）</div><ol class="live" id="pList"></ol></div>
+        </aside>
+      </div>
+    </div>
     <button class="btn" id="btnTLeave" style="align-self:center">關閉教室，回到開場</button>
   </section>
 </div>
@@ -736,6 +769,7 @@ function renderBoard(){
   $('#board').innerHTML=h;
   $('#btnRoll').onclick=takeTurn;
   if(S.over) $('#btnRoll').disabled=true;
+  updateRollBtn();
   renderDynamic();
 }
 function renderDynamic(){
@@ -762,7 +796,7 @@ function renderDynamic(){
       <div class="track"><div class="th"><span>戀愛</span><span>${ls?LOVE_ST[ls-1].n:'還沒開始'}</span></div><div class="dots love">${LOVE_ST.map((_,k)=>`<i class="${k<ls?'y':''}"></i>`).join('')}</div></div>
     </div>`}).join('');
 }
-function log(t){S.log.unshift(t);S.log=S.log.slice(0,12)}
+function log(t){S.log.unshift(t);S.log=S.log.slice(0,12);if(S.online&&typeof pushEvent==='function')pushEvent(t)}
 
 $('#board').addEventListener('click',e=>{
   const b=e.target.closest('[data-tile]'); if(!b||busy) return;
@@ -847,7 +881,9 @@ function learnSkill(p,skill){
 /* ---------- 回合 ---------- */
 let busy=false;
 async function takeTurn(){
-  if(busy||S.over) return; busy=true; $('#btnRoll').disabled=true;
+  if(busy||S.over) return;
+  if(S.online&&S.roomMode==='turn'&&S.turnUid!==uid){toast('還沒輪到你喔，等一下！');return}
+  busy=true; $('#btnRoll').disabled=true;
   const p=S.players[S.cur];
   if(p.skip>0){
     p.skip--; log(`${esc(p.name)} 在圖書館閉關，暫停一回合`);
@@ -860,6 +896,7 @@ async function takeTurn(){
   d1.classList.remove('roll'); d2.classList.remove('roll'); d1.textContent=a; d2.textContent=b;
   p.turns++;
   await moveSteps(p,a+b);
+  log(`${esc(p.name)} 擲出 ${a+b} 點，來到「${TILES[p.pos].n}」`);
   await resolve(p,0);
   if(p._reg){delete p._reg;await doOffice(p)}
   endTurn();
@@ -871,6 +908,7 @@ async function moveSteps(p,n){
     if(p.pos===0&&dir>0){p.year++;p._reg=1;log(`${esc(p.name)} 升上${YEAR(p.year)}！`)}
     renderDynamic(); await sleep(140);
   }
+  if(S.online) syncMe();
   const el=document.querySelector(`[data-tile="${p.pos}"]`); el&&el.classList.add('flash'); setTimeout(()=>el&&el.classList.remove('flash'),1100);
 }
 async function jumpTo(p,code){await moveSteps(p,(posOf(code)-p.pos+N)%N)}
@@ -882,6 +920,7 @@ async function endTurn(){
     p.done=true; p.gradAt=new Date().toLocaleTimeString('zh-TW',{hour12:false}); S.over=true;
     try{p.place=await claimPlace(p)}catch(e){p.place=null}
     save(); syncMe(); renderBoard(); busy=false;
+    await passTurn();
     return graduate(p,p.place,true);
   }
   if(p.cr>=S.target&&!p.done){
@@ -894,6 +933,7 @@ async function endTurn(){
   }
   do{S.cur=(S.cur+1)%S.players.length}while(S.players[S.cur].done);
   syncMe(); save(); renderBoard(); busy=false;
+  passTurn();
 }
 async function resolve(p,depth){
   const t=TILES[p.pos];
@@ -1170,7 +1210,7 @@ const TS=()=>firebase.database.ServerValue.TIMESTAMP;
 const sess={get(){try{return JSON.parse(localStorage.getItem('usc-online-sess'))}catch(e){return null}},
   set(v){try{localStorage.setItem('usc-online-sess',JSON.stringify(v))}catch(e){}},clear(){try{localStorage.removeItem('usc-online-sess')}catch(e){}}};
 const roomUrl=code=>location.origin+location.pathname+'?room='+code;
-function show(sel){['#setup','#game','#waiting','#teacher'].forEach(x=>$(x).hidden=x!==sel)}
+function show(sel){['#setup','#game','#waiting','#teacher'].forEach(x=>$(x).hidden=x!==sel);document.body.classList.toggle('wide',sel==='#teacher')}
 function fbApp(){if(!FB_OK) throw new Error('尚未設定 Firebase');if(!fb){firebase.initializeApp(CFG);fb=firebase.database()}}
 let authReady=null;
 function currentUser(){fbApp();if(!authReady)authReady=new Promise(r=>{const off=firebase.auth().onAuthStateChanged(u=>{off();r(u)})});return authReady}
@@ -1232,35 +1272,91 @@ async function createRoom(){
     let code=null;
     for(let k=0;k<30;k++){const c=String(1000+rnd(9000));const sn=await fb.ref('rooms/'+c+'/host').get();if(!sn.exists()){code=c;break}}
     if(!code) throw new Error('暫時找不到空的教室代碼，請再試一次');
-    await fb.ref('rooms/'+code).set({host:uid,target:teacherT,status:'open',createdAt:TS()});
+    await fb.ref('rooms/'+code).set({host:uid,target:teacherT,mode:teacherMode,status:'open',createdAt:TS()});
     sess.set({role:'teacher',code}); openTeacher(code);
   }catch(e){err.textContent='開教室失敗：'+errMsg(e);err.hidden=false}
   $('#btnCreate').disabled=false;
 }
+function nextTurn(order,players,cur){
+  order=order||[]; const n=order.length; if(!n) return null;
+  const i=order.indexOf(cur);
+  for(let k=1;k<=n;k++){const u=order[((i<0?-1:i)+k+n)%n]; if(players&&players[u]&&!players[u].done) return u}
+  return null;
+}
+const plain=t=>new DOMParser().parseFromString(String(t||''),'text/html').body.textContent||'';
+let tRoom={}, tEvents=[], tBuilt=false, tCodeNow='';
 function openTeacher(code){
-  show('#teacher'); scrollTo(0,0);
-  $('#tCode').textContent=code; $('#tUrl').textContent=roomUrl(code);
+  show('#teacher'); scrollTo(0,0); tCodeNow=code; tRoom={}; tEvents=[]; tBuilt=false;
+  $('#tCode').textContent=code; $('#pCode').textContent=code; $('#tUrl').textContent=roomUrl(code);
   const box=$('#tQR'); box.innerHTML='';
   if(window.QRCode) new QRCode(box,{text:roomUrl(code),width:300,height:300,colorDark:'#2b241f',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M});
   const ref=fb.ref('rooms/'+code);
-  listen(ref,'value',sn=>renderTeacher(sn.val()||{}));
-  let first=true;
-  const fref=ref.child('finish'); const t0=Date.now();
-  listen(fref,'child_added',sn=>{const f=sn.val()||{}; if((f.at||0)>t0-3000) toast(`${f.name} 第 ${f.place} 名畢業！`)});
-  $('#btnTStart').onclick=()=>ref.child('status').set('playing').catch(e=>toast('開始失敗：'+errMsg(e)));
+  listen(ref,'value',sn=>{tRoom=sn.val()||{};renderTeacher(tRoom)});
+  const t0=Date.now();
+  listen(ref.child('finish'),'child_added',sn=>{const f=sn.val()||{}; if((f.at||0)>t0-3000) toast(`${f.name} 第 ${f.place} 名畢業！`)});
+  listen(ref.child('events').limitToLast(30),'child_added',sn=>{const e=sn.val()||{};tEvents.push(e);tEvents=tEvents.slice(-30);renderProjFeed()});
+  $('#btnTStart').onclick=async()=>{
+    try{const ps=(await ref.child('players').get()).val()||{};
+      const order=Object.entries(ps).sort((a,b)=>(a[1].joinedAt||0)-(b[1].joinedAt||0)).map(x=>x[0]);
+      const upd={status:'playing'}; if(tRoom.mode==='turn'){upd.order=order;upd.turn=order[0]||null}
+      await ref.update(upd);
+    }catch(e){toast('開始失敗：'+errMsg(e))}};
   $('#btnTEnd').onclick=async()=>{const v=await sheet({tag:'確認',title:'結束比賽並頒獎？',body:'<p>全班手機都會看到前三名。沒畢業的同學依學分排名。</p>',buttons:[{l:'結束並頒獎',v:1,p:1},{l:'再等等',v:0}]});if(v)ref.child('status').set('ended').catch(e=>toast('結束失敗：'+errMsg(e)))};
+  $('#btnPSkip').onclick=()=>{const nx=nextTurn(tRoom.order,tRoom.players,tRoom.turn);ref.child('turn').set(nx).catch(e=>toast('跳過失敗：'+errMsg(e)))};
+  $('#btnPQR').onclick=()=>sheet({tag:'教室代碼 '+code,title:'掃碼加入教室',body:'<div class="qrbox" id="pqr"></div><p class="note" style="text-align:center;word-break:break-all">'+roomUrl(code)+'</p>',buttons:[{l:'關閉',v:1,p:1}],
+    onOpen:el=>{const b=el.querySelector('#pqr');if(window.QRCode)new QRCode(b,{text:roomUrl(code),width:280,height:280,colorDark:'#2b241f',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M});else b.textContent=roomUrl(code)}});
 }
 function renderTeacher(r){
   const list=rankList(r.players), n=list.length, fin=list.filter(p=>p.place).length;
-  $('#tCount').textContent=n;
+  const modeTxt=r.mode==='turn'?'輪流制':'同時玩';
   const st={open:'等待同學加入中',playing:'比賽進行中',ended:'比賽結束'}[r.status]||'';
-  $('#tStatus').textContent=`${st}・畢業門檻 ${r.target||28} 學分`;
-  $('#btnTStart').disabled=r.status!=='open'; $('#btnTEnd').disabled=r.status==='ended';
-  $('#tInfo').textContent=r.status==='open'?'同學掃碼加入後會在下方出現，人到齊就按「開始比賽」。':r.status==='playing'?`已有 ${fin} 人畢業。前三名產生後頒獎台會自動出現。`:'比賽已結束，頒獎台在上方。';
+  $('#tCount').textContent=n; $('#pCount').textContent=n;
+  $('#tStatus').textContent=`${st}・${modeTxt}・畢業門檻 ${r.target||28} 學分`;
+  $('#pStatus').textContent=`${st}・${modeTxt}・${r.target||28} 學分・已畢業 ${fin} 人`;
+  $('#btnTStart').disabled=r.status!=='open'||!n; $('#btnTEnd').disabled=r.status==='ended';
+  $('#tInfo').textContent=n?`已有 ${n} 位同學加入，人到齊就按「開始比賽」，投影畫面會切換成全班大棋盤。`:'同學掃碼加入後會出現在下方。';
   $('#tList').innerHTML=list.length?liveItems(list,r.target||28,''):'<li style="display:block;color:var(--ink-soft)">還沒有同學加入。</li>';
-  const showPod=r.status==='ended'||fin>=Math.min(3,n)&&n>0;
+  const playing=r.status==='playing'||r.status==='ended';
+  $('#tOpen').hidden=playing; $('#tProj').hidden=!playing;
+  if(!playing) return;
+  // 輪流制：補上晚加入的同學、目前輪到的人畢業時自動換人
+  if(r.mode==='turn'&&r.status==='playing'){
+    const order=r.order||[], missing=Object.keys(r.players||{}).filter(u=>!order.includes(u));
+    const ref=fb.ref('rooms/'+tCodeNow);
+    if(missing.length) ref.child('order').set([...order,...missing]);
+    else if(!r.turn||!r.players||!r.players[r.turn]||r.players[r.turn].done){const nx=nextTurn(order,r.players,r.turn);if(nx!==(r.turn||null)) ref.child('turn').set(nx)}
+  }
+  $('#btnPSkip').hidden=!(r.mode==='turn'&&r.status==='playing'&&r.turn);
+  renderProj(r,list,fin);
+}
+function buildProjBoard(){
+  let h='';
+  TILES.forEach((t,i)=>{const [rr,c]=gridPos(i);const cls='tile '+(t.type==='dept'?'dept-'+t.c:t.type);
+    const ic=t.type==='course'?'課堂':t.type==='chance'?'?':t.type==='fate'?'!':'';
+    h+=`<div class="${cls}" style="grid-area:${rr}/${c}">${ic?`<span class="ic">${ic}</span>`:''}<span class="nm">${t.s}</span><span class="tokens" id="pt${i}"></span></div>`});
+  h+=`<div class="center"><div class="ttl">我是大學生</div><div class="sub">國企系・全班大富翁</div><div class="pturn" id="pTurn"></div><div class="plast" id="pLast"></div><ul class="log pfeed" id="pFeed"></ul>${sprig('sprig l')}${sprig('sprig r','#e8b84a','#e0913a')}</div>`;
+  $('#pBoard').innerHTML=h; tBuilt=true;
+}
+function renderProj(r,list,fin){
+  if(!tBuilt) buildProjBoard();
+  const by={};
+  list.forEach((p,k)=>{const pos=Math.max(0,Math.min(N-1,+p.pos||0));(by[pos]=by[pos]||[]).push(p)});
+  for(let i=0;i<N;i++){const el=$('#pt'+i);if(!el)continue;const ps=by[i]||[];
+    el.innerHTML=ps.slice(0,ps.length>5?4:5).map(p=>`<span class="tok" style="--tk:${p.id===r.turn?'var(--red)':'var(--ink-soft)'}" title="${esc(p.name||'')}">${avatar(avOf(p.av))}</span>`).join('')+(ps.length>5?`<span class="more">+${ps.length-4}</span>`:'')}
+  const tp=r.mode==='turn'&&r.turn&&r.players?r.players[r.turn]:null;
+  $('#pTurn').innerHTML=r.status==='ended'?'<span>比賽結束！</span>':tp?`${avatar({...avOf(tp.av),v:'r'})}<span>輪到 ${esc(tp.name||'同學')}<small>請在手機上擲骰子・${tp.cr||0}/${r.target||28} 學分</small></span>`
+    :r.mode==='turn'?'<span>等待下一位</span>':`<span>全班同時進行中<small>${list.length} 位同學・已畢業 ${fin} 人</small></span>`;
+  $('#pList').innerHTML=list.length?liveItems(list,r.target||28,r.turn||''):'';
+  const showPod=r.status==='ended'||(fin>=Math.min(3,list.length)&&list.length>0);
   const pod=$('#tPodium'); pod.hidden=!showPod;
   if(showPod) pod.innerHTML=`<div class="label">頒獎台・畢業前三名</div>${podiumHTML(list)}`;
+  renderProjFeed();
+}
+function renderProjFeed(){
+  if(!tBuilt) return;
+  const ev=tEvents.slice(-7).reverse();
+  $('#pLast').textContent=ev[0]?plain(ev[0].t):'';
+  $('#pFeed').innerHTML=ev.slice(1).map(e=>`<li>${esc(plain(e.t))}</li>`).join('');
 }
 
 /* 學生端 */
@@ -1302,12 +1398,17 @@ function enterStudent(code){
     renderLive();
   });
   listen(ref.child('target'),'value',sn=>{const t=sn.val();if(t&&S&&!S.over){S.target=t;save()}});
+  listen(ref.child('mode'),'value',sn=>{S.roomMode=sn.val()||'free';updateRollBtn()});
+  listen(ref.child('order'),'value',sn=>{S.roomOrder=sn.val()||[]});
+  listen(ref.child('turn'),'value',sn=>{const t=sn.val(), was=S.turnUid; S.turnUid=t;
+    if(S.roomMode==='turn'&&t===uid&&was!==uid&&!S.over){toast('輪到你了！擲骰子吧');try{navigator.vibrate&&navigator.vibrate([120,60,120])}catch(e){}}
+    updateRollBtn()});
   listen(ref.child('players'),'value',sn=>{
     livePlayers=sn.val()||{};
     const arr=Object.values(livePlayers);
     $('#wCount').textContent=arr.length;
     $('#wList').innerHTML=arr.map(p=>`<span>${esc(p.name||'同學')}</span>`).join('');
-    renderLive();
+    renderLive(); updateRollBtn();
   });
   listen(ref.child('finish'),'child_added',sn=>{
     const f=sn.val()||{}; if(sn.key!==uid&&(f.at||0)>enterAt-3000) toast(`${f.name} 第 ${f.place} 名畢業！`);
@@ -1321,10 +1422,27 @@ function renderLive(){
   $('#liveBanner').innerHTML=ended?`<p style="margin:0 0 6px;font-weight:700">${S.roomStatus==='ended'?'比賽結束！':'前三名出爐！'}</p>${podiumHTML(list)}`:'';
   $('#liveList').innerHTML=liveItems(list.slice(0,20),S.target,uid);
 }
+function updateRollBtn(){
+  const btn=$('#btnRoll'); if(!btn||!S) return;
+  if(!(S.online&&S.roomMode==='turn')){btn.textContent='擲骰子';if(!busy&&!S.over)btn.disabled=false;return}
+  if(S.over){btn.disabled=true;btn.textContent='已畢業';return}
+  const mine=S.turnUid===uid, who=S.turnUid&&livePlayers[S.turnUid]?livePlayers[S.turnUid].name:'';
+  btn.disabled=!mine||busy; btn.textContent=mine?'輪到你！擲骰子':(who?`等待中・輪到 ${who}`:'等待老師開始');
+}
+async function passTurn(){
+  if(!(S&&S.online&&S.roomMode==='turn'&&S.turnUid===uid&&fb)) return;
+  const ps={...livePlayers,[uid]:{...(livePlayers[uid]||{}),done:!!S.players[0].done}};
+  const nx=nextTurn(S.roomOrder,ps,uid);
+  try{await fb.ref(`rooms/${S.online.code}/turn`).set(nx)}catch(e){}
+}
+function pushEvent(t){
+  if(!fb||!uid||!S||!S.online) return;
+  fb.ref(`rooms/${S.online.code}/events`).push({uid,t:String(t).slice(0,280),at:TS()}).catch(()=>{});
+}
 function syncMe(){
   if(!S||!S.online||!fb) return;
   const p=S.players[0], cs=stage(p.clubPt), ls=stage(p.lovePt);
-  fb.ref(`rooms/${S.online.code}/players/${uid}`).update({name:p.name,av:p.av,cr:p.cr,year:p.year,turns:p.turns,skills:p.skills.length,
+  fb.ref(`rooms/${S.online.code}/players/${uid}`).update({name:p.name,av:p.av,cr:p.cr,year:p.year,turns:p.turns,skills:p.skills.length,pos:p.pos,
     club:cs?CLUB_ST[cs-1].n:'',love:ls?LOVE_ST[ls-1].n:'',done:!!p.done,place:p.place||null}).catch(()=>{});
 }
 async function claimPlace(p){
@@ -1344,11 +1462,17 @@ function setMode(m){
   const saved=load(); $('#resume').hidden=!(m==='local'&&saved&&!saved.over&&!saved.online);
   if(m==='teacher') renderTeacherAuth();
 }
+let teacherMode='free';
+function renderMode(){
+  $('#segMode').innerHTML=[['free','同時玩'],['turn','輪流制']].map(([v,l])=>`<button aria-pressed="${teacherMode===v}" data-tmode="${v}">${l}</button>`).join('');
+  $('#modeNote').textContent=teacherMode==='turn'?'一次只有一位同學能擲骰子，投影大螢幕顯示「輪到誰」和他遇到的事，全班一起看。20 人輪一圈約 10–15 分鐘。':'全班同時用手機各自擲骰子，投影大螢幕顯示所有人的棋子位置和即時動態，一堂課玩得完。';
+}
 function renderTT(){$('#segTT').innerHTML=TARGETS.map(t=>`<button aria-pressed="${teacherT===t.v}" data-tt="${t.v}">${t.n}・${t.v} 學分</button>`).join('')}
 document.addEventListener('click',e=>{
   const b=e.target.closest('button'); if(!b) return;
   if(b.dataset.mode) setMode(b.dataset.mode);
   if(b.dataset.tt){teacherT=+b.dataset.tt;renderTT()}
+  if(b.dataset.tmode){teacherMode=b.dataset.tmode;renderMode()}
   if(b.dataset.jav!==undefined){const old=AV[join.av].name;join.av=+b.dataset.jav;if(!$('#jName').value||$('#jName').value===old)$('#jName').value=AV[join.av].name;renderJoin()}
 });
 $('#btnDemo').onclick=()=>{setMode('local');$('#mLocal').scrollIntoView({behavior:'smooth'})};
@@ -1361,7 +1485,7 @@ $('#btnTOut').onclick=async()=>{try{await firebase.auth().signOut()}catch(e){} u
 $('#btnTLeave').onclick=async()=>{const v=await sheet({tag:'確認',title:'關閉教室畫面？',body:'<p>同學的遊戲不受影響。之後用同一支手機或電腦重新打開網址，就會回到這間教室。</p>',buttons:[{l:'關閉',v:1,p:1},{l:'取消',v:0}]});if(v){stopLive();sess.clear();show('#setup')}};
 $('#btnWLeave').onclick=()=>backToSetup();
 async function boot(){
-  renderJoin(); renderTT();
+  renderJoin(); renderTT(); renderMode();
   const q=new URLSearchParams(location.search).get('room');
   if(q&&/^\d{4}$/.test(q)) $('#jCode').value=q;
   const demo=new URLSearchParams(location.search).has('demo');
