@@ -308,7 +308,7 @@ input[type=text]{font-family:var(--body);font-size:15px;color:var(--ink);backgro
     <button class="btn primary" id="btnStart" style="align-self:center;padding:12px 34px;font-size:17px">入學報到 →</button>
     </div>
     <div class="panel"><div class="label">國企系老師與執秘</div><div class="teach" id="teach"></div></div>
-    <p class="note" style="text-align:center;font-size:11px;opacity:.7">版本 2026-10-22 v26（大螢幕棋子逐格移動）</p>
+    <p class="note" style="text-align:center;font-size:11px;opacity:.7">版本 2026-10-22 v27（自動更新新版）</p>
     <p class="note" style="text-align:center">紅色格是國企系老師的課，要真的完成課堂任務才拿得到學分；走到其他系的格子可以學到該系的特殊技能，集滿三個有獎勵；每年回到報到處，可以跟玟玟執秘簡報技能換學分。</p>
   </section>
 
@@ -1847,5 +1847,19 @@ async function boot(){
 function startGame(){show('#game');renderBoard();scrollTo(0,0);if(!S.introShown){S.introShown=true;save();setTimeout(()=>showTeacherIntro().then(()=>scheduleBot()),250)}else scheduleBot();if(S.online){$('#livePanel').hidden=false;renderLive()}}
 renderSetup();
 boot();
+/* 自動檢查新版：網站更新後，打開的頁面會自動換成最新版 */
+const APP_VER=(document.body.innerHTML.match(/版本 (\d{4}-\d{2}-\d{2} v\d+)/)||[])[1]||'';
+async function checkNewVersion(){
+  try{
+    const r=await fetch(location.pathname+'?nocache='+Date.now(),{cache:'no-store'}); if(!r.ok) return;
+    const m=(await r.text()).match(/版本 (\d{4}-\d{2}-\d{2} v(\d+))/); if(!m||!APP_VER) return;
+    const cur=+(APP_VER.match(/v(\d+)/)||[])[1]||0, nw=+m[2]||0;
+    if(nw>cur&&$('#scrim').hidden&&!busy&&!(S&&S.online&&!S.over&&$('#game').hidden===false&&busy)){
+      const q=new URLSearchParams(location.search); if((+q.get('v')||0)>=nw) return; q.set('v',String(nw));
+      location.replace(location.pathname+'?'+q.toString());
+    }
+  }catch(e){}
+}
+setTimeout(checkNewVersion,1500);
 </script>
 </body></html>
