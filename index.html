@@ -262,14 +262,14 @@ input[type=text]{font-family:var(--body);font-size:15px;color:var(--ink);backgro
       <button class="btn" id="btnDemoQR" style="align-self:flex-start">顯示展示用 QR Code</button>
     </div>
     <div class="panel">
-      <div><div class="label">玩家人數（同一支手機輪流玩）</div><div class="seg" id="segN"></div></div>
+      <div><div class="label">真人玩家人數（同一支手機輪流玩）</div><div class="seg" id="segN"></div><p class="note" id="nNote" style="margin-top:4px"></p></div>
       <div><div class="label">畢業門檻學分</div><div class="seg" id="segT" hidden></div><p class="note" id="tNote"></p></div>
     </div>
     <div class="panel"><div class="label">選擇你的國企系新生</div><div id="plSetup" style="display:flex;flex-direction:column;gap:12px"></div></div>
     <button class="btn primary" id="btnStart" style="align-self:center;padding:12px 34px;font-size:17px">入學報到 →</button>
     </div>
     <div class="panel"><div class="label">國企系老師與執秘</div><div class="teach" id="teach"></div></div>
-    <p class="note" style="text-align:center;font-size:11px;opacity:.7">版本 2026-10-22 v11（大螢幕直播・輪流制）</p>
+    <p class="note" style="text-align:center;font-size:11px;opacity:.7">版本 2026-10-22 v12（電腦代玩・輪流制修正）</p>
     <p class="note" style="text-align:center">紅色格是國企系老師的課，要真的完成課堂任務才拿得到學分；走到其他系的格子可以學到該系的特殊技能，集滿三個有獎勵；每年回到報到處，可以跟玟玟執秘簡報技能換學分。</p>
   </section>
 
@@ -299,8 +299,11 @@ input[type=text]{font-family:var(--body);font-size:15px;color:var(--ink);backgro
       <div class="tgrid">
         <div class="panel" style="align-items:center"><div class="qrbox" id="tQR"></div><p class="note" id="tUrl" style="word-break:break-all;text-align:center"></p></div>
         <div class="panel"><div class="label">比賽控制</div>
-          <div class="row"><button class="btn primary" id="btnTStart">開始比賽</button></div>
-          <p class="note" id="tInfo"></p></div>
+          <div class="row"><button class="btn primary" id="btnTStart">開始比賽</button><button class="btn" id="btnAddBot">＋ 加入電腦玩家</button></div>
+          <p class="note" id="tInfo"></p>
+          <div class="label" style="margin-top:4px">電腦代玩的角色（點一下可移除）</div>
+          <div class="chips" id="tBots"></div>
+          <p class="note">開始比賽時如果不足 4 人，會自動補電腦玩家到 4 人。電腦玩家由這台電腦代玩，請不要關掉這個畫面。</p></div>
       </div>
       <div class="panel"><div class="label">已加入的同學（<span id="tCount">0</span> 人）</div><ol class="live" id="tList"></ol></div>
     </div>
@@ -709,6 +712,7 @@ function renderSetup(){
   $('#segN').innerHTML=[1,2,3,4].map(n=>`<button aria-pressed="${setup.n===n}" data-n="${n}">${n} 人</button>`).join('');
   $('#segT').innerHTML=TARGETS.map(t=>`<button aria-pressed="${setup.t===t.v}" data-t="${t.v}">${t.n}・${t.v} 學分</button>`).join('');
   setup.t=20; $('#tNote').textContent='展示試玩固定 20 學分，大約玩 17 回合就能領畢業證書。';
+  $('#nNote').textContent=setup.n<4?`一局固定 4 人：你們 ${setup.n} 位真人，另外 ${4-setup.n} 位由電腦代玩。`:'4 位都是真人，同一支手機輪流玩。';
   $('#plSetup').innerHTML=setup.pl.slice(0,setup.n).map((p,i)=>`
     <div class="pl-setup">
       ${setup.n>1?`<div class="label">玩家 ${i+1}</div>`:''}
@@ -725,20 +729,25 @@ document.addEventListener('click',e=>{
 });
 document.addEventListener('input',e=>{const t=e.target;if(t.dataset.p!==undefined&&t.tagName==='INPUT')setup.pl[+t.dataset.p].name=t.value});
 
-$('#btnStart').onclick=()=>{setup.t=20;newGame();save();startGame()};
-function newGame(){
+$('#btnStart').onclick=()=>{setup.t=20;newGame(true);save();startGame()};
+function newGame(withBots){
   const used=new Set();
+  let roster=setup.pl.slice(0,setup.n).map(p=>({...p}));
+  if(withBots){const taken=new Set(roster.map(p=>p.av));
+    const pool=AV.map((a,j)=>j).filter(j=>!taken.has(j)).sort(()=>Math.random()-.5);
+    while(roster.length<4){const av=pool.shift();roster.push({av,name:AV[av].name+'（電腦）',bot:true})}}
   S={target:setup.t,cur:0,over:false,finish:[],log:['國企系新生入學！擲骰子開始大學生活。'],
-    players:setup.pl.slice(0,setup.n).map((p,i)=>{
+    players:roster.map((p,i)=>{
       const want=AV[p.av].g==='男'?'女':'男';const pool=CRUSHES.map((x,k)=>k).filter(k=>CRUSHES[k].g===want);
       const free=pool.filter(k=>!used.has(k));const c=(free.length?free:pool)[rnd((free.length?free:pool).length)]; used.add(c);
-      return {name:(p.name||'').trim()||AV[p.av].name,av:p.av,pos:0,year:1,cr:0,club:null,clubPt:0,lovePt:0,clubMax:0,loveMax:0,acad:0,
+      return {name:(p.name||'').trim()||AV[p.av].name,av:p.av,bot:!!p.bot,pos:0,year:1,cr:0,club:null,clubPt:0,lovePt:0,clubMax:0,loveMax:0,acad:0,
         skip:0,crush:c,tk:i,turns:0,done:false,skills:[],presented:[],sets:0,combos:[],passed:[0,0,0,0,0,0,0]}})};
 }
 $('#btnResume').onclick=()=>{S=load();startGame()};
 $('#btnDiscard').onclick=()=>{clear();$('#resume').hidden=true};
 $('#btnQuit').onclick=async()=>{
-  const v=await sheet({tag:'確認',title:S&&S.online?'離開教室？':'結束這一局？',body:S&&S.online?'<p>你的進度會留在排行榜上，但這支手機會回到開場畫面。</p>':'<p>進度會被清除，回到開場畫面。</p>',buttons:[{l:'結束並回到開場',v:1,p:1},{l:'繼續玩',v:0}]});
+  if(busy&&S&&S.players[S.cur]&&S.players[S.cur].bot){toast('等電腦玩家走完這回合再結束喔');return}
+  const v=await sheet({human:1,tag:'確認',title:S&&S.online?'離開教室？':'結束這一局？',body:S&&S.online?'<p>你的進度會留在排行榜上，但這支手機會回到開場畫面。</p>':'<p>進度會被清除，回到開場畫面。</p>',buttons:[{l:'結束並回到開場',v:1,p:1},{l:'繼續玩',v:0}]});
   if(v) backToSetup();
 };
 function backToSetup(){clear();S=null;stopLive();sess.clear();show('#setup');$('#resume').hidden=true;renderSetup();scrollTo(0,0)}
@@ -770,6 +779,8 @@ function renderBoard(){
   $('#btnRoll').onclick=takeTurn;
   if(S.over) $('#btnRoll').disabled=true;
   updateRollBtn();
+  if(!S.online&&S.players[S.cur]&&S.players[S.cur].bot&&!S.over){$('#btnRoll').disabled=true;$('#btnRoll').textContent='電腦代玩中…'}
+  scheduleBot();
   renderDynamic();
 }
 function renderDynamic(){
@@ -787,7 +798,7 @@ function renderDynamic(){
   $('#players').innerHTML=S.players.map((p,i)=>{
     const cs=stage(p.clubPt), ls=stage(p.lovePt), r=p.skills.length%3;
     return `<div class="pc ${i===S.cur&&!S.over?'on':''}" style="--tk:${TK[p.tk]}">
-      <div class="pc-h">${avatar(AV[p.av])}<div style="min-width:0"><b>${esc(p.name)}</b><small>國際企業管理學系・${p.done?`<b style="color:var(--red)">第 ${S.finish.indexOf(i)+1} 名畢業</b>`:YEAR(p.year)}</small><small>心儀對象：${CRUSHES[p.crush].name}${p.club!==null?'・'+CLUBS[p.club].n:''}</small></div></div>
+      <div class="pc-h">${avatar(AV[p.av])}<div style="min-width:0"><b>${esc(p.name)}</b>${p.bot?' <span class="chips" style="display:inline-flex"><span>電腦代玩</span></span>':''}<small>國際企業管理學系・${p.done?`<b style="color:var(--red)">第 ${S.finish.indexOf(i)+1} 名畢業</b>`:YEAR(p.year)}</small><small>心儀對象：${CRUSHES[p.crush].name}${p.club!==null?'・'+CLUBS[p.club].n:''}</small></div></div>
       <div class="track"><div class="th"><span>學業</span><span class="num">${p.cr} / ${S.target} 學分${p.acad?'・'+ACAD[p.acad-1].n:''}</span></div><div class="bar"><i style="width:${Math.min(100,p.cr/S.target*100)}%"></i></div>
         <div class="five">${COURSES.map((c,k)=>`<span class="${p.passed[k]?'y':''}">${c.s}${p.passed[k]>1?'×'+p.passed[k]:''}</span>`).join('')}</div></div>
       <div class="track"><div class="th"><span>跨系技能</span><span class="num">${p.skills.length} 項（已向玟玟簡報 ${p.presented.length}）・獎勵還差 ${3-r}</span></div><div class="dots skill">${[0,1,2].map(k=>`<i class="${k<r?'y':''}"></i>`).join('')}</div>
@@ -810,9 +821,10 @@ $('#board').addEventListener('click',e=>{
 });
 
 /* ---------- 事件卡 ---------- */
-function sheet({tag='',title='',art='',body='',buttons=[],onOpen}){
+let sheetAt=0;
+function sheet({tag='',title='',art='',body='',buttons=[],onOpen,human}){
   return new Promise(res=>{
-    const el=$('#sheet'); el._res=res;
+    const el=$('#sheet'); el._res=res; sheetAt=Date.now(); el.dataset.human=human?'1':'';
     el.innerHTML=`<div class="tag">${tag}</div>${art?`<div class="art">${art}<h2>${title}</h2></div>`:`<h2>${title}</h2>`}
       <div style="display:flex;flex-direction:column;gap:8px">${body}</div>
       <div class="opts">${buttons.map((b,i)=>`<button class="btn ${b.p?'primary':''}" data-i="${i}">${b.l}</button>`).join('')}</div>`;
@@ -878,6 +890,22 @@ function learnSkill(p,skill){
   });
 }
 
+/* ---------- 電腦代玩 ---------- */
+let botTimer=null;
+function scheduleBot(){
+  clearTimeout(botTimer);
+  if(!S||S.over||S.online||busy) return;
+  const p=S.players[S.cur]; if(!p||!p.bot) return;
+  botTimer=setTimeout(()=>{ if(!$('#scrim').hidden){scheduleBot();return} if(!busy&&S&&!S.over&&S.players[S.cur]===p) takeTurn() },1100);
+}
+setInterval(()=>{
+  if(!S||S.over||S.online||!busy) return;
+  const p=S.players[S.cur]; if(!p||!p.bot) return;
+  if($('#scrim').hidden||$('#sheet').dataset.human) return;
+  if(Date.now()-sheetAt<1000) return;
+  const b=$('#sheet .opts button'); if(b) b.click();
+},300);
+
 /* ---------- 回合 ---------- */
 let busy=false;
 async function takeTurn(){
@@ -920,7 +948,7 @@ async function endTurn(){
     p.done=true; p.gradAt=new Date().toLocaleTimeString('zh-TW',{hour12:false}); S.over=true;
     try{p.place=await claimPlace(p)}catch(e){p.place=null}
     save(); syncMe(); renderBoard(); busy=false;
-    await passTurn();
+    await passTurn(); updateRollBtn();
     return graduate(p,p.place,true);
   }
   if(p.cr>=S.target&&!p.done){
@@ -933,7 +961,7 @@ async function endTurn(){
   }
   do{S.cur=(S.cur+1)%S.players.length}while(S.players[S.cur].done);
   syncMe(); save(); renderBoard(); busy=false;
-  passTurn();
+  await passTurn(); updateRollBtn(); scheduleBot();
 }
 async function resolve(p,depth){
   const t=TILES[p.pos];
@@ -1027,12 +1055,12 @@ async function doCourse(p,t){
   const who=`${T.name}老師${T.name==='仲哥'?'（系主任）':''}`;
   const tag=`國企系課程・${c.n}`;
   $('#sheet')._check=spec.check;
-  const r=await taskSheet({tag,title:`${who}的課`,art,intro:spec.intro,fields:spec.fields});
+  const r=p.bot?{ok:Math.random()<.7,v:null,bot:1}:await taskSheet({tag,title:`${who}的課`,art,intro:spec.intro,fields:spec.fields});
   let got, msg='', said='';
   if(!r){got=0;msg='這次先放棄，下次停在這裡再挑戰。'}
   else{
-    said=spec.say(r.v);
-    if(r.ok){got=4;msg=spec.win(r.v);p.passed[t.idx]++;if(spec.fx)applyFx(p,spec.fx);
+    said=r.bot?'（電腦代答）':spec.say(r.v);
+    if(r.ok){got=4;msg=r.bot?`${who}點點頭，${esc(p.name)} 順利完成課堂任務。`:spec.win(r.v);p.passed[t.idx]++;if(spec.fx)applyFx(p,spec.fx);
       if(c.task==='kr'&&!p.skills.includes('韓語會話')){learnSkill(p,'韓語會話');msg+='<br>你學會了外語技能「韓語會話」，也算一項跨系技能！'}}
     else{got=1;msg=spec.lose||'差一點，補救拿 1 學分。'}
   }
@@ -1285,6 +1313,53 @@ function nextTurn(order,players,cur){
 }
 const plain=t=>new DOMParser().parseFromString(String(t||''),'text/html').body.textContent||'';
 let tRoom={}, tEvents=[], tBuilt=false, tCodeNow='';
+/* 老師端電腦玩家 */
+let botBusy=false;
+const sumCr=fx=>(fx||[]).filter(f=>f[0]==='cr').reduce((a,f)=>a+f[1],0);
+async function addBot(av){
+  const ref=fb.ref('rooms/'+tCodeNow), ps=tRoom.players||{};
+  if(av==null){const used=new Set(Object.values(ps).map(p=>+p.av));const pool=AV.map((a,j)=>j).filter(j=>!used.has(j));av=pool.length?pool[rnd(pool.length)]:rnd(AV.length)}
+  const id='bot'+Date.now().toString(36)+rnd(1000);
+  await ref.child('players/'+id).set({name:AV[av].name+'（電腦）',av,bot:true,cr:0,year:1,turns:0,skills:0,pos:0,done:false,joinedAt:TS()});
+  return id;
+}
+function pickBotAvatar(){
+  const used=new Set(Object.values(tRoom.players||{}).map(p=>+p.av));
+  return sheet({human:1,tag:'電腦玩家',title:'選一個角色由電腦代玩',body:`<div class="avpick">${AV.map((a,j)=>`<button data-bav="${j}" ${used.has(j)?'disabled style="opacity:.35"':''}>${avatar(a)}<span>${a.name}</span><small>${a.g}</small></button>`).join('')}</div>`,
+    buttons:[{l:'隨機挑一位',v:-1},{l:'取消',v:null}],
+    onOpen:el=>el.querySelectorAll('[data-bav]').forEach(b=>b.onclick=()=>{$('#scrim').hidden=true;el._res(+b.dataset.bav)})});
+}
+async function botAct(id){
+  const r=tRoom, p=r.players&&r.players[id]; if(!p||p.done) return;
+  const ref=fb.ref('rooms/'+tCodeNow);
+  const a=1+rnd(6), b=1+rnd(6); let pos=(+p.pos||0)+a+b, year=p.year||1; if(pos>=N){pos-=N;year++}
+  const t=TILES[pos]; let cr=p.cr||0, skills=p.skills||0, club=p.club||'', love=p.love||'';
+  const nm=p.name||'電腦'; const ev=[`${nm} 擲出 ${a+b} 點，來到「${t.n}」`];
+  if(t.type==='course'){if(Math.random()<.7){cr+=4;ev.push(`${nm} 在${t.n}課完成任務（+4 學分）`)}else{cr+=1;ev.push(`${nm} 在${t.n}課補救過關（+1 學分）`)}}
+  else if(t.type==='dept'){skills++;cr+=1;ev.push(`${nm} 在${t.s}學會「${t.sk[rnd(t.sk.length)]}」`)}
+  else if(t.type==='club'){const i=CLUB_ST.findIndex(x=>x.n===club);if(i<CLUB_ST.length-1&&Math.random()<.65){const st=CLUB_ST[i+1];club=st.n;cr+=sumCr(st.fx);ev.push(`${nm} 在${t.n}：${st.n}`)}else ev.push(`${nm} 在${t.n}練習中`)}
+  else if(t.type==='spot'){const i=LOVE_ST.findIndex(x=>x.n===love);if(i<LOVE_ST.length-1&&Math.random()<.65){const st=LOVE_ST[i+1];love=st.n;cr+=sumCr(st.fx);ev.push(`${nm} 在${t.n}：${st.n}`)}else ev.push(`${nm} 在${t.n}散步`)}
+  else if(t.type==='chance'){const c=CHANCE[rnd(CHANCE.length)];cr+=sumCr(c.fx)+(c.skill?1:0);ev.push(`${nm} 抽到機會：${c.t}`)}
+  else if(t.type==='fate'){const c=FATE[rnd(FATE.length)];cr+=sumCr(c.fx);ev.push(`${nm} 抽到命運：${c.t}`)}
+  else if(t.code==='F'||t.code==='R'){cr+=1;ev.push(`${nm} 在${t.n}挑燈夜讀（+1 學分）`)}
+  cr=Math.max(0,cr);
+  const upd={pos,year,cr,skills,club,love,turns:(p.turns||0)+1};
+  if(cr>=(r.target||28)){upd.done=true;const res=await ref.child('finishCount').transaction(v=>(v||0)+1);upd.place=res.snapshot.val();
+    await ref.child('finish/'+id).set({place:upd.place,name:nm,av:p.av,turns:upd.turns,at:TS()});ev.push(`${nm} 第 ${upd.place} 名畢業！`)}
+  await ref.child('players/'+id).update(upd);
+  for(const e of ev) await ref.child('events').push({uid:id,t:e,at:TS()});
+}
+function runBots(r){
+  if(botBusy||r.status!=='playing'||!r.players) return;
+  const ref=fb.ref('rooms/'+tCodeNow);
+  if(r.mode==='turn'){
+    const id=r.turn; if(!id||!r.players[id]||!r.players[id].bot) return;
+    botBusy=true;
+    setTimeout(async()=>{try{ if(tRoom.turn===id&&tRoom.status==='playing'){await botAct(id);
+        const fresh=(await ref.get()).val()||{}; const nx=nextTurn(fresh.order,fresh.players,id); await ref.child('turn').set(nx)} }
+      catch(e){toast('電腦玩家出錯：'+errMsg(e))} finally{botBusy=false; setTimeout(()=>runBots(tRoom),300)}},1800);
+  }
+}
 function openTeacher(code){
   show('#teacher'); scrollTo(0,0); tCodeNow=code; tRoom={}; tEvents=[]; tBuilt=false;
   $('#tCode').textContent=code; $('#pCode').textContent=code; $('#tUrl').textContent=roomUrl(code);
@@ -1296,12 +1371,23 @@ function openTeacher(code){
   listen(ref.child('finish'),'child_added',sn=>{const f=sn.val()||{}; if((f.at||0)>t0-3000) toast(`${f.name} 第 ${f.place} 名畢業！`)});
   listen(ref.child('events').limitToLast(30),'child_added',sn=>{const e=sn.val()||{};tEvents.push(e);tEvents=tEvents.slice(-30);renderProjFeed()});
   $('#btnTStart').onclick=async()=>{
-    try{const ps=(await ref.child('players').get()).val()||{};
+    try{let ps=(await ref.child('players').get()).val()||{};
+      const used=new Set(Object.values(ps).map(p=>+p.av));const pool=AV.map((x,j)=>j).filter(j=>!used.has(j)).sort(()=>Math.random()-.5);
+      let k=Object.keys(ps).length; while(k<4){await addBot(pool.length?pool.shift():rnd(AV.length));k++}
+      ps=(await ref.child('players').get()).val()||{};
       const order=Object.entries(ps).sort((a,b)=>(a[1].joinedAt||0)-(b[1].joinedAt||0)).map(x=>x[0]);
       const upd={status:'playing'}; if(tRoom.mode==='turn'){upd.order=order;upd.turn=order[0]||null}
       await ref.update(upd);
     }catch(e){toast('開始失敗：'+errMsg(e))}};
   $('#btnTEnd').onclick=async()=>{const v=await sheet({tag:'確認',title:'結束比賽並頒獎？',body:'<p>全班手機都會看到前三名。沒畢業的同學依學分排名。</p>',buttons:[{l:'結束並頒獎',v:1,p:1},{l:'再等等',v:0}]});if(v)ref.child('status').set('ended').catch(e=>toast('結束失敗：'+errMsg(e)))};
+  const freeLoop=setInterval(async()=>{
+    const r=tRoom; if(botBusy||r.status!=='playing'||r.mode==='turn'||!r.players) return;
+    const bots=Object.keys(r.players).filter(k=>r.players[k].bot&&!r.players[k].done); if(!bots.length) return;
+    botBusy=true; try{for(const id of bots){if(Math.random()<.6) await botAct(id)}}catch(e){toast('電腦玩家出錯：'+errMsg(e))} finally{botBusy=false}
+  },5000);
+  liveOff.push(()=>clearInterval(freeLoop));
+  $('#btnAddBot').onclick=async()=>{const v=await pickBotAvatar(); if(v===null||v===undefined) return; try{await addBot(v<0?null:v)}catch(e){toast('加入失敗：'+errMsg(e))}};
+  $('#tBots').onclick=e=>{const b=e.target.closest('[data-rmbot]');if(!b||tRoom.status!=='open')return;ref.child('players/'+b.dataset.rmbot).remove()};
   $('#btnPSkip').onclick=()=>{const nx=nextTurn(tRoom.order,tRoom.players,tRoom.turn);ref.child('turn').set(nx).catch(e=>toast('跳過失敗：'+errMsg(e)))};
   $('#btnPQR').onclick=()=>sheet({tag:'教室代碼 '+code,title:'掃碼加入教室',body:'<div class="qrbox" id="pqr"></div><p class="note" style="text-align:center;word-break:break-all">'+roomUrl(code)+'</p>',buttons:[{l:'關閉',v:1,p:1}],
     onOpen:el=>{const b=el.querySelector('#pqr');if(window.QRCode)new QRCode(b,{text:roomUrl(code),width:280,height:280,colorDark:'#2b241f',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M});else b.textContent=roomUrl(code)}});
@@ -1314,8 +1400,12 @@ function renderTeacher(r){
   $('#tStatus').textContent=`${st}・${modeTxt}・畢業門檻 ${r.target||28} 學分`;
   $('#pStatus').textContent=`${st}・${modeTxt}・${r.target||28} 學分・已畢業 ${fin} 人`;
   $('#btnTStart').disabled=r.status!=='open'||!n; $('#btnTEnd').disabled=r.status==='ended';
-  $('#tInfo').textContent=n?`已有 ${n} 位同學加入，人到齊就按「開始比賽」，投影畫面會切換成全班大棋盤。`:'同學掃碼加入後會出現在下方。';
+  $('#tInfo').textContent=n?`已有 ${n-list.filter(p=>p.bot).length} 位同學、${list.filter(p=>p.bot).length} 位電腦玩家，人到齊就按「開始比賽」，投影畫面會切換成全班大棋盤。`:'同學掃碼加入後會出現在下方。';
   $('#tList').innerHTML=list.length?liveItems(list,r.target||28,''):'<li style="display:block;color:var(--ink-soft)">還沒有同學加入。</li>';
+  const bots=list.filter(p=>p.bot);
+  $('#tBots').innerHTML=bots.length?bots.map(p=>`<span data-rmbot="${esc(p.id)}" style="cursor:pointer">${esc(p.name)} ✕</span>`).join(''):'<span>目前沒有</span>';
+  const humans=n-bots.length;
+  $('#btnTStart').disabled=r.status!=='open'||!humans;
   const playing=r.status==='playing'||r.status==='ended';
   $('#tOpen').hidden=playing; $('#tProj').hidden=!playing;
   if(!playing) return;
@@ -1327,6 +1417,7 @@ function renderTeacher(r){
     else if(!r.turn||!r.players||!r.players[r.turn]||r.players[r.turn].done){const nx=nextTurn(order,r.players,r.turn);if(nx!==(r.turn||null)) ref.child('turn').set(nx)}
   }
   $('#btnPSkip').hidden=!(r.mode==='turn'&&r.status==='playing'&&r.turn);
+  runBots(r);
   renderProj(r,list,fin);
 }
 function buildProjBoard(){
@@ -1424,7 +1515,7 @@ function renderLive(){
 }
 function updateRollBtn(){
   const btn=$('#btnRoll'); if(!btn||!S) return;
-  if(!(S.online&&S.roomMode==='turn')){btn.textContent='擲骰子';if(!busy&&!S.over)btn.disabled=false;return}
+  if(!(S.online&&S.roomMode==='turn')){const bot=!S.online&&S.players[S.cur]&&S.players[S.cur].bot;btn.textContent=bot?'電腦代玩中…':'擲骰子';btn.disabled=!!(bot||busy||S.over);return}
   if(S.over){btn.disabled=true;btn.textContent='已畢業';return}
   const mine=S.turnUid===uid, who=S.turnUid&&livePlayers[S.turnUid]?livePlayers[S.turnUid].name:'';
   btn.disabled=!mine||busy; btn.textContent=mine?'輪到你！擲骰子':(who?`等待中・輪到 ${who}`:'等待老師開始');
@@ -1501,7 +1592,7 @@ async function boot(){
 }
 
 /* ---------- 啟動 ---------- */
-function startGame(){show('#game');renderBoard();scrollTo(0,0);if(!S.introShown){S.introShown=true;save();setTimeout(showTeacherIntro,250)}if(S.online){$('#livePanel').hidden=false;renderLive()}}
+function startGame(){show('#game');renderBoard();scrollTo(0,0);if(!S.introShown){S.introShown=true;save();setTimeout(()=>showTeacherIntro().then(()=>scheduleBot()),250)}else scheduleBot();if(S.online){$('#livePanel').hidden=false;renderLive()}}
 renderSetup();
 boot();
 </script>
