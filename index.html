@@ -41,7 +41,20 @@ body.wide .wrap{max-width:1400px}
 .pturn svg{width:clamp(54px,7vw,110px);height:auto;flex:0 0 auto}
 .pturn small{display:block;font-family:var(--body);font-size:.45em;color:var(--ink-soft)}
 .plast{font-size:clamp(13px,1.6vw,22px);font-weight:700;max-width:92%;line-height:1.35;min-height:1.4em}
-.pfeed{font-size:clamp(11px,1vw,15px)!important}
+.pfeed{font-size:clamp(10px,.85vw,13px)!important;width:100%;max-width:92%}
+.pfeed li{opacity:.55;color:var(--ink-soft)!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pfeed li:nth-child(2){opacity:.42}.pfeed li:nth-child(3){opacity:.32}.pfeed li:nth-child(n+4){opacity:.22}
+.pcen{justify-content:flex-start;gap:clamp(6px,1vw,12px);padding:clamp(8px,1.4vw,18px)}
+.pcen .pturn{font-size:clamp(16px,1.9vw,28px)}
+.pcen .pturn svg{width:clamp(40px,4.6vw,70px)}
+.spotcard{display:grid;grid-template-columns:minmax(0,44%) minmax(0,1fr);gap:clamp(8px,1.2vw,16px);align-items:center;width:100%;background:var(--card);
+  border:2px solid var(--ink);border-radius:16px;padding:clamp(8px,1.1vw,14px);box-shadow:5px 5px 0 var(--mustard);text-align:left;animation:pop .5s ease;position:relative;z-index:1}
+.spart svg{width:100%;height:auto;display:block}
+.sptag{font-size:clamp(10px,.95vw,14px);letter-spacing:.12em;color:var(--ink-soft)}
+.sptitle{font-family:var(--display);font-size:clamp(18px,2.3vw,36px);line-height:1.15;font-weight:700;margin:2px 0 4px;text-wrap:balance}
+.sptext{font-size:clamp(12px,1.2vw,19px);line-height:1.45;display:-webkit-box;-webkit-line-clamp:6;-webkit-box-orient:vertical;overflow:hidden}
+.spwho{display:inline-block;background:var(--red);color:#fff8f0;border-radius:99px;padding:0 10px;font-size:clamp(11px,1vw,15px);font-weight:700;margin-bottom:4px}
+@keyframes pop{from{transform:translateY(8px) scale(.97);opacity:.2}}
 .paside{display:flex;flex-direction:column;gap:12px;min-width:0}
 .paside .live{max-height:62vh;overflow-y:auto}
 .tbar{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;justify-content:space-between}
@@ -269,7 +282,7 @@ input[type=text]{font-family:var(--body);font-size:15px;color:var(--ink);backgro
     <button class="btn primary" id="btnStart" style="align-self:center;padding:12px 34px;font-size:17px">入學報到 →</button>
     </div>
     <div class="panel"><div class="label">國企系老師與執秘</div><div class="teach" id="teach"></div></div>
-    <p class="note" style="text-align:center;font-size:11px;opacity:.7">版本 2026-10-22 v12（電腦代玩・輪流制修正）</p>
+    <p class="note" style="text-align:center;font-size:11px;opacity:.7">版本 2026-10-22 v13（大螢幕任務特寫）</p>
     <p class="note" style="text-align:center">紅色格是國企系老師的課，要真的完成課堂任務才拿得到學分；走到其他系的格子可以學到該系的特殊技能，集滿三個有獎勵；每年回到報到處，可以跟玟玟執秘簡報技能換學分。</p>
   </section>
 
@@ -377,7 +390,7 @@ const T_INTRO={
   '玟玟':'國企系辦的大總管，選課、獎學金、實習和各種表單都找她。玟玟執秘最喜歡看到同學跨系學新技能，每學年回到報到處記得到系辦跟她簡報，還能換到額外學分喔！',
 };
 async function showTeacherIntro(){
-  await sheet({tag:'開學第一天',title:'認識國企系老師',body:`<p class="note">修課、學技能、拿學分，都會遇到這幾位。點「開始大學生活」就出發！</p>`+
+  await sheet({human:1,tag:'開學第一天',title:'認識國企系老師',body:`<p class="note">修課、學技能、拿學分，都會遇到這幾位。點「開始大學生活」就出發！</p>`+
     TEACH.map(t=>{const c=COURSES.find(c=>c.t===t.name);return `<div style="display:flex;gap:10px;align-items:flex-start;border-top:1px dashed var(--line);padding-top:8px">
       <div style="flex:0 0 56px">${avatar(t.av)}</div><div style="min-width:0"><b style="font-family:var(--display);font-size:17px">${t.name}${t.name==='玟玟'?' 執秘':'老師'}</b>
       <small class="note" style="display:block">${c?'授課：'+c.n:t.style}</small><p style="margin:2px 0 0;font-size:14px">${T_INTRO[t.name]||''}</p></div></div>`}).join(''),
@@ -825,6 +838,7 @@ let sheetAt=0;
 function sheet({tag='',title='',art='',body='',buttons=[],onOpen,human}){
   return new Promise(res=>{
     const el=$('#sheet'); el._res=res; sheetAt=Date.now(); el.dataset.human=human?'1':'';
+    if(S&&S.online&&!human&&typeof publishStage==='function') publishStage({tag,title,text:body});
     el.innerHTML=`<div class="tag">${tag}</div>${art?`<div class="art">${art}<h2>${title}</h2></div>`:`<h2>${title}</h2>`}
       <div style="display:flex;flex-direction:column;gap:8px">${body}</div>
       <div class="opts">${buttons.map((b,i)=>`<button class="btn ${b.p?'primary':''}" data-i="${i}">${b.l}</button>`).join('')}</div>`;
@@ -925,6 +939,7 @@ async function takeTurn(){
   p.turns++;
   await moveSteps(p,a+b);
   log(`${esc(p.name)} 擲出 ${a+b} 點，來到「${TILES[p.pos].n}」`);
+  if(S.online) publishStage({tag:'擲骰子',title:`擲出 ${a+b} 點！`,text:`來到「${TILES[p.pos].n}」。${TILES[p.pos].d||''}`,roll:a+b});
   await resolve(p,0);
   if(p._reg){delete p._reg;await doOffice(p)}
   endTurn();
@@ -1312,7 +1327,71 @@ function nextTurn(order,players,cur){
   return null;
 }
 const plain=t=>new DOMParser().parseFromString(String(t||''),'text/html').body.textContent||'';
-let tRoom={}, tEvents=[], tBuilt=false, tCodeNow='';
+let tRoom={}, tEvents=[], tBuilt=false, tCodeNow='', tStage={}, spotKey='', turnSeen={uid:null,before:0};
+/* 大螢幕插圖 */
+const ART={
+  wash:c=>`<ellipse cx="100" cy="80" rx="94" ry="64" fill="${c}" opacity=".28"/>`,
+  dice:(n)=>{const d=(x,y,r,v)=>`<g transform="rotate(${r} ${x+22} ${y+22})"><rect x="${x}" y="${y}" width="44" height="44" rx="9" fill="#fbf8f2" stroke="#4a4038" stroke-width="2.5"/>`+
+      ({1:[[22,22]],2:[[12,12],[32,32]],3:[[12,12],[22,22],[32,32]],4:[[12,12],[32,12],[12,32],[32,32]],5:[[12,12],[32,12],[22,22],[12,32],[32,32]],6:[[12,11],[32,11],[12,22],[32,22],[12,33],[32,33]]}[v]||[]).map(([a,b])=>`<circle cx="${x+a}" cy="${y+b}" r="4" fill="${v===1?'#d0573f':'#4a4038'}"/>`).join('')+'</g>';
+    const a=n?Math.max(1,Math.min(6,Math.ceil(n/2))):5, b=n?Math.max(1,Math.min(6,n-a)):3;
+    return ART.wash('#dca33a')+d(46,46,-12,a)+d(104,52,14,b)+`<path d="M40 120 q60 14 120 0" stroke="#c9b48a" stroke-width="5" stroke-linecap="round" fill="none" opacity=".6"/>`},
+  board:(label,teacher)=>ART.wash('#7d9a68')+`<rect x="14" y="24" width="122" height="84" rx="4" fill="#a0784c"/><rect x="20" y="30" width="110" height="72" fill="#3f5a4a"/>
+    <text x="75" y="64" text-anchor="middle" font-size="22" fill="#f4efe6" font-family="LXGW WenKai TC,serif">${esc(label)}</text>
+    <path d="M32 82 q20 -6 40 0 q20 6 40 -2" stroke="#f4efe6" stroke-width="2" fill="none" opacity=".7"/><rect x="40" y="108" width="70" height="6" fill="#a0784c"/>`+
+    (teacher?avatar(teacher,'',`x="118" y="40" width="82" height="92"`):''),
+  medal:(label)=>ART.wash('#dca33a')+`<path d="M78 14 L96 64 L104 64 L122 14 L110 14 L100 46 L90 14Z" fill="#d0573f"/><circle cx="100" cy="88" r="34" fill="#e6b354" stroke="#b8862a" stroke-width="4"/>
+    <path d="M100 66 l7 14 15 2 -11 10 3 15 -14 -7 -14 7 3 -15 -11 -10 15 -2Z" fill="#fff6dd"/>
+    <rect x="62" y="126" width="76" height="20" rx="10" fill="#fbf8f2" stroke="#4a4038" stroke-width="1.5"/><text x="100" y="140" text-anchor="middle" font-size="12" fill="#4a4038" font-family="LXGW WenKai TC,serif">${esc(label)}</text>`,
+  guitar:()=>ART.wash('#6e8f58')+`<g transform="rotate(-30 100 80)"><ellipse cx="100" cy="104" rx="30" ry="28" fill="#c98a4b"/><ellipse cx="100" cy="74" rx="22" ry="20" fill="#c98a4b"/><circle cx="100" cy="94" r="9" fill="#4a3226"/>
+    <rect x="96" y="10" width="8" height="70" fill="#6b4430"/><rect x="92" y="4" width="16" height="14" rx="3" fill="#4a3226"/><path d="M98 18 V120 M102 18 V120" stroke="#f4efe6" stroke-width=".7"/></g>
+    <path d="M150 40 v22 a6 5 0 1 1 -3 -4 v-14 l16 -4 v18 a6 5 0 1 1 -3 -4 v-12Z" fill="#4a4038"/>`,
+  ball:()=>ART.wash('#e0884a')+`<circle cx="100" cy="80" r="44" fill="#e0884a" stroke="#7a3d1e" stroke-width="3"/><path d="M56 80 h88 M100 36 v88 M70 48 q22 32 0 64 M130 48 q-22 32 0 64" stroke="#7a3d1e" stroke-width="3" fill="none"/>`,
+  shuttle:()=>ART.wash('#7fa3cf')+`<g transform="rotate(25 70 80)"><ellipse cx="70" cy="58" rx="26" ry="34" fill="none" stroke="#4a4038" stroke-width="4"/><path d="M58 42 l24 32 M82 42 l-24 32 M50 58 h40" stroke="#4a4038" stroke-width="1"/><rect x="66" y="92" width="8" height="46" rx="3" fill="#d0573f"/></g>
+    <path d="M128 64 l26 0 l-6 34 l-14 0Z" fill="#fbf8f2" stroke="#4a4038" stroke-width="2"/><circle cx="141" cy="104" r="9" fill="#4a4038"/>`,
+  camera:()=>ART.wash('#8a6c93')+`<rect x="40" y="52" width="120" height="74" rx="12" fill="#3e3a40"/><rect x="62" y="40" width="34" height="16" rx="4" fill="#3e3a40"/><circle cx="104" cy="89" r="28" fill="#6b6e75"/><circle cx="104" cy="89" r="18" fill="#1f2f45"/><circle cx="97" cy="82" r="5" fill="#fff" opacity=".7"/><rect x="138" y="60" width="12" height="8" rx="2" fill="#e6b354"/>`,
+  flag:()=>ART.wash('#d0573f')+`<rect x="58" y="16" width="5" height="124" fill="#6b4430"/><path d="M63 20 L142 34 L63 66Z" fill="#d0573f"/><path d="M76 40 l18 4" stroke="#f4efe6" stroke-width="3"/>
+    <ellipse cx="128" cy="112" rx="30" ry="10" fill="#a0784c"/><rect x="98" y="88" width="60" height="24" fill="#c9574a"/><ellipse cx="128" cy="88" rx="30" ry="10" fill="#f4e6cf" stroke="#a0784c" stroke-width="2"/><path d="M150 60 l-14 26 M108 60 l14 26" stroke="#6b4430" stroke-width="4" stroke-linecap="round"/>`,
+  notes:()=>ART.wash('#e39a92')+`<path d="M60 40 v58 a12 10 0 1 1 -6 -8 v-40 l50 -12 v52 a12 10 0 1 1 -6 -8 v-36 l-38 9Z" fill="#4a4038"/><path d="M130 70 v40 a10 8 0 1 1 -5 -6 v-34Z" fill="#d0573f"/><path d="M150 40 q10 10 0 20 M160 34 q16 16 0 32" stroke="#4a4038" stroke-width="3" fill="none" stroke-linecap="round"/>`,
+  mega:()=>ART.wash('#dca33a')+`<path d="M50 70 L120 40 L120 120 L50 92Z" fill="#d0573f"/><rect x="34" y="68" width="20" height="26" rx="4" fill="#4a4038"/><rect x="60" y="92" width="12" height="28" rx="4" fill="#4a4038"/><path d="M134 62 q12 18 0 36 M146 52 q20 28 0 56" stroke="#4a4038" stroke-width="4" fill="none" stroke-linecap="round"/>`,
+  street:()=>ART.wash('#e39a92')+`<rect x="22" y="50" width="156" height="84" fill="#e8d2b8"/><path d="M22 50 q20 -26 40 0 q19 -26 38 0 q19 -26 39 0 q19 -26 39 0Z" fill="#d9b48c"/>`+[34,72,110,148].map(x=>`<path d="M${x} 134 v-40 a9 9 0 0 1 18 0 v40Z" fill="#8a5a3a"/>`).join('')+`<rect x="22" y="78" width="156" height="5" fill="#b8862a"/>`,
+  station:()=>ART.wash('#7fa3cf')+`<path d="M28 70 L100 30 L172 70Z" fill="#7a5536"/><rect x="40" y="70" width="120" height="58" fill="#f4e6cf"/><rect x="88" y="90" width="24" height="38" fill="#8a5a3a"/><rect x="52" y="86" width="22" height="18" fill="#a9c2e2"/><rect x="126" y="86" width="22" height="18" fill="#a9c2e2"/><path d="M10 138 h180" stroke="#4a4038" stroke-width="4"/><path d="M10 146 h180" stroke="#4a4038" stroke-width="2" stroke-dasharray="6 6"/>`,
+  temple:()=>ART.wash('#d0573f')+`<path d="M18 62 Q100 22 182 62 Q160 56 150 66 L50 66 Q40 56 18 62Z" fill="#c5463b"/><path d="M30 64 q-8 -14 -16 -18 M170 64 q8 -14 16 -18" stroke="#c5463b" stroke-width="6" fill="none" stroke-linecap="round"/>
+    <rect x="44" y="66" width="112" height="64" fill="#f0d9b5"/><rect x="84" y="86" width="32" height="44" fill="#a0302a"/><rect x="54" y="80" width="20" height="40" fill="#c5463b"/><rect x="126" y="80" width="20" height="40" fill="#c5463b"/><circle cx="100" cy="46" r="6" fill="#e6b354"/>`,
+  lake:()=>`<rect x="6" y="20" width="188" height="120" rx="16" fill="#cfe1ee" opacity=".7"/><circle cx="146" cy="50" r="16" fill="#e6b354"/><path d="M6 92 q40 -46 80 -10 q30 -30 70 -6 q20 -10 38 4 V100 H6Z" fill="#7d9a68"/><rect x="6" y="98" width="188" height="42" fill="#7fa3cf"/><path d="M30 116 h40 M96 124 h50 M60 132 h30" stroke="#fff" stroke-width="2.5" opacity=".7" stroke-linecap="round"/>`,
+  umbrella:()=>ART.wash('#dca33a')+`<path d="M24 80 Q100 -6 176 80Z" fill="#d0573f"/><path d="M24 80 Q100 -6 176 80" fill="none" stroke="#8a2a20" stroke-width="2"/>`+[44,62,80,100,120,138,156].map(x=>`<path d="M100 24 L${x} 80" stroke="#8a2a20" stroke-width="1.2"/>`).join('')+`<path d="M60 52 q10 -10 20 0 M120 52 q10 -10 20 0" stroke="#e6b354" stroke-width="3" fill="none"/><path d="M100 80 v52 q0 8 -8 8" stroke="#6b4430" stroke-width="4" fill="none" stroke-linecap="round"/>`,
+  gift:()=>ART.wash('#dca33a')+`<rect x="50" y="64" width="100" height="70" rx="6" fill="#7fa3cf"/><rect x="42" y="50" width="116" height="22" rx="5" fill="#a9c2e2"/><rect x="92" y="50" width="16" height="84" fill="#d0573f"/><path d="M100 50 q-30 -30 -34 -4 q10 8 34 4 q30 -30 34 -4 q-10 8 -34 4" fill="#d0573f"/><text x="100" y="118" text-anchor="middle" font-size="34" font-weight="700" fill="#fff" font-family="Caveat,cursive">?</text>`,
+  storm:()=>ART.wash('#8a6c93')+`<path d="M48 80 a24 24 0 0 1 22 -32 a32 32 0 0 1 60 6 a22 22 0 0 1 4 44 H56 a18 18 0 0 1 -8 -18Z" fill="#9aa0b4"/><path d="M98 98 l-14 26 h14 l-8 24 l26 -34 h-14 l10 -16Z" fill="#e6b354"/><path d="M60 110 l-4 10 M140 110 l-4 10" stroke="#7fa3cf" stroke-width="3" stroke-linecap="round"/>`,
+  books:()=>ART.wash('#7fa3cf')+`<rect x="40" y="106" width="120" height="20" rx="3" fill="#d0573f"/><rect x="48" y="86" width="104" height="20" rx="3" fill="#7d9a68"/><rect x="36" y="66" width="112" height="20" rx="3" fill="#dca33a"/><rect x="52" y="46" width="96" height="20" rx="3" fill="#8a6c93"/><path d="M48 112 h100 M58 92 h86 M46 72 h96" stroke="#fff" stroke-width="2" opacity=".5"/><path d="M150 36 q14 -4 18 10" stroke="#4a4038" stroke-width="2" fill="none"/><text x="160" y="30" font-size="18" fill="#4a4038" font-family="Caveat,cursive">zZ</text>`,
+  dorm:()=>`<rect x="6" y="14" width="188" height="126" rx="14" fill="#2f3a57" opacity=".85"/><circle cx="150" cy="44" r="16" fill="#e6b354"/><circle cx="156" cy="40" r="14" fill="#2f3a57"/>`+[[40,34],[80,26],[110,48],[60,56]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="2" fill="#fff"/>`).join('')+`<rect x="24" y="92" width="152" height="30" rx="6" fill="#c9dcea"/><rect x="24" y="84" width="40" height="14" rx="6" fill="#fbf8f2"/><rect x="20" y="78" width="8" height="54" fill="#a0784c"/><rect x="172" y="92" width="8" height="40" fill="#a0784c"/>`,
+  lamp:()=>ART.wash('#dca33a')+`<path d="M60 30 L100 30 L112 60 L48 60Z" fill="#7d9a68"/><path d="M80 60 v54" stroke="#4a4038" stroke-width="4"/><ellipse cx="80" cy="118" rx="22" ry="6" fill="#4a4038"/><path d="M48 60 L20 120 L140 120 L112 60Z" fill="#fff2b0" opacity=".55"/>
+    <rect x="104" y="100" width="70" height="14" rx="2" fill="#d0573f"/><rect x="110" y="86" width="60" height="14" rx="2" fill="#7fa3cf"/><circle cx="160" cy="46" r="18" fill="#fbf8f2" stroke="#4a4038" stroke-width="3"/><path d="M160 34 v12 l8 6" stroke="#4a4038" stroke-width="3" fill="none"/>`,
+  gate:()=>ART.wash('#7d9a68')+`<rect x="30" y="40" width="16" height="96" fill="#a0784c"/><rect x="154" y="40" width="16" height="96" fill="#a0784c"/><rect x="22" y="30" width="156" height="22" rx="4" fill="#d0573f"/><text x="100" y="47" text-anchor="middle" font-size="14" fill="#fff" font-family="LXGW WenKai TC,serif">實踐大學 高雄校區</text><path d="M46 136 q54 -30 108 0" stroke="#c9b48a" stroke-width="5" fill="none"/>`,
+  trophy:()=>ART.wash('#dca33a')+`<path d="M64 30 h72 v20 a36 36 0 0 1 -72 0Z" fill="#e6b354" stroke="#b8862a" stroke-width="3"/><path d="M64 38 h-16 a14 14 0 0 0 18 22 M136 38 h16 a14 14 0 0 1 -18 22" stroke="#b8862a" stroke-width="4" fill="none"/><rect x="92" y="84" width="16" height="24" fill="#b8862a"/><rect x="70" y="108" width="60" height="16" rx="3" fill="#6b4430"/><path d="M100 40 l5 10 11 2 -8 8 2 11 -10 -5 -10 5 2 -11 -8 -8 11 -2Z" fill="#fff6dd"/>`,
+  cap:()=>ART.wash('#d0573f')+`<path d="M20 64 L100 30 L180 64 L100 98Z" fill="#2b2b2e"/><path d="M56 80 v28 q44 24 88 0 v-28 L100 98Z" fill="#3e3a40"/><path d="M160 72 v36" stroke="#e6b354" stroke-width="3"/><circle cx="160" cy="112" r="6" fill="#e6b354"/><rect x="118" y="112" width="60" height="22" rx="4" fill="#f4e6cf" stroke="#a0784c" stroke-width="2" transform="rotate(-10 148 123)"/>`,
+};
+const CLUB_ART={'吉他社':'guitar','熱音社':'notes','籃研社':'ball','羽球社':'shuttle','攝影社':'camera','宋江陣':'flag','熱舞社':'notes','學生會':'mega','康輔社':'mega','系學會':'mega'};
+const SPOT_ART={'旗山老街':'street','旗山車站':'station','內門紫竹寺':'temple','內門順賢宮':'temple','美濃湖':'lake','美濃油紙傘':'umbrella'};
+function stageArt(st,players){
+  const t=TILES[Math.max(0,Math.min(N-1,+st.pos||0))], tag=(st.tag||'')+' '+(st.title||'');
+  const svg=inner=>`<svg viewBox="0 0 200 150" aria-hidden="true"><g filter="url(#wc)">${inner}</g></svg>`;
+  if(/畢業|恭喜|頒獎/.test(tag)) return svg(ART.cap());
+  if(/成就/.test(tag)) return svg(ART.trophy());
+  if(/擲骰|擲出/.test(tag)) return svg(ART.dice(+st.roll||0));
+  if(/機會/.test(tag)) return svg(ART.gift());
+  if(/命運/.test(tag)) return svg(ART.storm());
+  if(/閉關|圖書館/.test(tag)) return svg(ART.books());
+  if(/技能|工作坊|跨系/.test(tag)) return svg(ART.medal(t.type==='dept'?t.s:'技能'));
+  if(t.type==='course'){const c=COURSES[t.idx];return svg(ART.board(c.n,(T_BY(c.t)||{}).av))}
+  if(t.type==='dept') return svg(ART.medal(t.s));
+  if(t.type==='club') return svg(ART[CLUB_ART[t.n]||'mega']());
+  if(t.type==='spot'){const p=players&&players[st.uid];return svg(ART[SPOT_ART[t.n]||'lake']())}
+  if(t.code==='R') return svg(ART.dorm());
+  if(t.code==='F') return svg(ART.lamp());
+  if(t.code==='L') return svg(ART.books());
+  if(t.code==='S') return svg(/玟玟|系辦/.test(tag)?ART.board('系辦',(T_BY('玟玟')||{}).av):ART.gate());
+  return svg(ART.dice(0));
+}
+
 /* 老師端電腦玩家 */
 let botBusy=false;
 const sumCr=fx=>(fx||[]).filter(f=>f[0]==='cr').reduce((a,f)=>a+f[1],0);
@@ -1335,6 +1414,10 @@ async function botAct(id){
   const a=1+rnd(6), b=1+rnd(6); let pos=(+p.pos||0)+a+b, year=p.year||1; if(pos>=N){pos-=N;year++}
   const t=TILES[pos]; let cr=p.cr||0, skills=p.skills||0, club=p.club||'', love=p.love||'';
   const nm=p.name||'電腦'; const ev=[`${nm} 擲出 ${a+b} 點，來到「${t.n}」`];
+  const stg=o=>ref.child('stage/'+id).set({tag:o.tag,title:o.title,text:o.text,pos,roll:o.roll||0,at:TS()});
+  await ref.child('players/'+id).update({pos});
+  await stg({tag:'擲骰子',title:`擲出 ${a+b} 點！`,text:`來到「${t.n}」。`,roll:a+b});
+  await new Promise(r=>setTimeout(r,1600));
   if(t.type==='course'){if(Math.random()<.7){cr+=4;ev.push(`${nm} 在${t.n}課完成任務（+4 學分）`)}else{cr+=1;ev.push(`${nm} 在${t.n}課補救過關（+1 學分）`)}}
   else if(t.type==='dept'){skills++;cr+=1;ev.push(`${nm} 在${t.s}學會「${t.sk[rnd(t.sk.length)]}」`)}
   else if(t.type==='club'){const i=CLUB_ST.findIndex(x=>x.n===club);if(i<CLUB_ST.length-1&&Math.random()<.65){const st=CLUB_ST[i+1];club=st.n;cr+=sumCr(st.fx);ev.push(`${nm} 在${t.n}：${st.n}`)}else ev.push(`${nm} 在${t.n}練習中`)}
@@ -1343,6 +1426,8 @@ async function botAct(id){
   else if(t.type==='fate'){const c=FATE[rnd(FATE.length)];cr+=sumCr(c.fx);ev.push(`${nm} 抽到命運：${c.t}`)}
   else if(t.code==='F'||t.code==='R'){cr+=1;ev.push(`${nm} 在${t.n}挑燈夜讀（+1 學分）`)}
   cr=Math.max(0,cr);
+  const tagOf={course:'課堂任務',dept:'跨系學習',club:'社團',spot:'約會景點',chance:'機會卡',fate:'命運卡',corner:'特殊格'}[t.type]||'';
+  await stg({tag:tagOf+'（電腦代玩）',title:t.n,text:ev.slice(1).join('。')||'在這裡休息一下。'});
   const upd={pos,year,cr,skills,club,love,turns:(p.turns||0)+1};
   if(cr>=(r.target||28)){upd.done=true;const res=await ref.child('finishCount').transaction(v=>(v||0)+1);upd.place=res.snapshot.val();
     await ref.child('finish/'+id).set({place:upd.place,name:nm,av:p.av,turns:upd.turns,at:TS()});ev.push(`${nm} 第 ${upd.place} 名畢業！`)}
@@ -1369,6 +1454,7 @@ function openTeacher(code){
   listen(ref,'value',sn=>{tRoom=sn.val()||{};renderTeacher(tRoom)});
   const t0=Date.now();
   listen(ref.child('finish'),'child_added',sn=>{const f=sn.val()||{}; if((f.at||0)>t0-3000) toast(`${f.name} 第 ${f.place} 名畢業！`)});
+  listen(ref.child('stage'),'value',sn=>{tStage=sn.val()||{};renderSpot()});
   listen(ref.child('events').limitToLast(30),'child_added',sn=>{const e=sn.val()||{};tEvents.push(e);tEvents=tEvents.slice(-30);renderProjFeed()});
   $('#btnTStart').onclick=async()=>{
     try{let ps=(await ref.child('players').get()).val()||{};
@@ -1425,7 +1511,7 @@ function buildProjBoard(){
   TILES.forEach((t,i)=>{const [rr,c]=gridPos(i);const cls='tile '+(t.type==='dept'?'dept-'+t.c:t.type);
     const ic=t.type==='course'?'課堂':t.type==='chance'?'?':t.type==='fate'?'!':'';
     h+=`<div class="${cls}" style="grid-area:${rr}/${c}">${ic?`<span class="ic">${ic}</span>`:''}<span class="nm">${t.s}</span><span class="tokens" id="pt${i}"></span></div>`});
-  h+=`<div class="center"><div class="ttl">我是大學生</div><div class="sub">國企系・全班大富翁</div><div class="pturn" id="pTurn"></div><div class="plast" id="pLast"></div><ul class="log pfeed" id="pFeed"></ul>${sprig('sprig l')}${sprig('sprig r','#e8b84a','#e0913a')}</div>`;
+  h+=`<div class="center pcen"><div class="sub">我是大學生・國企系全班大富翁</div><div class="pturn" id="pTurn"></div><div id="pSpot" style="width:100%"></div><ul class="log pfeed" id="pFeed"></ul>${sprig('sprig l')}${sprig('sprig r','#e8b84a','#e0913a')}</div>`;
   $('#pBoard').innerHTML=h; tBuilt=true;
 }
 function renderProj(r,list,fin){
@@ -1435,19 +1521,39 @@ function renderProj(r,list,fin){
   for(let i=0;i<N;i++){const el=$('#pt'+i);if(!el)continue;const ps=by[i]||[];
     el.innerHTML=ps.slice(0,ps.length>5?4:5).map(p=>`<span class="tok" style="--tk:${p.id===r.turn?'var(--red)':'var(--ink-soft)'}" title="${esc(p.name||'')}">${avatar(avOf(p.av))}</span>`).join('')+(ps.length>5?`<span class="more">+${ps.length-4}</span>`:'')}
   const tp=r.mode==='turn'&&r.turn&&r.players?r.players[r.turn]:null;
-  $('#pTurn').innerHTML=r.status==='ended'?'<span>比賽結束！</span>':tp?`${avatar({...avOf(tp.av),v:'r'})}<span>輪到 ${esc(tp.name||'同學')}<small>請在手機上擲骰子・${tp.cr||0}/${r.target||28} 學分</small></span>`
+  $('#pTurn').innerHTML=r.status==='ended'?'<span>比賽結束！</span>':tp?`${avatar({...avOf(tp.av),v:'r'})}<span>輪到 ${esc(tp.name||'同學')}<small>${tp.bot?'電腦代玩中':'請在手機上擲骰子'}・${tp.cr||0}/${r.target||28} 學分</small></span>`
     :r.mode==='turn'?'<span>等待下一位</span>':`<span>全班同時進行中<small>${list.length} 位同學・已畢業 ${fin} 人</small></span>`;
   $('#pList').innerHTML=list.length?liveItems(list,r.target||28,r.turn||''):'';
   const showPod=r.status==='ended'||(fin>=Math.min(3,list.length)&&list.length>0);
   const pod=$('#tPodium'); pod.hidden=!showPod;
   if(showPod) pod.innerHTML=`<div class="label">頒獎台・畢業前三名</div>${podiumHTML(list)}`;
-  renderProjFeed();
+  renderProjFeed(); renderSpot();
 }
 function renderProjFeed(){
   if(!tBuilt) return;
-  const ev=tEvents.slice(-7).reverse();
-  $('#pLast').textContent=ev[0]?plain(ev[0].t):'';
-  $('#pFeed').innerHTML=ev.slice(1).map(e=>`<li>${esc(plain(e.t))}</li>`).join('');
+  const ev=tEvents.slice(-5).reverse();
+  $('#pFeed').innerHTML=ev.map(e=>`<li>${esc(plain(e.t))}</li>`).join('');
+}
+function renderSpot(){
+  if(!tBuilt) return;
+  const r=tRoom, ps=r.players||{};
+  let st=null, who=null;
+  if(r.mode==='turn'&&r.turn){
+    if(turnSeen.uid!==r.turn){turnSeen={uid:r.turn,before:(tStage[r.turn]&&tStage[r.turn].at)||0}}
+    const s0=tStage[r.turn]; if(s0&&(s0.at||0)>turnSeen.before) st={...s0,uid:r.turn};
+    who=ps[r.turn];
+    if(!st&&who) st={uid:r.turn,pos:who.pos||0,tag:'輪到你了',title:who.bot?`${who.name||'電腦'} 準備擲骰子`:`${who.name||'同學'}，擲骰子吧！`,text:who.bot?'電腦代玩中，馬上就走。':'請在手機上按「擲骰子」。全班一起看看會走到哪一格！',roll:0,at:0,_wait:1};
+  }else{
+    for(const [u,s1] of Object.entries(tStage)){if(!st||(s1.at||0)>(st.at||0)) st={...s1,uid:u}}
+    who=st?ps[st.uid]:null;
+  }
+  const el=$('#pSpot');
+  if(!st){el.innerHTML='';return}
+  const key=[st.uid,st.at,st.title,st.text].join('|'); if(key===spotKey) return; spotKey=key;
+  const nm=who?who.name:(st.name||'同學');
+  el.innerHTML=`<div class="spotcard"><div class="spart">${st._wait?`<svg viewBox="0 0 200 150"><g filter="url(#wc)">${ART.dice(0)}</g></svg>`:stageArt(st,ps)}</div>
+    <div style="min-width:0"><span class="spwho">${esc(nm)}</span><div class="sptag">${esc(plain(st.tag))}${st.pos!=null&&!st._wait?'・'+esc(TILES[Math.max(0,Math.min(N-1,+st.pos))].n):''}</div>
+    <div class="sptitle">${esc(plain(st.title))}</div><div class="sptext">${esc(plain(st.text))}</div></div></div>`;
 }
 
 /* 學生端 */
@@ -1525,6 +1631,11 @@ async function passTurn(){
   const ps={...livePlayers,[uid]:{...(livePlayers[uid]||{}),done:!!S.players[0].done}};
   const nx=nextTurn(S.roomOrder,ps,uid);
   try{await fb.ref(`rooms/${S.online.code}/turn`).set(nx)}catch(e){}
+}
+function publishStage(o){
+  if(!fb||!uid||!S||!S.online) return;
+  const cl=x=>String(new DOMParser().parseFromString(String(x||''),'text/html').body.textContent||'').replace(/\s+/g,' ').trim();
+  fb.ref(`rooms/${S.online.code}/stage/${uid}`).set({tag:cl(o.tag).slice(0,60),title:cl(o.title).slice(0,80),text:cl(o.text).slice(0,300),pos:S.players[0].pos,roll:o.roll||0,at:TS()}).catch(()=>{});
 }
 function pushEvent(t){
   if(!fb||!uid||!S||!S.online) return;
