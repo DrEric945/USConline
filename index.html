@@ -47,6 +47,12 @@ body.wide .wrap{max-width:1400px}
 .pcen{justify-content:flex-start;gap:clamp(6px,1vw,12px);padding:clamp(8px,1.4vw,18px)}
 .pcen .pturn{font-size:clamp(16px,1.9vw,28px)}
 .pcen .pturn svg{width:clamp(40px,4.6vw,70px)}
+body.wide .sheet{max-width:min(1100px,96vw);max-height:92vh}
+body.wide .sheet h2{font-size:34px}
+body.wide .tintro{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 22px}
+body.wide .tintro p{font-size:16px!important;line-height:1.55}
+body.wide .tintro b{font-size:21px!important}
+body.wide .tintro > div > div:first-child{flex-basis:76px!important}
 .spotcard{display:grid;grid-template-columns:minmax(0,44%) minmax(0,1fr);gap:clamp(8px,1.2vw,16px);align-items:center;width:100%;background:var(--card);
   border:2px solid var(--ink);border-radius:16px;padding:clamp(8px,1.1vw,14px);box-shadow:5px 5px 0 var(--mustard);text-align:left;animation:pop .5s ease;position:relative;z-index:1}
 .spart svg{width:100%;height:auto;display:block}
@@ -282,7 +288,7 @@ input[type=text]{font-family:var(--body);font-size:15px;color:var(--ink);backgro
     <button class="btn primary" id="btnStart" style="align-self:center;padding:12px 34px;font-size:17px">入學報到 →</button>
     </div>
     <div class="panel"><div class="label">國企系老師與執秘</div><div class="teach" id="teach"></div></div>
-    <p class="note" style="text-align:center;font-size:11px;opacity:.7">版本 2026-10-22 v13（大螢幕任務特寫）</p>
+    <p class="note" style="text-align:center;font-size:11px;opacity:.7">版本 2026-10-22 v14（開始時介紹老師）</p>
     <p class="note" style="text-align:center">紅色格是國企系老師的課，要真的完成課堂任務才拿得到學分；走到其他系的格子可以學到該系的特殊技能，集滿三個有獎勵；每年回到報到處，可以跟玟玟執秘簡報技能換學分。</p>
   </section>
 
@@ -389,12 +395,12 @@ const T_INTRO={
   '英子':'來自韓國的英子老師，是國企系的韓籍教師。她的韓文課從打招呼教起，帶大家認識韓國文化、流行音樂和商業往來。認真上完一學期，追劇不用看字幕的日子就不遠了！',
   '玟玟':'國企系辦的大總管，選課、獎學金、實習和各種表單都找她。玟玟執秘最喜歡看到同學跨系學新技能，每學年回到報到處記得到系辦跟她簡報，還能換到額外學分喔！',
 };
-async function showTeacherIntro(){
-  await sheet({human:1,tag:'開學第一天',title:'認識國企系老師',body:`<p class="note">修課、學技能、拿學分，都會遇到這幾位。點「開始大學生活」就出發！</p>`+
-    TEACH.map(t=>{const c=COURSES.find(c=>c.t===t.name);return `<div style="display:flex;gap:10px;align-items:flex-start;border-top:1px dashed var(--line);padding-top:8px">
+async function showTeacherIntro(btn){
+  await sheet({human:1,tag:'開學第一天',title:'認識國企系老師',body:`<p class="note">修課、學技能、拿學分，都會遇到這幾位。點「${btn||'開始大學生活'}」就出發！</p>`+
+    '<div class="tintro">'+TEACH.map(t=>{const c=COURSES.find(c=>c.t===t.name);return `<div style="display:flex;gap:10px;align-items:flex-start;border-top:1px dashed var(--line);padding-top:8px">
       <div style="flex:0 0 56px">${avatar(t.av)}</div><div style="min-width:0"><b style="font-family:var(--display);font-size:17px">${t.name}${t.name==='玟玟'?' 執秘':'老師'}</b>
-      <small class="note" style="display:block">${c?'授課：'+c.n:t.style}</small><p style="margin:2px 0 0;font-size:14px">${T_INTRO[t.name]||''}</p></div></div>`}).join(''),
-    buttons:[{l:'開始大學生活',v:1,p:1}]});
+      <small class="note" style="display:block">${c?'授課：'+c.n:t.style}</small><p style="margin:2px 0 0;font-size:14px">${T_INTRO[t.name]||''}</p></div></div>`}).join('')+'</div>',
+    buttons:[{l:btn||'開始大學生活',v:1,p:1}]});
 }
 const T_BY=n=>TEACH.find(t=>t.name===n);
 
@@ -1393,7 +1399,7 @@ function stageArt(st,players){
 }
 
 /* 老師端電腦玩家 */
-let botBusy=false;
+let botBusy=false, tIntro=false;
 const sumCr=fx=>(fx||[]).filter(f=>f[0]==='cr').reduce((a,f)=>a+f[1],0);
 async function addBot(av){
   const ref=fb.ref('rooms/'+tCodeNow), ps=tRoom.players||{};
@@ -1435,7 +1441,7 @@ async function botAct(id){
   for(const e of ev) await ref.child('events').push({uid:id,t:e,at:TS()});
 }
 function runBots(r){
-  if(botBusy||r.status!=='playing'||!r.players) return;
+  if(tIntro||botBusy||r.status!=='playing'||!r.players) return;
   const ref=fb.ref('rooms/'+tCodeNow);
   if(r.mode==='turn'){
     const id=r.turn; if(!id||!r.players[id]||!r.players[id].bot) return;
@@ -1463,11 +1469,14 @@ function openTeacher(code){
       ps=(await ref.child('players').get()).val()||{};
       const order=Object.entries(ps).sort((a,b)=>(a[1].joinedAt||0)-(b[1].joinedAt||0)).map(x=>x[0]);
       const upd={status:'playing'}; if(tRoom.mode==='turn'){upd.order=order;upd.turn=order[0]||null}
+      tIntro=true;
       await ref.update(upd);
-    }catch(e){toast('開始失敗：'+errMsg(e))}};
+      await showTeacherIntro('開始比賽！');
+    }catch(e){toast('開始失敗：'+errMsg(e))}
+    tIntro=false; runBots(tRoom);};
   $('#btnTEnd').onclick=async()=>{const v=await sheet({tag:'確認',title:'結束比賽並頒獎？',body:'<p>全班手機都會看到前三名。沒畢業的同學依學分排名。</p>',buttons:[{l:'結束並頒獎',v:1,p:1},{l:'再等等',v:0}]});if(v)ref.child('status').set('ended').catch(e=>toast('結束失敗：'+errMsg(e)))};
   const freeLoop=setInterval(async()=>{
-    const r=tRoom; if(botBusy||r.status!=='playing'||r.mode==='turn'||!r.players) return;
+    const r=tRoom; if(tIntro||botBusy||r.status!=='playing'||r.mode==='turn'||!r.players) return;
     const bots=Object.keys(r.players).filter(k=>r.players[k].bot&&!r.players[k].done); if(!bots.length) return;
     botBusy=true; try{for(const id of bots){if(Math.random()<.6) await botAct(id)}}catch(e){toast('電腦玩家出錯：'+errMsg(e))} finally{botBusy=false}
   },5000);
