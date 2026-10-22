@@ -291,7 +291,7 @@ input[type=text]{font-family:var(--body);font-size:15px;color:var(--ink);backgro
     <button class="btn primary" id="btnStart" style="align-self:center;padding:12px 34px;font-size:17px">入學報到 →</button>
     </div>
     <div class="panel"><div class="label">國企系老師與執秘</div><div class="teach" id="teach"></div></div>
-    <p class="note" style="text-align:center;font-size:11px;opacity:.7">版本 2026-10-22 v22（阿珊、Leo 造型）</p>
+    <p class="note" style="text-align:center;font-size:11px;opacity:.7">版本 2026-10-22 v23（公平排名）</p>
     <p class="note" style="text-align:center">紅色格是國企系老師的課，要真的完成課堂任務才拿得到學分；走到其他系的格子可以學到該系的特殊技能，集滿三個有獎勵；每年回到報到處，可以跟玟玟執秘簡報技能換學分。</p>
   </section>
 
@@ -853,7 +853,7 @@ function renderDynamic(){
   $('#players').innerHTML=S.players.map((p,i)=>{
     const cs=stage(p.clubPt), ls=stage(p.lovePt), r=p.skills.length%3;
     return `<div class="pc ${i===S.cur&&!S.over?'on':''}" style="--tk:${TK[p.tk]}">
-      <div class="pc-h">${avatar(AV[p.av])}<div style="min-width:0"><b>${esc(p.name)}</b>${p.bot?' <span class="chips" style="display:inline-flex"><span>電腦代玩</span></span>':''}<small>國際企業管理學系・${p.done?`<b style="color:var(--red)">第 ${S.finish.indexOf(i)+1} 名畢業</b>`:YEAR(p.year)}</small><small>心儀對象：${crushOf(p).name}${p.club!==null?'・'+CLUBS[p.club].n:''}</small></div></div>
+      <div class="pc-h">${avatar(AV[p.av])}<div style="min-width:0"><b>${esc(p.name)}</b>${p.bot?' <span class="chips" style="display:inline-flex"><span>電腦代玩</span></span>':''}<small>國際企業管理學系・${p.done?`<b style="color:var(--red)">${S.over?`第 ${standings().indexOf(p)+1} 名畢業`:`第 ${p.turns} 回合畢業`}</b>`:YEAR(p.year)}</small><small>心儀對象：${crushOf(p).name}${p.club!==null?'・'+CLUBS[p.club].n:''}</small></div></div>
       <div class="track"><div class="th"><span>學業</span><span class="num">${p.cr} / ${S.target} 學分${p.acad?'・'+ACAD[p.acad-1].n:''}</span></div><div class="bar"><i style="width:${Math.min(100,p.cr/S.target*100)}%"></i></div>
         <div class="five">${COURSES.map((c,k)=>`<span class="${p.passed[k]?'y':''}">${c.s}${p.passed[k]>1?'×'+p.passed[k]:''}</span>`).join('')}</div></div>
       <div class="track"><div class="th"><span>跨系技能</span><span class="num">${p.skills.length} 項（已向玟玟簡報 ${p.presented.length}）・獎勵還差 ${3-r}</span></div><div class="dots skill">${[0,1,2].map(k=>`<i class="${k<r?'y':''}"></i>`).join('')}</div>
@@ -978,7 +978,6 @@ async function takeTurn(){
   const d1=$('#d1'), d2=$('#d2'); d1.classList.add('roll'); d2.classList.add('roll');
   for(let k=0;k<8;k++){d1.textContent=1+rnd(6);d2.textContent=1+rnd(6);await sleep(70)}
   d1.classList.remove('roll'); d2.classList.remove('roll'); d1.textContent=a; d2.textContent=b;
-  p.turns++;
   await moveSteps(p,a+b);
   log(`${esc(p.name)} 擲出 ${a+b} 點，來到「${TILES[p.pos].n}」`);
   if(S.online) publishStage({tag:'擲骰子',title:`擲出 ${a+b} 點！`,text:`來到「${TILES[p.pos].n}」。${TILES[p.pos].d||''}`,roll:a+b});
@@ -999,6 +998,7 @@ async function moveSteps(p,n){
 async function jumpTo(p,code){await moveSteps(p,(posOf(code)-p.pos+N)%N)}
 async function endTurn(){
   const p=S.players[S.cur];
+  p.turns=(p.turns||0)+1;
   await flushPending(p);
   renderDynamic();
   if(p.cr>=S.target&&!p.done&&S.online){
@@ -1009,13 +1009,12 @@ async function endTurn(){
     return graduate(p,p.place,true);
   }
   if(p.cr>=S.target&&!p.done){
-    const n=S.players.length, need=n===1?1:Math.min(3,n-1);
     p.done=true; p.gradAt=new Date().toLocaleTimeString('zh-TW',{hour12:false}); S.finish.push(S.cur);
-    const final=S.finish.length>=need; if(final) S.over=true;
+    if(S.players.length===1){S.over=true;save();renderDynamic();busy=false;renderBoard();return graduate(p,1,true)}
     save(); renderDynamic();
-    await graduate(p,S.finish.length,final);
-    if(final){busy=false;renderBoard();return showPodium()}
+    await graduate(p,null,false);
   }
+  if(S.players.length>1&&decided(standings(),Math.min(3,S.players.length-1))){S.over=true;save();busy=false;renderBoard();return showPodium()}
   do{S.cur=(S.cur+1)%S.players.length}while(S.players[S.cur].done);
   syncMe(); save(); renderBoard(); busy=false;
   await passTurn(); updateRollBtn(); scheduleBot();
@@ -1257,12 +1256,12 @@ async function graduate(p,place,final){
   if(ls) badges.push(`${LOVE_ST[ls-1].n}・${crushOf(p).name}`);
   const title = cs>=7&&ls>=8?'人生勝利組':cs>=7?'大專青年楷模':ls>=8?'校園模範CP':p.skills.length>=9?'跨域斜槓王':p.combos.length?p.combos[0]:cs>=5?'社團風雲人物':'認真的國企人';
   const multi=S.players.length>1||!!S.online;
-  log(`${esc(p.name)} ${multi?`第 ${place} 個`:''}領到畢業證書！`); renderDynamic();
+  log(`${esc(p.name)} 修滿學分，領到畢業證書！（第 ${p.turns} 回合）`); renderDynamic();
   const v=await sheet({tag:'恭喜',title:'畢業典禮',body:`<div class="cert">
       <div class="ct">畢業證書</div>${avatar({...AV[p.av],v:'r'})}
       <div style="font-family:var(--display);font-size:22px">${esc(p.name)}</div>
       <div>國際企業管理學系</div>
-      ${multi&&place?`<div style="font-family:var(--display);font-size:20px;color:var(--red)">${S.online?'全班':''}第 ${place} 名畢業</div>`:''}
+      ${multi&&!(S.players.length===1&&!S.online)?`<div style="font-family:var(--display);font-size:20px;color:var(--red)">第 ${p.turns} 回合修滿學分</div><div class="note">同一回合畢業的同學會再比跨系技能數、社團、戀愛進度，最終名次看頒獎台</div>`:''}
       <div class="note num">修滿 ${p.cr} 學分・共 ${p.turns} 回合・${p.gradAt} 畢業</div>
       <div class="badges">${badges.map(b=>`<span>${b}</span>`).join('')}</div>
       <div style="font-family:var(--display);font-size:18px;color:var(--red)">稱號：${title}</div>
@@ -1272,15 +1271,35 @@ async function graduate(p,place,final){
   if(v) backToSetup();
   if(S&&S.online){const lp=$('#livePanel');lp&&lp.scrollIntoView({behavior:'smooth'})}
 }
-function standings(){
-  const fin=S.finish.map(i=>S.players[i]);
-  const rest=S.players.filter(p=>!p.done).sort((a,b)=>b.cr-a.cr||a.turns-b.turns);
-  return [...fin,...rest];
+/* 排名：畢業回合數少者優先；同回合依序比跨系技能數、社團進度、戀愛進度 */
+function rkv(p){const sk=Array.isArray(p.skills)?p.skills.length:(+p.skills||0);
+  const cl=p.clubSt!=null?+p.clubSt:(p.clubPt!=null?stage(p.clubPt):0), lv=p.loveSt!=null?+p.loveSt:(p.lovePt!=null?stage(p.lovePt):0);
+  return {d:p.done?1:0,t:+p.turns||0,sk,cl,lv,cr:+p.cr||0}}
+function rankCmp(a,b){const x=rkv(a),y=rkv(b); if(x.d!==y.d) return y.d-x.d;
+  return x.d?(x.t-y.t||y.sk-x.sk||y.cl-x.cl||y.lv-x.lv):(y.cr-x.cr||x.t-y.t||y.sk-x.sk)}
+function decided(list,need){const g=list.filter(p=>p.done); if(!need||g.length<need) return false;
+  const cut=rkv(g[need-1]).t; return list.every(p=>p.done||(+p.turns||0)>=cut)}
+function tieNotes(list){
+  const out=[], top=list.filter(p=>p.done).slice(0,4), nm=p=>esc(p.name||'同學');
+  const clN=v=>v?CLUB_ST[v-1].n:'未入社', lvN=v=>v?LOVE_ST[v-1].n:'還沒開始';
+  for(let i=0;i<Math.min(3,top.length-1);i++){const a=top[i],b=top[i+1],x=rkv(a),y=rkv(b); if(x.t!==y.t) continue;
+    let t=`${nm(a)} 與 ${nm(b)} 都在第 ${x.t} 回合畢業`;
+    if(x.sk!==y.sk) t+=`，比跨系技能：${nm(a)} ${x.sk} 項、${nm(b)} ${y.sk} 項`;
+    else if(x.cl!==y.cl) t+=`，技能數相同（${x.sk} 項），比社團進度：${nm(a)}「${clN(x.cl)}」、${nm(b)}「${clN(y.cl)}」`;
+    else if(x.lv!==y.lv) t+=`，技能與社團都相同，比戀愛進度：${nm(a)}「${lvN(x.lv)}」、${nm(b)}「${lvN(y.lv)}」`;
+    else t+='，技能、社團、戀愛進度也完全相同，並列同名次';
+    out.push(t)}
+  return out;
 }
+function rankRuleHTML(list){
+  return `<p class="note" style="margin:8px 0 0">排名規則：畢業回合數少的優先；同一回合畢業的，再依序比跨系技能數、社團進度、戀愛進度。</p>`+
+    tieNotes(list).map(t=>`<p class="note" style="margin:3px 0 0;color:var(--ink)">・${t}</p>`).join('');
+}
+function standings(){ return [...S.players].sort(rankCmp) }
 async function showPodium(){
   const st=standings(), lab=['冠軍','亞軍','季軍'];
   const col=(p,k)=>p?`<div class="p${k+1}">${avatar({...AV[p.av],v:k===0?'r':undefined})}<b>${esc(p.name)}</b><small class="note num">${p.done?`${p.turns} 回合畢業`:`${p.cr} 學分`}</small><div class="step">${lab[k]}</div></div>`:'<div></div>';
-  const v=await sheet({tag:'頒獎典禮',title:'畢業前三名',body:`<div class="podium">${col(st[1],1)}${col(st[0],0)}${col(st[2],2)}</div>
+  const v=await sheet({tag:'頒獎典禮',title:'畢業前三名',body:`<div class="podium">${col(st[1],1)}${col(st[0],0)}${col(st[2],2)}</div>${rankRuleHTML(st)}
     ${st.length>3?`<p class="note">其他同學：${st.slice(3).map(p=>`${esc(p.name)}（${p.cr} 學分）`).join('、')}</p>`:''}`,
     buttons:[{l:'再玩一次',v:1,p:1},{l:'留在棋盤看看',v:0}]});
   if(v) backToSetup();
@@ -1335,18 +1354,18 @@ function toast(t){const el=$('#toast');el.textContent=t;el.hidden=false;clearTim
 const avOf=i=>AV[Math.max(0,Math.min(AV.length-1,+i||0))];
 function rankList(players){
   const arr=Object.entries(players||{}).map(([id,p])=>({id,...p}));
-  return arr.sort((a,b)=>(a.place||999)-(b.place||999)||(b.cr||0)-(a.cr||0)||(a.turns||0)-(b.turns||0));
+  return arr.sort(rankCmp);
 }
 function liveItems(list,target,meId){
-  return list.map((p,i)=>`<li class="${p.id===meId?'me':''} ${p.place&&p.place<=3?'gold':''}">
+  return list.map((p,i)=>`<li class="${p.id===meId?'me':''} ${p.done&&i<3?'gold':''}">
     <span class="rk">${i+1}</span>${avatar(avOf(p.av))}
-    <span class="nm"><b>${esc(p.name||'同學')}</b><small>${p.place?`第 ${p.place} 名畢業・${p.turns||0} 回合`:`${YEAR(p.year||1)}・技能 ${p.skills||0}${p.club?'・'+esc(p.club):''}${p.love?'・'+esc(p.love):''}`}</small></span>
+    <span class="nm"><b>${esc(p.name||'同學')}</b><small>${p.done?`第 ${p.turns||0} 回合畢業・技能 ${p.skills||0}`:`${YEAR(p.year||1)}・技能 ${p.skills||0}${p.club?'・'+esc(p.club):''}${p.love?'・'+esc(p.love):''}`}</small></span>
     <span class="cr">${p.cr||0}/${target}</span></li>`).join('');
 }
 function podiumHTML(list){
   const lab=['冠軍','亞軍','季軍'];
-  const col=(p,k)=>p?`<div class="p${k+1}">${avatar({...avOf(p.av),v:k===0?'r':undefined})}<b>${esc(p.name||'同學')}</b><small class="note num">${p.place?`${p.turns||0} 回合畢業`:`${p.cr||0} 學分`}</small><div class="step">${lab[k]}</div></div>`:'<div></div>';
-  return `<div class="podium">${col(list[1],1)}${col(list[0],0)}${col(list[2],2)}</div>`;
+  const col=(p,k)=>p?`<div class="p${k+1}">${avatar({...avOf(p.av),v:k===0?'r':undefined})}<b>${esc(p.name||'同學')}</b><small class="note num">${p.done?`${p.turns||0} 回合畢業`:`${p.cr||0} 學分`}</small><div class="step">${lab[k]}</div></div>`:'<div></div>';
+  return `<div class="podium">${col(list[1],1)}${col(list[0],0)}${col(list[2],2)}</div>`+rankRuleHTML(list);
 }
 
 /* 老師端 */
@@ -1472,9 +1491,9 @@ async function botAct(id){
   cr=Math.max(0,cr);
   const tagOf={course:'課堂任務',dept:'跨系學習',club:'社團',spot:'約會景點',chance:'機會卡',fate:'命運卡',corner:'特殊格'}[t.type]||'';
   await stg({tag:tagOf+'（電腦代玩）',title:t.n,text:ev.slice(1).join('。')||'在這裡休息一下。'});
-  const upd={pos,year,cr,skills,club,love,turns:(p.turns||0)+1};
+  const upd={pos,year,cr,skills,club,love,clubSt:CLUB_ST.findIndex(x=>x.n===club)+1,loveSt:LOVE_ST.findIndex(x=>x.n===love)+1,turns:(p.turns||0)+1};
   if(cr>=(r.target||28)){upd.done=true;const res=await ref.child('finishCount').transaction(v=>(v||0)+1);upd.place=res.snapshot.val();
-    await ref.child('finish/'+id).set({place:upd.place,name:nm,av:p.av,turns:upd.turns,at:TS()});ev.push(`${nm} 第 ${upd.place} 名畢業！`)}
+    await ref.child('finish/'+id).set({place:upd.place,name:nm,av:p.av,turns:upd.turns,at:TS()});ev.push(`${nm} 修滿學分畢業了！（第 ${upd.turns} 回合）`)}
   await ref.child('players/'+id).update(upd);
   for(const e of ev) await ref.child('events').push({uid:id,t:e,at:TS()});
 }
@@ -1497,7 +1516,7 @@ function openTeacher(code){
   const ref=fb.ref('rooms/'+code);
   listen(ref,'value',sn=>{tRoom=sn.val()||{};renderTeacher(tRoom)});
   const t0=Date.now();
-  listen(ref.child('finish'),'child_added',sn=>{const f=sn.val()||{}; if((f.at||0)>t0-3000) toast(`${f.name} 第 ${f.place} 名畢業！`)});
+  listen(ref.child('finish'),'child_added',sn=>{const f=sn.val()||{}; if((f.at||0)>t0-3000) toast(`${f.name} 修滿學分畢業了！（第 ${f.turns||'?'} 回合）`)});
   listen(ref.child('stage'),'value',sn=>{tStage=sn.val()||{};renderSpot()});
   listen(ref.child('events').limitToLast(30),'child_added',sn=>{const e=sn.val()||{};tEvents.push(e);tEvents=tEvents.slice(-30);renderProjFeed()});
   $('#btnTStart').onclick=async()=>{
@@ -1528,7 +1547,7 @@ function openTeacher(code){
     onOpen:el=>{const b=el.querySelector('#pqr');if(window.QRCode)new QRCode(b,{text:roomUrl(code),width:280,height:280,colorDark:'#2b241f',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M});else b.textContent=roomUrl(code)}});
 }
 function renderTeacher(r){
-  const list=rankList(r.players), n=list.length, fin=list.filter(p=>p.place).length;
+  const list=rankList(r.players), n=list.length, fin=list.filter(p=>p.done).length;
   const modeTxt=r.mode==='turn'?'輪流制':'同時玩';
   const st={open:'等待同學加入中',playing:'比賽進行中',ended:'比賽結束'}[r.status]||'';
   $('#tCount').textContent=n; $('#pCount').textContent=n;
@@ -1573,7 +1592,7 @@ function renderProj(r,list,fin){
   $('#pTurn').innerHTML=r.status==='ended'?'<span>比賽結束！</span>':tp?`${avatar({...avOf(tp.av),v:'r'})}<span>輪到 ${esc(tp.name||'同學')}<small>${tp.bot?'電腦代玩中':'請在手機上擲骰子'}・${tp.cr||0}/${r.target||28} 學分</small></span>`
     :r.mode==='turn'?'<span>等待下一位</span>':`<span>全班同時進行中<small>${list.length} 位同學・已畢業 ${fin} 人</small></span>`;
   $('#pList').innerHTML=list.length?liveItems(list,r.target||28,r.turn||''):'';
-  const showPod=r.status==='ended'||(fin>=Math.min(3,list.length)&&list.length>0);
+  const showPod=r.status==='ended'||(list.length>0&&decided(list,Math.min(3,list.length)));
   const pod=$('#tPodium'); pod.hidden=!showPod;
   if(showPod) pod.innerHTML=`<div class="label">頒獎台・畢業前三名</div>${podiumHTML(list)}`;
   renderProjFeed(); renderSpot();
@@ -1676,13 +1695,13 @@ function enterStudent(code){
     renderLive(); updateRollBtn();
   });
   listen(ref.child('finish'),'child_added',sn=>{
-    const f=sn.val()||{}; if(sn.key!==uid&&(f.at||0)>enterAt-3000) toast(`${f.name} 第 ${f.place} 名畢業！`);
+    const f=sn.val()||{}; if(sn.key!==uid&&(f.at||0)>enterAt-3000) toast(`${f.name} 修滿學分畢業了！（第 ${f.turns||'?'} 回合）`);
   });
 }
 function renderLive(){
   if(!S||!S.online) return;
-  const list=rankList(livePlayers), fin=list.filter(p=>p.place).length;
-  const ended=S.roomStatus==='ended'||(fin>=Math.min(3,list.length)&&list.length>0);
+  const list=rankList(livePlayers), fin=list.filter(p=>p.done).length;
+  const ended=S.roomStatus==='ended'||(list.length>0&&decided(list,Math.min(3,list.length)));
   $('#liveTitle').textContent=`全班即時排名（${list.length} 人）`;
   $('#liveBanner').innerHTML=ended?`<p style="margin:0 0 6px;font-weight:700">${S.roomStatus==='ended'?'比賽結束！':'前三名出爐！'}</p>${podiumHTML(list)}`:'';
   $('#liveList').innerHTML=liveItems(list.slice(0,20),S.target,uid);
@@ -1698,7 +1717,8 @@ async function passTurn(){
   if(!(S&&S.online&&S.roomMode==='turn'&&S.turnUid===uid&&fb)) return;
   const ps={...livePlayers,[uid]:{...(livePlayers[uid]||{}),done:!!S.players[0].done}};
   const nx=nextTurn(S.roomOrder,ps,uid);
-  try{await fb.ref(`rooms/${S.online.code}/turn`).set(nx)}catch(e){}
+  S.turnUid=nx;
+  try{await fb.ref(`rooms/${S.online.code}/turn`).set(nx)}catch(e){S.turnUid=uid}
 }
 function publishStage(o){
   if(!fb||!uid||!S||!S.online) return;
@@ -1713,7 +1733,7 @@ function syncMe(){
   if(!S||!S.online||!fb) return;
   const p=S.players[0], cs=stage(p.clubPt), ls=stage(p.lovePt);
   fb.ref(`rooms/${S.online.code}/players/${uid}`).update({name:p.name,av:p.av,cr:p.cr,year:p.year,turns:p.turns,skills:p.skills.length,pos:p.pos,
-    club:cs?CLUB_ST[cs-1].n:'',love:ls?LOVE_ST[ls-1].n:'',done:!!p.done,place:p.place||null}).catch(()=>{});
+    club:cs?CLUB_ST[cs-1].n:'',love:ls?LOVE_ST[ls-1].n:'',clubSt:cs,loveSt:ls,done:!!p.done,place:p.place||null}).catch(()=>{});
 }
 async function claimPlace(p){
   const code=S.online.code;
