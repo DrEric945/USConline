@@ -308,7 +308,7 @@ input[type=text]{font-family:var(--body);font-size:15px;color:var(--ink);backgro
     <button class="btn primary" id="btnStart" style="align-self:center;padding:12px 34px;font-size:17px">入學報到 →</button>
     </div>
     <div class="panel"><div class="label">國企系老師與執秘</div><div class="teach" id="teach"></div></div>
-    <p class="note" style="text-align:center;font-size:11px;opacity:.7">版本 2026-10-22 v33（30 位學生・10 學分講解）</p>
+    <p class="note" style="text-align:center;font-size:11px;opacity:.7">版本 2026-10-22 v34（名次顯示修正）</p>
     <p class="note" style="text-align:center">紅色格是國企系老師的課，要真的完成課堂任務才拿得到學分；走到其他系的格子可以學到該系的特殊技能，集滿三個有獎勵；每年回到報到處，可以跟玟玟執秘簡報技能換學分。</p>
   </section>
 
@@ -907,13 +907,13 @@ function renderDynamic(){
   $('#players').innerHTML=S.players.map((p,i)=>{
     const cs=stage(p.clubPt), ls=stage(p.lovePt), r=p.skills.length%3;
     return `<div class="pc ${i===S.cur&&!S.over?'on':''}" style="--tk:${TK[p.tk]}">
-      <div class="pc-h">${avatar(AV[p.av])}<div style="min-width:0"><b>${esc(p.name)}</b>${p.bot?' <span class="chips" style="display:inline-flex"><span>電腦代玩</span></span>':''}<small>國際企業管理學系・${p.done?`<b style="color:var(--red)">${S.over?`第 ${standings().indexOf(p)+1} 名畢業`:`第 ${p.turns} 回合畢業`}</b>`:YEAR(p.year)}</small><small>心儀對象：${crushOf(p).name}${p.club!==null?'・'+CLUBS[p.club].n:''}</small></div></div>
+      <div class="pc-h">${avatar(AV[p.av])}<div style="min-width:0"><b>${esc(p.name)}</b>${p.bot?' <span class="chips" style="display:inline-flex"><span>電腦代玩</span></span>':''}<small>國際企業管理學系・${p.done?`<b style="color:var(--red)">${rankLabel(p)}</b>`:YEAR(p.year)}</small><small>心儀對象：${crushOf(p).name}${p.club!==null?'・'+CLUBS[p.club].n:''}</small></div></div>
       <div class="track"><div class="th"><span>學業</span><span class="num">${p.cr} / ${S.target} 學分${p.acad?'・'+ACAD[p.acad-1].n:''}</span></div><div class="bar"><i style="width:${Math.min(100,p.cr/S.target*100)}%"></i></div>
         <div class="five">${COURSES.map((c,k)=>`<span class="${p.passed[k]?'y':''}">${c.s}${p.passed[k]>1?'×'+p.passed[k]:''}</span>`).join('')}</div></div>
       <div class="track"><div class="th"><span>跨系技能</span><span class="num">${p.skills.length} 項（已向玟玟簡報 ${p.presented.length}）・獎勵還差 ${3-r}</span></div><div class="dots skill">${[0,1,2].map(k=>`<i class="${k<r?'y':''}"></i>`).join('')}</div>
         ${p.skills.length?`<div class="chips">${p.skills.map(s=>`<span>${s}</span>`).join('')}</div>`:''}</div>
-      <div class="track"><div class="th"><span>社團</span><span>${cs?CLUB_ST[cs-1].n:'尚未入社'}</span></div><div class="dots club">${CLUB_ST.map((_,k)=>`<i class="${k<cs?'y':''}"></i>`).join('')}</div></div>
-      <div class="track"><div class="th"><span>戀愛</span><span>${ls?LOVE_ST[ls-1].n:'還沒開始'}</span></div><div class="dots love">${LOVE_ST.map((_,k)=>`<i class="${k<ls?'y':''}"></i>`).join('')}</div></div>
+      <div class="track"><div class="th"><span>社團</span><span>${cs?CLUB_ST[cs-1].n:'尚未入社'}</span></div><div class="dots club">${CLUB_ST.map((st,k)=>`<i class="${k<cs?'y':''}" title="${k+1}. ${st.n}"></i>`).join('')}</div></div>
+      <div class="track"><div class="th"><span>戀愛</span><span>${ls?LOVE_ST[ls-1].n:'還沒開始'}</span></div><div class="dots love">${LOVE_ST.map((st,k)=>`<i class="${k<ls?'y':''}" title="${k+1}. ${st.n}"></i>`).join('')}</div></div>
     </div>`}).join('');
 }
 function log(t){S.log.unshift(t);S.log=S.log.slice(0,12);if(S.online&&typeof pushEvent==='function')pushEvent(t)}
@@ -1757,7 +1757,7 @@ function enterStudent(code){
     const st=sn.val(); S.roomStatus=st;
     if(st==='open'){ if($('#game').hidden) show('#waiting') }
     else if($('#game').hidden) startGame();
-    renderLive();
+    renderLive(); if(S&&!$('#game').hidden&&S.players[0].done) renderDynamic();
   });
   listen(ref.child('target'),'value',sn=>{const t=sn.val();if(t&&S&&!S.over){S.target=t;save()}});
   listen(ref.child('mode'),'value',sn=>{S.roomMode=sn.val()||'free';updateRollBtn()});
@@ -1770,11 +1770,17 @@ function enterStudent(code){
     const arr=Object.values(livePlayers);
     $('#wCount').textContent=arr.length;
     $('#wList').innerHTML=arr.map(p=>`<span>${esc(p.name||'同學')}</span>`).join('');
-    renderLive(); updateRollBtn();
+    renderLive(); updateRollBtn(); if(S&&!$('#game').hidden) renderDynamic();
   });
   listen(ref.child('finish'),'child_added',sn=>{
     const f=sn.val()||{}; if(sn.key!==uid&&(f.at||0)>enterAt-3000) toast(`${f.name} 修滿學分畢業了！（第 ${f.turns||'?'} 回合）`);
   });
+}
+function rankLabel(p){
+  if(!S.online) return S.over?`第 ${standings().indexOf(p)+1} 名畢業`:`第 ${p.turns} 回合畢業`;
+  const L=rankList(livePlayers), fin=S.roomStatus==='ended'||(L.length>0&&decided(L,Math.min(3,L.length)));
+  const k=L.findIndex(q=>q.id===uid)+1;
+  return fin&&k?`全班第 ${k} 名畢業`:`第 ${p.turns} 回合畢業（名次待頒獎台確定）`;
 }
 function renderLive(){
   if(!S||!S.online) return;
