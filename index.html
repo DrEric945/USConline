@@ -288,7 +288,7 @@ input[type=text]{font-family:var(--body);font-size:15px;color:var(--ink);backgro
     <button class="btn primary" id="btnStart" style="align-self:center;padding:12px 34px;font-size:17px">入學報到 →</button>
     </div>
     <div class="panel"><div class="label">國企系老師與執秘</div><div class="teach" id="teach"></div></div>
-    <p class="note" style="text-align:center;font-size:11px;opacity:.7">版本 2026-10-22 v14（開始時介紹老師）</p>
+    <p class="note" style="text-align:center;font-size:11px;opacity:.7">版本 2026-10-22 v15（開始時介紹老師）</p>
     <p class="note" style="text-align:center">紅色格是國企系老師的課，要真的完成課堂任務才拿得到學分；走到其他系的格子可以學到該系的特殊技能，集滿三個有獎勵；每年回到報到處，可以跟玟玟執秘簡報技能換學分。</p>
   </section>
 
@@ -330,7 +330,7 @@ input[type=text]{font-family:var(--body);font-size:15px;color:var(--ink);backgro
       <div class="tbar">
         <span class="codechip">教室代碼 <b class="num" id="pCode"></b></span>
         <span id="pStatus" style="font-weight:700"></span>
-        <span class="row"><button class="btn" id="btnPQR">顯示 QR Code</button><button class="btn" id="btnPSkip" hidden>跳過這位</button><button class="btn primary" id="btnTEnd">結束並頒獎</button></span>
+        <span class="row"><button class="btn" id="btnPIntro">老師介紹</button><button class="btn" id="btnPQR">顯示 QR Code</button><button class="btn" id="btnPSkip" hidden>跳過這位</button><button class="btn primary" id="btnTEnd">結束並頒獎</button></span>
       </div>
       <div class="proj">
         <div class="board" id="pBoard"></div>
@@ -1484,6 +1484,7 @@ function openTeacher(code){
   $('#btnAddBot').onclick=async()=>{const v=await pickBotAvatar(); if(v===null||v===undefined) return; try{await addBot(v<0?null:v)}catch(e){toast('加入失敗：'+errMsg(e))}};
   $('#tBots').onclick=e=>{const b=e.target.closest('[data-rmbot]');if(!b||tRoom.status!=='open')return;ref.child('players/'+b.dataset.rmbot).remove()};
   $('#btnPSkip').onclick=()=>{const nx=nextTurn(tRoom.order,tRoom.players,tRoom.turn);ref.child('turn').set(nx).catch(e=>toast('跳過失敗：'+errMsg(e)))};
+  $('#btnPIntro').onclick=async()=>{tIntro=true;try{await showTeacherIntro('回到比賽')}finally{tIntro=false;runBots(tRoom)}};
   $('#btnPQR').onclick=()=>sheet({tag:'教室代碼 '+code,title:'掃碼加入教室',body:'<div class="qrbox" id="pqr"></div><p class="note" style="text-align:center;word-break:break-all">'+roomUrl(code)+'</p>',buttons:[{l:'關閉',v:1,p:1}],
     onOpen:el=>{const b=el.querySelector('#pqr');if(window.QRCode)new QRCode(b,{text:roomUrl(code),width:280,height:280,colorDark:'#2b241f',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M});else b.textContent=roomUrl(code)}});
 }
