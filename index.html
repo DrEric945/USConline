@@ -308,7 +308,7 @@ input[type=text]{font-family:var(--body);font-size:15px;color:var(--ink);backgro
     <button class="btn primary" id="btnStart" style="align-self:center;padding:12px 34px;font-size:17px">入學報到 →</button>
     </div>
     <div class="panel"><div class="label">國企系老師與執秘</div><div class="teach" id="teach"></div></div>
-    <p class="note" style="text-align:center;font-size:11px;opacity:.7">版本 2026-10-22 v27（自動更新新版）</p>
+    <p class="note" style="text-align:center;font-size:11px;opacity:.7">版本 2026-10-22 v31（30 位學生・10 學分講解）</p>
     <p class="note" style="text-align:center">紅色格是國企系老師的課，要真的完成課堂任務才拿得到學分；走到其他系的格子可以學到該系的特殊技能，集滿三個有獎勵；每年回到報到處，可以跟玟玟執秘簡報技能換學分。</p>
   </section>
 
@@ -394,6 +394,16 @@ const AV = [
   {name:'阿豪',full:'陳家豪',g:'男',skin:'#e4b893',hair:'#231d1a',style:'fluffy',top:'#3a4a6b',inner:'#d8dee8'},
   {name:'冠廷',full:'鄭冠廷',g:'男',eyes:'open',skin:'#efc6a6',hair:'#2e2522',style:'wavymid',top:'#8a6c93',inner:'#f1ecf4',glasses:true},
   {name:'Ethan',full:'林以森',g:'男',skin:'#ebc19f',hair:'#5a3b28',style:'quiff',top:'#2f2f35',inner:'#d0573f'},
+  {name:'Tim',full:'方正霆',g:'男',eyes:'open',skin:'#f0c9a8',hair:'#14110f',style:'messyup',top:'#1f2a44',inner:'#f6f6f4'},
+  {name:'Jake',full:'林傑克',g:'男',eyes:'open',skin:'#e8bc98',hair:'#6b4a32',style:'quiffL',top:'#8a8f98',inner:'#e9ecef'},
+  {name:'承恩',full:'張承恩',g:'男',skin:'#ddae88',hair:'#1c1a19',style:'crop',top:'#6e8f58',inner:'#f1eadd'},
+  {name:'Ryan',full:'黃睿恩',g:'男',eyes:'open',skin:'#efc6a6',hair:'#3a2c24',style:'sidepart',top:'#c9a24a',inner:'#fff7e6',glasses:true},
+  {name:'小麥',full:'麥家銘',g:'男',skin:'#e4b893',hair:'#231d1a',style:'fringe',top:'#d0573f',inner:'#f6e9df'},
+  {name:'Anny',full:'李安妮',g:'女',eyes:'open',skin:'#f7d6c2',hair:'#6b4430',style:'pony',top:'#a9c2e2',inner:'#f7fafd'},
+  {name:'Olivia',full:'吳奧莉',g:'女',eyes:'open',skin:'#f6d1bb',hair:'#8a4a2c',style:'layerbob',top:'#7d9a68',inner:'#f1eadd'},
+  {name:'Sandy',full:'張伊秀',g:'女',eyes:'open',skin:'#f8dccb',hair:'#2a1d18',style:'longwave',top:'#c5463b',inner:'#fbeee8',slim:true,earring:true},
+  {name:'詩涵',full:'陳詩涵',g:'女',skin:'#f5d0b8',hair:'#1f1b1a',style:'smallwave',top:'#b39bc1',inner:'#f8f3fa'},
+  {name:'Emma',full:'鄭艾瑪',g:'女',eyes:'open',skin:'#f8dccb',hair:'#c99b5a',style:'bangs',top:'#e8b64e',inner:'#fff6e4'},
 ];
 const TEACH = [
   {name:'艾瑞克',style:'品牌行銷學',av:{skin:'#e9be9b',hair:'#2f2620',style:'spiky',top:'#a9c6e6',inner:'#f7fafd',glasses:true}},
@@ -440,6 +450,8 @@ const QF=(m)=>{const X=x=>m?100-x:x;
   return {b:h=>`<path d="M26 52 C21 26 79 24 74 52 C72 47 28 47 26 52Z" fill="${h}"/>`,
     f:h=>`<path d="${f}" fill="${h}"/><path d="${hl}" stroke="#fff" stroke-opacity=".25" stroke-width="1.4" fill="none" stroke-linecap="round"/>`}};
 const HAIR={
+  messyup:{b:h=>`<path d="M25 54 C19 22 81 20 75 54 C72 47 28 47 25 54Z" fill="${h}"/>`,
+    f:h=>`<path d="M26 50 C22 33 25 23 32 19.5 Q33 13 40 15.5 Q44 10 50 13.5 Q56 9 60 14.5 Q67 12 68 19.5 C76 23.5 78 35 74 50 C72.5 45 70.5 42.5 67.5 43.5 L65 37 L61.5 44.5 L57 36 L53.5 44 L48.5 35.5 L45.5 43.5 L40.5 36.5 L37.5 44.5 L33.5 40 C30.5 43 28 46 26 50Z" fill="${h}"/>`+HL('M36 24 q8 -6 18 -5 M56 20 q8 2 11 8 M42 31 q6 -4 12 -3',.26)},
   cornrow:{b:h=>`<path d="M26 54 C21 24 79 22 74 54 C72 48 28 48 26 54Z" fill="${h}"/>`,
     f:h=>{let o=`<path d="M27 50 C25 28 36 21.5 50 21.5 C64 21.5 75 28 73 50 C71 44 66 40 60 39 L40 39 C34 40 29 44 27 50Z" fill="#6b5148"/>
       <path d="M27 50 C26.5 46 27.5 43 29.5 41 L30.5 54 C29 53 27.5 52 27 50Z M73 50 C73.5 46 72.5 43 70.5 41 L69.5 54 C71 53 72.5 52 73 50Z" fill="${h}" opacity=".6"/>`;
@@ -754,7 +766,7 @@ const FATE = [
  {t:'校慶擺攤賺翻，還和攤位夥伴變熟',fx:[['club',1],['love',1]]},
  {t:'颱風停課，在宿舍躺平一天',fx:[]},
 ];
-const TARGETS = [{v:28,n:'標準'},{v:36,n:'進階'},{v:60,n:'挑戰'}];
+const TARGETS = [{v:10,n:'講解'},{v:28,n:'標準'},{v:36,n:'進階'},{v:60,n:'挑戰'}];
 const YEAR = y => y<=4 ? ['','大一','大二','大三','大四'][y] : `延畢第${y-4}年`;
 const TK = ['var(--red)','var(--blue)','var(--leaf)','var(--mustard)'];
 
@@ -781,7 +793,7 @@ function renderSetup(){
   $('#plSetup').innerHTML=setup.pl.slice(0,setup.n).map((p,i)=>`
     <div class="pl-setup">
       ${setup.n>1?`<div class="label">玩家 ${i+1}</div>`:''}
-      <div class="avpick">${AV.map((a,j)=>`<button aria-pressed="${p.av===j}" data-p="${i}" data-av="${j}" aria-label="${a.full}（${a.name}）">${avatar(a)}<span>${a.name}</span><small>${a.g}・${a.full}</small></button>`).join('')}</div>
+      <div class="avpick">${AV.map((a,j)=>`<button aria-pressed="${p.av===j}" data-p="${i}" data-av="${j}" aria-label="${a.full}（${a.name}）">${avatar(a)}<span>${a.name}</span><small>${a.g}・${a.tag||a.full}</small></button>`).join('')}</div>
       <input type="text" id="nm${i}" value="${esc(p.name)}" maxlength="8" aria-label="玩家${i+1}暱稱" data-p="${i}">
     </div>`).join('');
   $('#teach').innerHTML=TEACH.map(t=>`<div>${avatar(t.av)}<span>${t.name}${t.name==='玟玟'?'':'老師'}</span><small>${t.style}</small></div>`).join('');
@@ -1671,7 +1683,7 @@ function renderJoin(){
   const mine=uid;
   if(takenAv[join.av]&&takenAv[join.av]!==mine){const f=AV.findIndex((a,j)=>!takenAv[j]||takenAv[j]===mine);if(f>=0){const old=AV[join.av].name;join.av=f;if($('#jName').value===old)$('#jName').value=AV[f].name}}
   $('#jPick').innerHTML=AV.map((a,j)=>{const tk=takenAv[j]&&takenAv[j]!==mine;
-    return `<button aria-pressed="${join.av===j}" data-jav="${j}" ${tk?'disabled style="opacity:.35;cursor:not-allowed"':''} aria-label="${a.full}（${a.name}）${tk?'已被選走':''}">${avatar(a)}<span>${a.name}</span><small>${tk?'已被選走':a.g}</small></button>`}).join('');
+    return `<button aria-pressed="${join.av===j}" data-jav="${j}" ${tk?'disabled style="opacity:.35;cursor:not-allowed"':''} aria-label="${a.full}（${a.name}）${tk?'已被選走':''}">${avatar(a)}<span>${a.name}</span><small>${tk?'已被選走':(a.tag?a.g+'・'+a.tag:a.g)}</small></button>`}).join('');
   if(!join.name) $('#jName').value=AV[join.av].name;
 }
 async function watchTaken(code){
