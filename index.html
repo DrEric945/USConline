@@ -39,6 +39,7 @@ body.wide .wrap{max-width:1400px}
 .proj .tile .ic{font-size:.7em}
 .proj .tile.corner{font-size:clamp(12px,1.5vw,24px)}
 .proj .tok{width:24%;max-width:30px}
+.proj .tok.mov{width:40%;max-width:46px;z-index:3;box-shadow:0 0 0 3px var(--red),0 4px 10px rgba(0,0,0,.25);transform:translateY(-4px)}
 .proj .more{position:relative;font-size:.8em;font-weight:700;background:var(--ink);color:var(--paper);border-radius:99px;padding:0 4px;line-height:1.4}
 .pturn{display:flex;align-items:center;gap:12px;font-family:var(--display);font-size:clamp(18px,2.6vw,38px);line-height:1.15;text-align:left}
 .pturn svg{width:clamp(54px,7vw,110px);height:auto;flex:0 0 auto}
@@ -307,7 +308,7 @@ input[type=text]{font-family:var(--body);font-size:15px;color:var(--ink);backgro
     <button class="btn primary" id="btnStart" style="align-self:center;padding:12px 34px;font-size:17px">入學報到 →</button>
     </div>
     <div class="panel"><div class="label">國企系老師與執秘</div><div class="teach" id="teach"></div></div>
-    <p class="note" style="text-align:center;font-size:11px;opacity:.7">版本 2026-10-22 v25（預設輪流制）</p>
+    <p class="note" style="text-align:center;font-size:11px;opacity:.7">版本 2026-10-22 v26（大螢幕棋子逐格移動）</p>
     <p class="note" style="text-align:center">紅色格是國企系老師的課，要真的完成課堂任務才拿得到學分；走到其他系的格子可以學到該系的特殊技能，集滿三個有獎勵；每年回到報到處，可以跟玟玟執秘簡報技能換學分。</p>
   </section>
 
@@ -1525,7 +1526,7 @@ function runBots(r){
   }
 }
 function openTeacher(code){
-  show('#teacher'); scrollTo(0,0); tCodeNow=code; tRoom={}; tEvents=[]; tBuilt=false;
+  show('#teacher'); scrollTo(0,0); tCodeNow=code; tRoom={}; tEvents=[]; tBuilt=false; dispPos={}; movingId=null;
   $('#tCode').textContent=code; $('#pCode').textContent=code; $('#tUrl').textContent=roomUrl(code);
   const box=$('#tQR'); box.innerHTML='';
   if(window.QRCode) new QRCode(box,{text:roomUrl(code),width:300,height:300,colorDark:'#2b241f',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M});
@@ -1600,10 +1601,7 @@ function buildProjBoard(){
 }
 function renderProj(r,list,fin){
   if(!tBuilt) buildProjBoard();
-  const by={};
-  list.forEach((p,k)=>{const pos=Math.max(0,Math.min(N-1,+p.pos||0));(by[pos]=by[pos]||[]).push(p)});
-  for(let i=0;i<N;i++){const el=$('#pt'+i);if(!el)continue;const ps=by[i]||[];
-    el.innerHTML=ps.slice(0,ps.length>5?4:5).map(p=>`<span class="tok" style="--tk:${p.id===r.turn?'var(--red)':'var(--ink-soft)'}" title="${esc(p.name||'')}">${avatar(avOf(p.av))}</span>`).join('')+(ps.length>5?`<span class="more">+${ps.length-4}</span>`:'')}
+  tTokList=list; tTokTurn=r.turn; stepTokens(); renderTokens();
   const tp=r.mode==='turn'&&r.turn&&r.players?r.players[r.turn]:null;
   $('#pTurn').innerHTML=r.status==='ended'?'<span>比賽結束！</span>':tp?`${avatar({...avOf(tp.av),v:'r'})}<span>輪到 ${esc(tp.name||'同學')}<small>${tp.bot?'電腦代玩中':'請在手機上擲骰子'}・${tp.cr||0}/${r.target||28} 學分</small></span>`
     :r.mode==='turn'?'<span>等待下一位</span>':`<span>全班同時進行中<small>${list.length} 位同學・已畢業 ${fin} 人</small></span>`;
@@ -1612,6 +1610,33 @@ function renderProj(r,list,fin){
   const pod=$('#tPodium'); pod.hidden=!showPod;
   if(showPod) pod.innerHTML=`<div class="label">頒獎台・畢業前三名</div>${podiumHTML(list)}`;
   renderProjFeed(); renderSpot();
+}
+/* 大螢幕棋子逐格移動 */
+let tTokList=[], tTokTurn=null, dispPos={}, tokTimer=null, movingId=null;
+function renderTokens(){
+  const by={};
+  tTokList.forEach(p=>{const pos=dispPos[p.id]!=null?dispPos[p.id]:Math.max(0,Math.min(N-1,+p.pos||0));(by[pos]=by[pos]||[]).push(p)});
+  for(let i=0;i<N;i++){const el=$('#pt'+i);if(!el)continue;let ps=by[i]||[];
+    ps=ps.slice().sort((a,b)=>(b.id===movingId)-(a.id===movingId)||(b.id===tTokTurn)-(a.id===tTokTurn));
+    el.innerHTML=ps.slice(0,ps.length>5?4:5).map(p=>`<span class="tok${p.id===movingId?' mov':''}" style="--tk:${p.id===tTokTurn||p.id===movingId?'var(--red)':'var(--ink-soft)'}" title="${esc(p.name||'')}">${avatar(avOf(p.av))}</span>`).join('')+(ps.length>5?`<span class="more">+${ps.length-4}</span>`:'')}
+}
+function stepTokens(){
+  if(tokTimer) return;
+  const tick=()=>{
+    let moved=false;
+    for(const p of tTokList){
+      const tgt=Math.max(0,Math.min(N-1,+p.pos||0)); let cur=dispPos[p.id];
+      if(cur==null){dispPos[p.id]=tgt;continue}
+      if(cur===tgt){if(movingId===p.id){movingId=null;const el=$('#pt'+tgt);el&&el.parentElement&&el.parentElement.classList.add('flash');setTimeout(()=>el&&el.parentElement&&el.parentElement.classList.remove('flash'),1100)}continue}
+      const fwd=(tgt-cur+N)%N, back=(cur-tgt+N)%N;
+      if(fwd<=12) dispPos[p.id]=(cur+1)%N; else if(back<=6) dispPos[p.id]=(cur-1+N)%N; else dispPos[p.id]=tgt;
+      movingId=p.id; moved=true; break;   // 一次只走一位，看得清楚
+    }
+    renderTokens();
+    if(moved){tokTimer=setTimeout(()=>{tokTimer=null;stepTokens()},170)}
+    else if(movingId){tokTimer=setTimeout(()=>{tokTimer=null;stepTokens()},170)}
+  };
+  tick();
 }
 function renderProjFeed(){
   if(!tBuilt) return;
