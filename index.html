@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="zh-Hant"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>我是大學生</title>
+<title>青春不被當：國企校園大富翁</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=Caveat:wght@500;700&display=swap">
 <style>
@@ -10,7 +10,7 @@
 /* Layout: 水彩紙底 + 12×12 大富翁棋盤（中央為操作區），下方玩家卡；事件以底部彈出卡呈現 */
 :root{
   --paper:#f2ece1; --paper-2:#e9e1d2; --ink:#4a4038; --ink-soft:#7d7064;
-  --blue:#7fa3cf; --red:#d0573f; --mustard:#dca33a; --leaf:#6e8f58; --rose:#e39a92; --plum:#8a6c93;
+  --blue:#7fa3cf; --red:#d0573f; --mustard:#dca33a; --leaf:#6e8f58; --rose:#e39a92; --plum:#8a6c93; --teal:#3f9c96;
   --card:#fbf8f2; --line:#d8cdbb;
   --display:"LXGW WenKai TC","Kaiti TC","STKaiti","PingFang TC","Microsoft JhengHei",serif;
   --body:"LXGW WenKai TC","PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;
@@ -18,11 +18,11 @@
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --paper:#26221d; --paper-2:#302a24; --ink:#efe6d6; --ink-soft:#b8aa97;
-  --blue:#8fb2dc; --red:#e2735c; --mustard:#e6b354; --leaf:#8fb077; --rose:#e9aaa2; --plum:#b495bd;
+  --blue:#8fb2dc; --red:#e2735c; --mustard:#e6b354; --leaf:#8fb077; --rose:#e9aaa2; --plum:#b495bd; --teal:#5fb8b0;
   --card:#2f2923; --line:#4a4138; color-scheme:dark }}
 :root[data-theme="dark"]{
   --paper:#26221d; --paper-2:#302a24; --ink:#efe6d6; --ink-soft:#b8aa97;
-  --blue:#8fb2dc; --red:#e2735c; --mustard:#e6b354; --leaf:#8fb077; --rose:#e9aaa2; --plum:#b495bd;
+  --blue:#8fb2dc; --red:#e2735c; --mustard:#e6b354; --leaf:#8fb077; --rose:#e9aaa2; --plum:#b495bd; --teal:#5fb8b0;
   --card:#2f2923; --line:#4a4138; color-scheme:dark }
 *{box-sizing:border-box}
 body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.6;
@@ -252,6 +252,39 @@ input[type=text]{font-family:var(--body);font-size:15px;color:var(--ink);backgro
   body.gamewide #board .die{width:clamp(36px,3.6vw,56px);font-size:clamp(22px,2.4vw,34px)}
   body.gamewide #board .log{font-size:clamp(12px,1vw,16px)}
 }
+
+/* v40 */
+.tile.intern{--tc:var(--teal)} .tile.exch{--tc:var(--blue)} .tile.intern::before,.tile.exch::before{opacity:.36}
+.tok.cur{width:70%;max-width:30px;z-index:3;box-shadow:0 0 0 2.5px var(--red),0 3px 8px rgba(0,0,0,.25);transform:translateY(-3px)}
+.proj .tok.cur{width:40%;max-width:46px;box-shadow:0 0 0 3px var(--red),0 4px 10px rgba(0,0,0,.25);transform:translateY(-4px)}
+@media (min-width:900px){body.gamewide #board .tok.cur{width:40%;max-width:46px}}
+.opts .btn{position:relative;overflow:hidden}
+.autobar{position:absolute;left:0;bottom:0;height:4px;width:0;background:rgba(255,248,240,.85);animation:autobar 2s linear forwards}
+.btn:not(.primary) .autobar{background:var(--red)}
+@keyframes autobar{to{width:100%}}
+.mcq{display:flex;flex-direction:column;gap:8px}
+.mcq .btn{text-align:left;border-radius:12px;font-weight:400}
+.mcq .btn[aria-pressed="true"]{border-color:var(--red);background:color-mix(in srgb,var(--red) 14%,var(--card));box-shadow:inset 0 0 0 1.5px var(--red)}
+.ipic svg{width:100%;max-height:210px;display:block;border-radius:12px}
+.dtab{border-collapse:collapse;margin:6px 0;font-variant-numeric:tabular-nums;width:100%}
+.dtab th,.dtab td{border:1px solid var(--line);padding:4px 6px;text-align:center;font-size:14px}
+.dtab th{background:var(--paper-2);font-weight:700}
+.judgep{border:2.5px solid var(--red);box-shadow:0 0 0 4px color-mix(in srgb,var(--red) 22%,transparent);animation:pulse 1.6s ease infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 9px color-mix(in srgb,var(--red) 10%,transparent)}}
+.jcard{display:grid;grid-template-columns:48px 1fr;gap:6px 10px;align-items:start;border-top:1px dashed var(--line);padding-top:8px}
+.jcard svg{width:48px;height:53px}
+.jtx b{font-family:var(--display);font-size:18px;display:block}
+.jtx small{color:var(--ink-soft)} .jtx p{margin:2px 0 0;font-size:14px}
+.jbtn{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.jbtn .btn{font-size:17px;padding:10px}
+.live li.k{grid-template-columns:28px 40px 1fr auto auto}
+.kick{border:1px solid var(--line);background:transparent;border-radius:99px;font-size:11px;padding:2px 8px;color:var(--ink-soft)}
+.kick:hover{border-color:var(--red);color:var(--red)}
+.off{color:var(--red);font-weight:700}
+body:has(#scrim:not([hidden])) .musicbtn{display:none}
+.track .th span:first-child{white-space:nowrap;flex:none}
+.musicbtn{position:fixed;left:max(10px,env(safe-area-inset-left,0px));bottom:calc(10px + env(safe-area-inset-bottom,0px));z-index:30;border:1.5px solid var(--ink);background:var(--card);border-radius:99px;padding:6px 12px;font-size:13px;font-weight:700;opacity:.88}
+.tile .got{font-size:.7em}
 </style>
 </head><body>
 <svg class="svgdefs" aria-hidden="true"><defs>
@@ -265,8 +298,9 @@ input[type=text]{font-family:var(--body);font-size:15px;color:var(--ink);backgro
     <div class="hero">
       <div id="cover" style="width:100%;display:flex;justify-content:center"></div>
       <span class="script">Shih Chien · Kaohsiung · IBM</span>
-      <h1>我是大學生</h1>
-      <p>國際企業管理學系・大學生活體驗大富翁</p>
+      <h1>青春不被當</h1>
+      <p style="font-family:var(--display);font-size:18px;color:var(--ink)">國企校園大富翁</p>
+      <p>學業、社團、戀愛，這次換你當人生玩家！</p>
     </div>
     <div class="panel" id="resume" hidden>
       <p style="margin:0">上次的遊戲還沒結束。</p>
@@ -283,7 +317,8 @@ input[type=text]{font-family:var(--body);font-size:15px;color:var(--ink);backgro
       <input type="text" id="jCode" inputmode="numeric" maxlength="4" placeholder="輸入 4 位數教室代碼" autocomplete="off" style="font-size:22px;letter-spacing:.3em;text-align:center">
       <div class="label">選擇你的國企系新生</div>
       <div class="avpick" id="jPick"></div>
-      <input type="text" id="jName" maxlength="8" placeholder="你的暱稱" autocomplete="off">
+      <div class="label">幫你的角色取名字（最多 8 個字，不能和同學重複）</div>
+      <input type="text" id="jName" maxlength="8" placeholder="輸入你的名字或暱稱" autocomplete="off">
       <p class="bad" id="jErr" style="margin:0;font-size:13px" hidden></p>
       <button class="btn primary" id="btnJoin" style="align-self:center;padding:12px 34px;font-size:17px">加入教室 →</button>
       <button class="btn" id="btnDemo" style="align-self:center">沒有教室代碼？直接展示試玩</button>
@@ -315,15 +350,15 @@ input[type=text]{font-family:var(--body);font-size:15px;color:var(--ink);backgro
     <button class="btn primary" id="btnStart" style="align-self:center;padding:12px 34px;font-size:17px">入學報到 →</button>
     </div>
     <div class="panel"><div class="label">國企系老師與執秘</div><div class="teach" id="teach"></div></div>
-    <p class="note" style="text-align:center;font-size:11px;opacity:.7">版本 2026-10-25 v36（心儀對象新名字與圖像）</p>
-    <p class="note" style="text-align:center">紅色格是國企系老師的課，要真的完成課堂任務才拿得到學分；走到其他系的格子可以學到該系的特殊技能，集滿三個有獎勵；每年回到報到處，可以跟玟玟執秘簡報技能換學分。</p>
+    <p class="note" style="text-align:center;font-size:11px;opacity:.7">版本 2026-10-28 v40（青春不被當大改版）</p>
+    <p class="note" style="text-align:center">紅色格是 13 門國企系課程，要完成老師的課堂任務才拿得到學分，第一位完成的同學會成為教學 TA；綠色格是 7 個社團，要先通過入社考驗；還有海外實習、姊妹校交換和旗山美濃內門約會景點。累積 3 項技能可以向玟玟執秘簡報換學分。</p>
   </section>
 
   <section id="game" hidden>
     <div class="board" id="board"></div>
     <div class="legend">
-      <span><i style="background:var(--red)"></i>國企系課程（課堂任務）</span><span><i style="background:var(--blue)"></i>商資學院學系（學技能）</span><span><i style="background:var(--mustard)"></i>文創學院學系（學技能）</span>
-      <span><i style="background:var(--leaf)"></i>社團</span><span><i style="background:var(--rose)"></i>景點（約會）</span><span><i style="background:var(--plum)"></i>命運</span>
+      <span><i style="background:var(--red)"></i>國企系課程（課堂任務）</span><span><i style="background:var(--teal)"></i>海外實習（知識問答）</span><span><i style="background:var(--blue)"></i>姊妹校交換</span>
+      <span><i style="background:var(--leaf)"></i>社團</span><span><i style="background:var(--rose)"></i>景點（約會）</span><span><i style="background:var(--mustard)"></i>機會</span><span><i style="background:var(--plum)"></i>命運</span>
       <span>點格子看介紹</span>
     </div>
     <div class="panel" id="livePanel" hidden><div class="label" id="liveTitle">全班即時排名</div><div id="liveBanner"></div><ol class="live" id="liveList"></ol></div>
@@ -351,7 +386,7 @@ input[type=text]{font-family:var(--body);font-size:15px;color:var(--ink);backgro
           <div class="chips" id="tBots"></div>
           <p class="note">開始比賽時如果不足 4 人，會自動補電腦玩家到 4 人。電腦玩家由這台電腦代玩，請不要關掉這個畫面。</p></div>
       </div>
-      <div class="panel"><div class="label">已加入的同學（<span id="tCount">0</span> 人）</div><ol class="live" id="tList"></ol></div>
+      <div class="panel"><div class="label">已加入的同學（<span id="tCount">0</span> 人）・點「移出」可把角色踢出教室</div><ol class="live" id="tList"></ol><p class="note" id="tKicked"></p></div>
     </div>
     <div id="tProj" hidden style="display:flex;flex-direction:column;gap:12px">
       <div class="tbar">
@@ -362,8 +397,9 @@ input[type=text]{font-family:var(--body);font-size:15px;color:var(--ink);backgro
       <div class="proj">
         <div class="board" id="pBoard"></div>
         <aside class="paside">
+          <div class="panel judgep" id="tJudge" hidden></div>
           <div class="panel" id="tPodium" hidden></div>
-          <div class="panel"><div class="label">全班即時排名（<span id="pCount">0</span> 人）</div><ol class="live" id="pList"></ol></div>
+          <div class="panel"><div class="label">全班即時排名（<span id="pCount">0</span> 人）・點「移出」可把角色踢出遊戲</div><ol class="live" id="pList"></ol><p class="note" id="pKicked"></p></div>
         </aside>
       </div>
     </div>
@@ -371,6 +407,7 @@ input[type=text]{font-family:var(--body);font-size:15px;color:var(--ink);backgro
   </section>
 </div>
 <div id="toast" hidden></div>
+<button id="musicBtn" class="musicbtn" type="button" aria-pressed="false" onclick="Music.toggle()">♪ 音樂：關</button>
 <div id="scrim" hidden><div class="sheet" id="sheet" role="dialog" aria-modal="true"></div></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -413,13 +450,13 @@ const AV = [
   {name:'Emma',full:'鄭艾瑪',g:'女',eyes:'open',skin:'#f8dccb',hair:'#c99b5a',style:'bangs',top:'#e8b64e',inner:'#fff6e4'},
 ];
 const TEACH = [
-  {name:'艾瑞克',style:'品牌行銷學',av:{skin:'#e9be9b',hair:'#2f2620',style:'spiky',top:'#a9c6e6',inner:'#f7fafd',glasses:true}},
-  {name:'阿金',style:'經濟學',av:{skin:'#efc3a0',hair:'#3d3430',style:'buzz',top:'url(#navystripe)',inner:'#2f3a57',glasses:true,glassColor:'#c9a24a',v:'r'}},
-  {name:'武哥',style:'統計學・全英授課・愛唱德文歌',av:{skin:'#e6b996',hair:'#1c1a19',style:'sidepart',top:'#d6d2c8',inner:'#6d2433',glasses:true,turtle:true,mic:true}},
-  {name:'仲哥',style:'系主任・企業倫理',av:{skin:'#e6b996',hair:'#35312e',style:'crew',top:'#4a4b4f',inner:'#3c3d41',glasses:true,mood:'calm'}},
-  {name:'雙慧',style:'日文',av:{skin:'#f4cfb8',hair:'#4e3428',style:'jpbob',top:'#dca33a',inner:'#fff8ea',glasses:true,mood:'calm'}},
+  {name:'艾瑞克',style:'品牌行銷學、簡報與公關',av:{skin:'#e9be9b',hair:'#2f2620',style:'spiky',top:'#a9c6e6',inner:'#f7fafd',glasses:true}},
+  {name:'阿金',style:'經濟學、供應鏈管理',av:{skin:'#efc3a0',hair:'#3d3430',style:'buzz',top:'url(#navystripe)',inner:'#2f3a57',glasses:true,glassColor:'#c9a24a',v:'r'}},
+  {name:'武哥',style:'統計學、金融市場・全英授課',av:{skin:'#e6b996',hair:'#1c1a19',style:'sidepart',top:'#d6d2c8',inner:'#6d2433',glasses:true,turtle:true,mic:true}},
+  {name:'仲哥',style:'系主任・企業倫理、消費者行為',av:{skin:'#e6b996',hair:'#35312e',style:'crew',top:'#4a4b4f',inner:'#3c3d41',glasses:true,mood:'calm'}},
+  {name:'雙慧',style:'日文、國際貿易實務',av:{skin:'#f4cfb8',hair:'#4e3428',style:'jpbob',top:'#dca33a',inner:'#fff8ea',glasses:true,mood:'calm'}},
   {name:'英子',style:'韓文',av:{skin:'#f6d3bf',hair:'#3a2a22',style:'frenchbob',top:'#e39a92',inner:'#fff3ef'}},
-  {name:'阿明',style:'會計學',av:{skin:'#efc6a6',hair:'#1f1c1b',style:'fringe',top:'#c9dcea',inner:'#8fb0d6',glasses:true,v:'r'}},
+  {name:'阿明',style:'會計學、商業資料分析',av:{skin:'#efc6a6',hair:'#1f1c1b',style:'fringe',top:'#c9dcea',inner:'#8fb0d6',glasses:true,v:'r'}},
   {name:'玟玟',style:'系上執秘・行政支援',av:{skin:'#f7d8c6',hair:'#5a3a2c',style:'bangbob',top:'#b39bc1',inner:'#f8f3fa'}},
 ];
 const T_INTRO={
@@ -430,12 +467,12 @@ const T_INTRO={
   '阿明':'會計與資訊碩士、中山大學博士，專長國際企業財務會計、公司治理、商業資料分析與 AI 應用，也當過記帳事務所顧問。阿明老師教會計總是笑咪咪：「資產等於負債加權益，帳一平，心就安。」',
   '雙慧':'日本早稻田大學商學碩士，曾在佐川航空、日產汽車擔任商品企劃分析師，也當過國企系副主任。雙慧老師的日文課不只教語言，還會分享日本職場與商業禮儀，讓你開口說日文，也懂日本人做生意的眉角。',
   '英子':'來自韓國的英子老師，是國企系的韓籍教師。她的韓文課從打招呼教起，帶大家認識韓國文化、流行音樂和商業往來。認真上完一學期，追劇不用看字幕的日子就不遠了！',
-  '玟玟':'國企系辦的大總管，選課、獎學金、實習和各種表單都找她。玟玟執秘最喜歡看到同學跨系學新技能，每學年回到報到處記得到系辦跟她簡報，還能換到額外學分喔！',
+  '玟玟':'國企系辦的大總管，選課、獎學金、實習和各種表單都找她。玟玟執秘最喜歡看到同學學新技能：社團技能、語言技能、當 TA 的教學技能都算，累積 3 項就來系辦跟她簡報，每項換 1 學分！',
 };
 async function showTeacherIntro(btn){
   await sheet({human:1,tag:'開學第一天',title:'認識國企系老師',body:`<p class="note">修課、學技能、拿學分，都會遇到這幾位。點「${btn||'開始大學生活'}」就出發！</p>`+
-    '<div class="tintro">'+TEACH.map(t=>{const c=COURSES.find(c=>c.t===t.name);return `<div class="tcard"><div class="tpic">${avatar(t.av,'')}</div><div class="ttx"><b style="font-family:var(--display);font-size:17px">${t.name}${t.name==='玟玟'?' 執秘':'老師'}</b>
-      <small class="note" style="display:block">${c?'授課：'+c.n:t.style}</small><p style="margin:2px 0 0;font-size:14px">${T_INTRO[t.name]||''}</p></div></div>`}).join('')+'</div>',
+    '<div class="tintro">'+TEACH.map(t=>{const cs=COURSES.filter(c=>c.t===t.name).map(c=>c.n);return `<div class="tcard"><div class="tpic">${avatar(t.av,'')}</div><div class="ttx"><b style="font-family:var(--display);font-size:17px">${t.name}${t.name==='玟玟'?' 執秘':'老師'}</b>
+      <small class="note" style="display:block">${cs.length?'授課：'+cs.join('、'):t.style}</small><p style="margin:2px 0 0;font-size:14px">${T_INTRO[t.name]||''}</p></div></div>`}).join('')+'</div>',
     buttons:[{l:btn||'開始大學生活',v:1,p:1}]});
 }
 const T_BY=n=>TEACH.find(t=>t.name===n);
@@ -656,74 +693,131 @@ function coverSVG(){
   </svg>`;
 }
 
-/* ---------- 課程與技能 ---------- */
+/* ---------- 課程（國企系 13 門，依老師專長） ---------- */
 const COURSES = [
- {n:'統計學',s:'統計',t:'武哥',task:'stats'},
- {n:'品牌行銷學',s:'品牌',t:'艾瑞克',task:'intro'},
  {n:'企業倫理',s:'倫理',t:'仲哥',task:'ethics'},
- {n:'日文',s:'日文',t:'雙慧',task:'jp'},
+ {n:'消費者行為',s:'消費者',t:'仲哥',task:'consumer'},
+ {n:'統計學',s:'統計',t:'武哥',task:'stats'},
+ {n:'金融市場',s:'金融',t:'武哥',task:'banks'},
  {n:'經濟學',s:'經濟',t:'阿金',task:'econ'},
+ {n:'供應鏈管理',s:'供應鏈',t:'阿金',task:'scm'},
+ {n:'會計學',s:'會計',t:'阿明',task:'math'},
+ {n:'商業資料分析',s:'數據',t:'阿明',task:'data'},
+ {n:'日文',s:'日文',t:'雙慧',task:'jp'},
+ {n:'國際貿易實務',s:'國貿',t:'雙慧',task:'trade'},
  {n:'韓文',s:'韓文',t:'英子',task:'kr'},
- {n:'會計學',s:'會計',t:'阿明',task:'acct'},
+ {n:'品牌行銷學',s:'品牌',t:'艾瑞克',task:'tactics'},
+ {n:'簡報與公關',s:'簡報',t:'艾瑞克',task:'speech'},
 ];
-const TASK_HINT={stats:'用英文出的算數題，算出答案。',intro:'寫一段至少 20 字的自我介紹。',ethics:'舉一家形象正面的知名企業，說出理由。',
-  jp:'說（打）一句日文，要有平假名或片假名。',econ:'舉一個供需變化讓東西漲價或降價的生活例子。',acct:'用會計恆等式算出答案。',kr:'說（打）一句韓文。'};
-const DEPTS = [
- {n:'資訊管理學系',s:'資管',c:'biz',sk:['Python 資料分析','ERP 系統操作','SQL 資料庫']},
- {n:'數位多媒體遊戲設計學系',s:'遊戲',c:'biz',sk:['遊戲企劃書','Unity 關卡設計','角色原畫']},
- {n:'資訊科技與通訊學系',s:'資通',c:'biz',sk:['無人機專業證照','手機 App 設計','網路架設']},
- {n:'電腦動畫學士學位學程',s:'動畫',c:'biz',sk:['3D 建模','動態分鏡','短影音剪輯']},
- {n:'金融管理學系',s:'金管',c:'biz',sk:['投資理財規劃','金融證照','保險規劃']},
- {n:'會計暨稅務學系',s:'會稅',c:'biz',sk:['財報分析','記帳實務','報稅技巧']},
- {n:'行銷管理學系',s:'行銷',c:'biz',sk:['社群小編','品牌企劃','直播帶貨']},
- {n:'東南亞智慧商務學士學位學程',s:'東南亞',c:'biz',sk:['越南語會話','跨境電商開店','印尼市場調查']},
- {n:'服飾設計與經營學系',s:'服經',c:'cul',sk:['打版製衣','服裝陳列','品牌採購']},
- {n:'時尚設計學系',s:'時尚',c:'cul',sk:['彩妝技巧','攝影技巧','劇場服裝設計']},
- {n:'觀光管理學系',s:'觀光',c:'cul',sk:['領隊導遊證照','遊程規劃','旅館櫃檯接待']},
- {n:'應用日文學系',s:'應日',c:'cul',sk:['日檢 N1','日式待客禮儀','日文商業書信']},
- {n:'休閒產業管理學系',s:'休閒',c:'cul',sk:['SUP 立槳','獨木舟','EMT-1 證照']},
-];
-const SET_REWARDS = [
- {n:'跨域學習證明',d:'集滿三項跨系技能，系辦頒給你跨域學習證明。',fx:[['cr',2]]},
- {n:'斜槓青年',d:'技能多到可以接案，社團和人緣都跟著加分。',fx:[['club',1],['love',1]]},
- {n:'跨領域微學程',d:'修完跨領域微學程，學分直接抵免。',fx:[['cr',3]]},
- {n:'海外實習推薦',d:'系上推薦你參加海外企業實習，履歷超亮眼。',fx:[['cr',2],['club',1]]},
- {n:'跨域達人',d:'你已經是全校最會跨域的人。',fx:[['cr',2]]},
-];
-const COMBOS = [
- {n:'空拍影像工作室',need:['無人機專業證照','攝影技巧','短影音剪輯'],d:'接下觀光局的空拍宣傳案。',fx:[['cr',2],['club',1]]},
- {n:'東南亞跨境創業家',need:['越南語會話','跨境電商開店','直播帶貨'],d:'在越南開了第一家網路商店。',fx:[['cr',3]]},
- {n:'生態旅遊領隊',need:['SUP 立槳','獨木舟','領隊導遊證照'],d:'帶外國旅客玩遍美濃湖和內門山林。',fx:[['love',1],['club',1]]},
- {n:'時尚品牌經理',need:['彩妝技巧','服裝陳列','品牌企劃'],d:'幫學姐的服飾品牌辦了一場快閃店。',fx:[['cr',2],['love',1]]},
- {n:'金融科技分析師',need:['財報分析','投資理財規劃','Python 資料分析'],d:'寫出自己的選股模型。',fx:[['cr',3]]},
- {n:'日系服務專家',need:['日檢 N1','日式待客禮儀','旅館櫃檯接待'],d:'拿到日本飯店的實習機會。',fx:[['cr',2],['club',1]]},
-];
+const CR_COURSE=4;
+const TASK_HINT={ethics:'企業倫理情境題，寫出你的看法。',consumer:'消費者心理選擇題。',stats:'全英文出題的統計算數題。',banks:'寫出三家常見的銀行。',
+  econ:'舉一個生活中的經濟學例子。',scm:'物流與供應鏈選擇題。',math:'一題高三程度的簡單數學題。',data:'看銷售數據表回答問題。',
+  jp:'用說的或打字說一句日文。',trade:'國際貿易選擇題。',kr:'用說的或打字說一句韓文。',tactics:'說出三個行銷手段。',speech:'上台說話，由老師判定通過。'};
+const SKILL_POOL=['Excel 函數技能','跨文化溝通技能','英文簡報技能','社群小編技能','商業攝影技能','短影音剪輯技能','時間管理技能'];
 
-/* ---------- 地圖 ---------- */
-const CLUB_INTRO={
-  '學生會':'全校學生的代言人，負責反映同學意見、爭取權益，也主辦迎新、校慶園遊會等大型活動。想練領導力和溝通協調，學生會就是最好的舞台。',
-  '吉他社':'零基礎或自彈自唱高手都歡迎。社課從和弦教起，期末有成果發表，草地上的夜間彈唱更是內門山上最浪漫的風景。',
-  '康輔社':'帶動跳、營火晚會、團康遊戲樣樣來，寒暑假還會出隊帶營隊。在這裡學會炒熱氣氛、照顧小朋友，也會交到一群一起熬夜的夥伴。',
-  '系學會':'國企系學會負責迎新宿營、系烤、聖誕晚會和送舊，是學長姐和學弟妹之間的橋樑。想認識全系的人，加入系學會準沒錯。',
-  '熱音社':'有自己的練團室和器材，吉他、貝斯、鼓、鍵盤和主唱都找得到團員。每學期的成果大公演，是站上舞台、被全校看見的機會。',
-  '籃研社':'籃球研究社，從基本動作練到戰術，也常和外校打友誼賽。球場上一起流汗的隊友，常常就是大學四年最好的朋友。',
-  '羽球社':'新手老手都歡迎，社課依程度分組練球，還有校內盃和大專盃比賽。下課後到體育館殺幾球，是最好的紓壓方式。',
-  '攝影社':'從相機操作、構圖教到後製，還會外拍旗山老街、美濃湖和內門山區。用鏡頭記錄大學生活，也能幫各種活動拍出好照片。',
-  '宋江陣':'實踐高雄校區的招牌社團，傳承內門最具代表性的傳統陣頭。社員練兵器與陣法、跟著廟會出陣，還常受邀到國內外表演。',
-  '熱舞社':'Hip-hop、Locking、Jazz、K-pop 都有人跳，社課從基本律動教起。期末成果發表和校外比賽，是舞者們最熱血的時刻。',
+/* ---------- 題庫（每位同學看過的題目會先避開，盡量每次不同） ---------- */
+const BANK={
+ consumer:[
+  {q:'馬斯洛需求層次理論中，最底層的需求是什麼？',o:['生理需求','自我實現需求','尊重需求','社會歸屬需求'],a:0,ex:'吃飯、喝水、睡覺這些生理需求被滿足後，人才會往上追求安全、歸屬、尊重和自我實現。'},
+  {q:'「限時限量、售完為止」主要利用消費者的哪一種心理？',o:['怕錯過的稀少性心理','從眾心理','價格敏感','品牌忠誠'],a:0,ex:'東西越少越覺得珍貴，怕錯過就會加快下單。'},
+  {q:'買了很貴的東西後，一直懷疑自己是不是買錯了，這叫做什麼？',o:['購後失調','衝動購買','品牌轉換','需求確認'],a:0,ex:'購後失調（認知失調）是買完之後的不安，所以很多品牌會在售後再強調產品優點。'},
+  {q:'網紅推薦之後大家搶著買，這主要是哪一種影響？',o:['參考群體的影響','季節性影響','通貨膨脹','價格歧視'],a:0,ex:'網紅、朋友、家人都屬於參考群體，會影響我們的購買決策。'},
+  {q:'結帳櫃台旁放口香糖和小零食，主要是想引發什麼？',o:['衝動性購買','延遲購買','比價行為','退貨'],a:0,ex:'排隊等結帳時順手拿一個，就是典型的衝動性購買。'},
+  {q:'「第二件六折」這類促銷，最主要想提高什麼？',o:['每次購買的數量（客單價）','員工薪水','商品成本','退貨率'],a:0,ex:'讓你一次買兩件，提高每筆交易的金額。'},
+  {q:'消費者購買決策過程的第一步通常是什麼？',o:['發現需求（問題確認）','蒐集資訊','比較方案','購後評價'],a:0,ex:'先發現「我需要」，才會開始找資料、比較、購買和評價。'},
+  {q:'商品標價 99 元而不是 100 元，用的是哪一種定價技巧？',o:['尾數定價','成本加成定價','滲透定價','聲望定價'],a:0,ex:'99 元看起來比 100 元便宜很多，這是尾數（畸零）定價。'},
+  {q:'賣場提供試吃、試用，主要是降低消費者的什麼？',o:['知覺風險（怕買錯）','購買能力','品牌知名度','運費'],a:0,ex:'先試過，比較不怕踩雷，購買意願就提高了。'},
+  {q:'一直固定買同一個品牌，很少換別家，這叫做什麼？',o:['品牌忠誠度','品牌延伸','市場區隔','價格戰'],a:0,ex:'品牌忠誠度高的顧客會重複購買，也比較願意推薦給朋友。'},
+ ],
+ scm:[
+  {q:'供應鏈中的「長鞭效應」指的是什麼？',o:['需求變動往上游被一層層放大','運輸距離越來越長','商品越賣越便宜','員工流動率變高'],a:0,ex:'零售端一點點需求變化，傳到工廠和原料商時會被放大，造成庫存忽多忽少。'},
+  {q:'豐田汽車有名的 JIT（及時生產）最主要的目標是？',o:['降低庫存浪費','增加廣告曝光','提高售價','延長交貨時間'],a:0,ex:'需要多少才生產多少，減少倉庫裡堆放的庫存。'},
+  {q:'國際海運最常用來裝貨的標準容器是什麼？',o:['貨櫃','紙箱','麻布袋','油桶'],a:0,ex:'標準化的貨櫃讓船、火車、卡車之間可以快速轉運。'},
+  {q:'倉庫的「先進先出」（FIFO）是什麼意思？',o:['先入庫的貨先出貨','價格高的先出貨','最輕的先出貨','新貨先出貨'],a:0,ex:'先進來的先出去，避免貨品放到過期。'},
+  {q:'「冷鏈物流」主要用來運送哪一類商品？',o:['需要低溫保存的生鮮或疫苗','家具','書籍','衣服'],a:0,ex:'從產地到消費者手上全程保持低溫，品質才不會壞掉。'},
+  {q:'下列哪一項屬於「逆物流」？',o:['退貨與回收','原料進貨','工廠出貨','門市補貨'],a:0,ex:'商品從消費者往回流到賣家或工廠，就是逆物流。'},
+  {q:'企業準備「安全庫存」的用途是什麼？',o:['應付需求或交貨時間的意外變化','讓倉庫看起來很滿','提高商品售價','減少員工人數'],a:0,ex:'多留一點緩衝，就算訂單突然變多或供應商延遲，也不會斷貨。'},
+  {q:'條碼和 RFID 在供應鏈中主要幫助什麼？',o:['追蹤與盤點貨品','設計包裝','決定售價','招募員工'],a:0,ex:'一掃就知道貨在哪裡、還剩多少。'},
+  {q:'把部分工作交給外部公司來做，這叫做什麼？',o:['外包','併購','上市','加盟'],a:0,ex:'例如把物流交給專業物流公司，自己專心做核心業務。'},
+  {q:'跟海運比起來，空運的特點是什麼？',o:['速度快但運費比較高','速度慢但比較便宜','只能運送液體','完全不用報關'],a:0,ex:'空運適合高價、急件或保存期限短的商品。'},
+ ],
+ trade:[
+  {q:'用 FOB 條件交易時，貨物裝上船之後的風險由誰承擔？',o:['買方','賣方','船長','銀行'],a:0,ex:'FOB（船上交貨）：貨物裝上船，風險就轉移給買方。'},
+  {q:'CIF 報價包含哪些費用？',o:['成本、保險費、運費','只有成本','成本和關稅','運費和倉儲費'],a:0,ex:'CIF = Cost（成本）+ Insurance（保險）+ Freight（運費）。'},
+  {q:'信用狀（L/C）是由誰開出的付款保證？',o:['銀行','海關','船公司','保險公司'],a:0,ex:'買方請銀行開信用狀，賣方只要交出符合規定的文件，銀行就保證付款。'},
+  {q:'貨物進口或出口時，要向哪個單位申報？',o:['海關','警察局','衛生所','戶政事務所'],a:0,ex:'進出口貨物都要經過海關查驗和報關。'},
+  {q:'報價單上的「MOQ」是什麼意思？',o:['最低訂購量','最高售價','付款期限','保固期'],a:0,ex:'MOQ（Minimum Order Quantity）：一次至少要訂這麼多，工廠才接單。'},
+  {q:'1 美元從兌換 30 元新台幣變成 32 元，代表新台幣怎麼了？',o:['貶值','升值','沒有變化','停止交易'],a:0,ex:'同樣 1 美元要用更多台幣才換得到，表示台幣變薄、貶值了。'},
+  {q:'新台幣貶值時，通常對哪一方比較有利？',o:['台灣的出口商','台灣的進口商','出國旅遊的人','買進口車的人'],a:0,ex:'出口賣出去收到美元，換回的台幣變多了。'},
+  {q:'海運「提單」（B/L）是由誰簽發的？',o:['運送人（船公司）','買方','海關','外交部'],a:0,ex:'提單是船公司收到貨物後簽發的單據，也是提貨的憑證。'},
+  {q:'「關稅」是對什麼課徵的稅？',o:['進出口的貨物','個人薪水','房屋','股票交易'],a:0,ex:'關稅是貨物通過國境時課徵的稅。'},
+  {q:'「產地證明」主要用來證明什麼？',o:['貨物是在哪個國家生產的','貨物的價格','買方的身分','運輸的時間'],a:0,ex:'有些國家依產地給予不同關稅，所以需要產地證明。'},
+ ],
+ badminton:[
+  {q:'羽球比賽每局先得幾分的一方獲勝（還沒打到 20 平的情況）？',o:['21 分','11 分','15 分','25 分'],a:0,ex:'現行羽球採每球得分制，每局 21 分。'},
+  {q:'羽球雙打比賽，每一隊有幾位球員？',o:['2 位','1 位','3 位','4 位'],a:0,ex:'雙打就是兩人一隊。'},
+  {q:'羽球落在邊界線上，算界內還是界外？',o:['界內','界外','重打','由觀眾決定'],a:0,ex:'壓線算界內，所以壓線球是好球。'},
+  {q:'羽球單打發球時，要把球發到哪裡？',o:['斜對角的發球區','正前方的發球區','對方場地任何地方','網子上'],a:0,ex:'發球要打到對角線方向的發球區。'},
+ ],
+ volley:[
+  {q:'六人制排球，每一隊在場上有幾位球員？',o:['6 位','5 位','7 位','9 位'],a:0,ex:'六人制排球每隊場上 6 人。'},
+  {q:'排球每一隊最多可以觸球幾次，就要把球送過網（攔網不算）？',o:['3 次','2 次','4 次','沒有限制'],a:0,ex:'一傳、舉球、扣球，最多 3 次。'},
+  {q:'排球比賽（非決勝局）每局要先得幾分，並且領先 2 分才獲勝？',o:['25 分','21 分','15 分','30 分'],a:0,ex:'前四局 25 分、決勝局 15 分，都要領先 2 分。'},
+  {q:'同一位球員可以連續碰球兩次嗎（攔網除外）？',o:['不行，算連擊犯規','可以，沒有限制','只有隊長可以','只有發球時可以'],a:0,ex:'同一人連續觸球兩次是連擊犯規。'},
+ ],
+ ibm:[
+  {q:'國企系的系主任是哪一位老師？',o:['仲哥老師','武哥老師','阿金老師','英子老師'],a:0,ex:'系主任仲哥老師也曾擔任商學與資訊學院院長。'},
+  {q:'國企系教韓文的是哪一位老師？',o:['英子老師','雙慧老師','阿明老師','艾瑞克老師'],a:0,ex:'英子老師是國企系的韓籍教師。'},
+  {q:'在系辦負責選課、獎學金和各種表單的執秘是誰？',o:['玟玟','雙慧','英子','羽彤'],a:0,ex:'有問題找系辦的玟玟執秘就對了。'},
+  {q:'全英文授課、還會唱德文歌的是哪位老師？',o:['武哥老師','阿金老師','阿明老師','仲哥老師'],a:0,ex:'武哥老師的統計學全英文授課。'},
+  {q:'下列哪一個「不是」國企系海外實習的地點？',o:['冰島','北海道','峇里島','普吉島'],a:0,ex:'Club Med 實習地點包括日本北海道、印尼峇里島、泰國普吉島等，沒有冰島。'},
+ ],
+ abroad:[
+  {q:'出國交換之前，一定要先辦好哪一項證件？',o:['護照','駕照','健保卡','學生證影本'],a:0,ex:'護照是出國的身分證明，沒有護照就無法出境。'},
+  {q:'到國外長期就讀或交換，通常要依當地規定申請什麼？',o:['學生簽證或居留許可','國際駕照','信用卡','會員卡'],a:0,ex:'各國規定不同，出發前要查清楚並及早申請簽證。'},
+  {q:'申請交換學生時，學校通常最看重哪兩項？',o:['在校成績和語言能力','身高和體重','社團數量和粉絲數','家裡住哪裡'],a:0,ex:'成績和語言能力（例如多益）是交換甄選最常見的條件。'},
+  {q:'出國前，最建議先投保哪一種保險？',o:['海外旅遊平安險和醫療保險','汽車險','火險','寵物險'],a:0,ex:'國外看病很貴，出國前一定要保險。'},
+  {q:'出國前，護照的有效期限一般建議至少還剩多久？',o:['6 個月以上','1 週','1 個月','不用管效期'],a:0,ex:'很多國家要求入境時護照效期至少還有 6 個月。'},
+  {q:'出國交換前，修課學分要先跟誰確認能不能抵免？',o:['系上（系辦與指導老師）','旅行社','航空公司','房東'],a:0,ex:'先和系上確認學分抵免，回國才不會延畢。'},
+ ],
+ toeic:[
+  {q:'The meeting has been ___ until next Monday.',o:['postponed','postpone','postponing','postpones'],a:0,ex:'has been + 過去分詞：會議「被延到」下週一。'},
+  {q:'Please submit the form ___ the end of the day.',o:['by','since','during','among'],a:0,ex:'by + 時間：在某時間之前完成。'},
+  {q:'Ms. Chen is responsible ___ training new staff.',o:['for','to','at','with'],a:0,ex:'be responsible for：負責某事。'},
+  {q:'The store opens ___ 9 a.m.',o:['at','in','on','to'],a:0,ex:'幾點幾分用 at。'},
+  {q:'"Invoice" 的意思是什麼？',o:['發票、請款單','邀請函','履歷表','登機證'],a:0,ex:'Invoice 是商業上很常見的請款單據。'},
+  {q:'"Boarding pass" 的意思是什麼？',o:['登機證','護照','行李箱','出口'],a:0,ex:'機場報到後拿到的登機證。'},
+  {q:'If you have any questions, please feel free to ___ me.',o:['contact','contacting','contacts','contacted'],a:0,ex:'feel free to + 原形動詞。'},
+  {q:'The new product was ___ successful that it sold out in a week.',o:['so','such','very','too'],a:0,ex:'so + 形容詞 + that：太…以致於…'},
+  {q:'"Deadline" 的意思是什麼？',o:['截止期限','死胡同','最後一班車','加班費'],a:0,ex:'職場上常說的 deadline 就是截止時間。'},
+  {q:'She has worked here ___ 2020.',o:['since','for','during','ago'],a:0,ex:'現在完成式 + since + 起始時間點。'},
+ ],
 };
+/* 選項打亂，避免答案永遠在同一個位置 */
+function shuffleQ(it){const idx=it.o.map((x,i)=>i).sort(()=>Math.random()-.5);return {q:it.q,o:idx.map(i=>it.o[i]),a:idx.indexOf(it.a),ex:it.ex}}
+function pickIdx(p,key,n){p.qs=p.qs||{};const seen=p.qs[key]=p.qs[key]||[];let pool=[...Array(n).keys()].filter(i=>!seen.includes(i));
+  if(!pool.length){seen.length=0;pool=[...Array(n).keys()]} const i=pool[rnd(pool.length)]; seen.push(i); return i}
+function pickBank(p,key){const b=BANK[key];return shuffleQ(b[pickIdx(p,'b_'+key,b.length)])}
+
+/* ---------- 社團（7 個，入社要先通過考驗） ---------- */
 const CLUBS = [
- {n:'學生會',s:'學生會',d:'替全校同學爭取權益，辦活動也辦座談。'},
- {n:'吉他社',s:'吉他',d:'草地上的木吉他和自彈自唱的夜晚。'},
- {n:'康輔社',s:'康輔',d:'帶動跳、營隊、小隊呼，嗓子永遠是啞的。'},
- {n:'系學會',s:'系學會',d:'國企系迎新、系烤、送舊，大小事都歸你管。'},
- {n:'熱音社',s:'熱音',d:'練團室裡的爆音和期末成果大公演。'},
- {n:'籃研社',s:'籃研',d:'球場鬥牛打到天黑，再一起去吃宵夜。'},
- {n:'羽球社',s:'羽球',d:'體育館裡此起彼落的殺球聲。'},
- {n:'攝影社',s:'攝影',d:'背著相機掃街，內門山景、旗山老街都是題材。'},
- {n:'宋江陣',s:'宋江',d:'實踐高雄的招牌傳統陣頭，跟著廟會一起出陣。'},
- {n:'熱舞社',s:'熱舞',d:'鏡子前的八拍，跳到地板發燙。'},
+ {n:'籃球系隊',s:'籃球',d:'國企系隊，系際盃就靠你了！',test:{kind:'judge',prompt:'入社考驗：說出一個籃球規則（例如走步、三秒區、24 秒進攻）。'},skill:'團隊合作技能',fx:[['cr',1]]},
+ {n:'熱舞社',s:'熱舞',d:'鏡子前的八拍，跳到地板發燙。',test:{kind:'judge',prompt:'入社考驗：說出一種舞蹈的名稱（例如 Hip-hop、Locking、K-pop 舞）。'},skill:'跳舞技能',fx:[['love',1]]},
+ {n:'羽球社',s:'羽球',d:'體育館裡此起彼落的殺球聲。',test:{kind:'mcq',bank:'badminton'},skill:'反應力技能',fx:[['cr',1]]},
+ {n:'吉他社',s:'吉他',d:'草地上的木吉他和自彈自唱的夜晚。',test:{kind:'chords'},skill:'把妹技能',fx:[['love',1]]},
+ {n:'排球社',s:'排球',d:'一傳、舉球、扣殺，默契就是一切。',test:{kind:'mcq',bank:'volley'},skill:'運動技能',fx:[['love',1]]},
+ {n:'健身社',s:'健身',d:'深蹲、伏地挺身、高蛋白，練出好體態。',test:{kind:'judge',prompt:'入社考驗：現場做 5 下伏地挺身！'},skill:'運動技能',fx:[['love',1]]},
+ {n:'國企系學會',s:'系學會',d:'國企系迎新、系烤、送舊，大小事都歸你管。',test:{kind:'mcq',bank:'ibm'},skill:'活動企劃技能',fx:[['cr',1]]},
 ];
+const CLUB_INTRO={
+  '籃球系隊':'國企系自己的籃球隊，平常一起練球，系際盃和新生盃一起拚冠軍。球場上一起流汗的隊友，常常就是大學四年最好的朋友。',
+  '熱舞社':'Hip-hop、Locking、Jazz、K-pop 都有人跳，社課從基本律動教起。期末成果發表和校外比賽，是舞者們最熱血的時刻。',
+  '羽球社':'新手老手都歡迎，社課依程度分組練球，還有校內盃和大專盃比賽。下課後到體育館殺幾球，是最好的紓壓方式。',
+  '吉他社':'零基礎或自彈自唱高手都歡迎。社課從和弦教起，期末有成果發表，草地上的夜間彈唱更是內門山上最浪漫的風景。',
+  '排球社':'從低手、高手傳球練到扣殺，強調團隊默契。每學期都有校內聯賽，場邊加油聲最熱鬧。',
+  '健身社':'教你正確的重訓動作和飲食觀念，從伏地挺身練到深蹲硬舉。一起練習、互相督促，體態和自信一起變好。',
+  '國企系學會':'國企系學會負責迎新宿營、系烤、聖誕晚會和送舊，是學長姐和學弟妹之間的橋樑。想認識全系的人，加入系學會準沒錯。',
+};
 const SPOTS = [
  {n:'旗山老街',s:'旗山街',d:'巴洛克立面的老街，來一碗香蕉冰。'},
  {n:'旗山車站',s:'旗山站',d:'糖鐵時代留下的老車站，拍照很好看。'},
@@ -732,21 +826,52 @@ const SPOTS = [
  {n:'美濃湖',s:'美濃湖',d:'湖畔騎單車，等一場夕陽。'},
  {n:'美濃油紙傘',s:'紙傘',d:'客家油紙傘工坊，可以親手彩繪一把傘。'},
 ];
-// 44 格（12×12 外圈）：0 報到、11 圖書館、22 宿舍、33 期末考週
-const LAYOUT = ['S','k0','d0','c0','k5','d1','s0','d2','c1','d3','fa',
-                'L','k1','d4','c2','s1','d5','c3','ch','d6','c4','k2',
-                'R','d7','fa','c5','s2','d8','c6','k3','d9','s3','d10',
-                'F','c7','d11','ch','c8','s4','k4','d12','k6','c9','s5'];
-const CORNERS = {S:{n:'入學報到・國企系辦',s:'報到',d:'每經過一次就升上一個年級。新學年註冊時，可以向玟玟執秘簡報新學會的跨系技能，換取額外學分。'},L:{n:'圖書館閉關',s:'圖書館',d:'被送來閉關要暫停一回合；路過只是來借書。'},
+
+/* ---------- 海外實習（5 國，知識問答：答對 2 學分、答錯 1 學分） ---------- */
+const INTERNS = [
+ {country:'日本',s:'日本實習',art:'snow',
+  intro:'日本的實習目的地包括北海道 Tomamu、Kiroro、Sahoro，以及沖繩石垣島。北海道以雪景、滑雪及山岳度假體驗聞名；石垣島則以碧藍海水、海洋活動及熱帶島嶼風光為特色。',
+  q:'Club Med Tomamu 位於日本哪個地區？',o:['東京','北海道','大阪','沖繩石垣島'],a:1,ex:'Tomamu 位於日本北海道，以山岳度假、雪季活動及雲海平台等特色聞名。'},
+ {country:'印尼',s:'印尼實習',art:'bali',
+  intro:'印尼的實習目的地包括峇里島與民丹島。峇里島以熱帶景觀、當地文化與度假氛圍聞名；民丹島則以海灘、自然環境及海島休閒體驗為特色。',
+  q:'以下哪兩個地點都是印尼的實習目的地？',o:['峇里島、民丹島','普吉島、石垣島','Tomamu、Kiroro','卡尼島、普吉島'],a:0,ex:'峇里島與民丹島都是印尼的島嶼；普吉島位於泰國，石垣島位於日本。'},
+ {country:'泰國',s:'泰國實習',art:'phuket',
+  intro:'泰國的實習目的地為普吉島。普吉島以熱帶海島、海灘及多元休閒度假體驗聞名，是認識國際觀光與度假村服務的好機會。',
+  q:'Club Med 普吉島最具代表性的度假環境是什麼？',o:['高山滑雪與雪地活動','沙漠探險','熱帶海島與海灘度假','冰川與極地探險'],a:2,ex:'普吉島位於泰國，以熱帶海島、海灘及休閒度假體驗聞名。'},
+ {country:'馬爾地夫',s:'馬爾地夫',art:'maldives',
+  intro:'馬爾地夫的實習目的地為卡尼島，以碧藍潟湖、白色沙灘及海島度假體驗聞名。學生可以藉此認識國際觀光及高端度假產業。',
+  q:'以下哪一項最符合馬爾地夫的代表性旅遊特色？',o:['雪地滑雪','水上別墅與碧藍潟湖','大型沙漠','高山雲海平台'],a:1,ex:'馬爾地夫以清澈海水、白色沙灘、珊瑚礁及水上別墅等海島景觀聞名。'},
+ {country:'韓國',s:'韓國實習',art:'kschool',
+  intro:'韓國的實習計畫為華僑學校實習計畫，與 Club Med 海外度假村實習不同。實際工作內容、申請資格及實習期間，應以合作學校及當年度計畫公告為準。學生可藉此認識韓國的生活環境、校園文化與跨文化交流。',
+  q:'韓國華僑學校實習計畫的實際工作內容，應以什麼為準？',o:['網路上的所有傳言','自己想像的工作內容','合作學校與當年度計畫公告','其他國家的實習規定'],a:2,ex:'實習工作內容及申請條件應依實際合作學校與當年度計畫規定確認。'},
+];
+INTERNS.forEach(x=>x.n='海外實習—'+x.country);
+
+/* ---------- 國外姊妹校交換（3 校，每次停留問一輪） ---------- */
+const EXCH = [
+ {n:'德國福茲堡應用科技大學',s:'德國交換',country:'德國',lang:'德語技能',cur:'歐元',unit:1,twd:35,flag:['#1f1f1f','#d0302a','#e6b354']},
+ {n:'韓國誠信女子大學',s:'韓國交換',country:'韓國',lang:'韓語技能',cur:'韓元',unit:100,twd:2.4,flag:['#fbf8f2','#d0302a','#2f4f9a']},
+ {n:'日本東洋大學',s:'日本交換',country:'日本',lang:'日語技能',cur:'日圓',unit:100,twd:21,flag:['#fbf8f2','#d0302a','#fbf8f2']},
+];
+const EX_ROUND=['第一輪・出國條件','第二輪・多益英文','第三輪・匯率換算'];
+
+/* ---------- 地圖（44 格） ---------- */
+// 0 報到、11 圖書館、22 宿舍、33 期末考週
+const LAYOUT = ['S','k0','c0','i0','k1','s0','k2','fa','c1','k3','x0',
+                'L','k4','i1','c2','s1','ch','k5','c3','k6','i2','s2',
+                'R','k7','fa','x1','c4','k8','s3','i3','k9','ch','c5',
+                'F','k10','s4','x2','fa','k11','c6','i4','ch','k12','s5'];
+const CORNERS = {S:{n:'入學報到・國企系辦',s:'報到',d:'每經過一次就升上一個年級。累積 3 項技能，就能向玟玟執秘簡報換學分。'},L:{n:'圖書館閉關',s:'圖書館',d:'被送來閉關要暫停一回合；路過只是來借書。'},
   R:{n:'學生宿舍',s:'宿舍',d:'宿舍夜談：自己選要讀書、顧社團，還是聊心事。'},F:{n:'期末考週',s:'期末週',d:'熬夜 K 書！拿 1 學分，然後去圖書館閉關一回合。'}};
 function tileInfo(code){
   if(CORNERS[code]) return {type:'corner',...CORNERS[code],code};
   if(code==='ch') return {type:'chance',n:'機會',s:'機會',d:'抽一張機會卡，多半是好事。',code};
   if(code==='fa') return {type:'fate',n:'命運',s:'命運',d:'抽一張命運卡，好壞都有可能。',code};
   const k=code[0], i=+code.slice(1);
-  if(k==='k') return {type:'course',idx:i,...COURSES[i],code,d:`${COURSES[i].t}老師的「${COURSES[i].n}」。課堂任務：${TASK_HINT[COURSES[i].task]}完成任務拿 4 學分。`};
-  if(k==='d') return {type:'dept',idx:i,...DEPTS[i],code,d:`到${DEPTS[i].n}跨系學習，可習得：${DEPTS[i].sk.join('、')}。`};
+  if(k==='k') return {type:'course',idx:i,...COURSES[i],code,d:`${COURSES[i].t}老師的「${COURSES[i].n}」。課堂任務：${TASK_HINT[COURSES[i].task]}完成任務才拿得到 ${CR_COURSE} 學分。第一位完成任務的同學會成為這門課的教學 TA。`};
   if(k==='c') return {type:'club',idx:i,...CLUBS[i],code};
+  if(k==='i') return {type:'intern',idx:i,...INTERNS[i],code,d:INTERNS[i].intro};
+  if(k==='x') return {type:'exch',idx:i,...EXCH[i],code,d:`到${EXCH[i].country}的姊妹校「${EXCH[i].n}」交換：語言技能 +1、學分 +1、雙聯學位 +1，並回答一輪題目（答錯會被遣返回國，暫停一回合）。`};
   return {type:'spot',idx:i,...SPOTS[i],code};
 }
 const N=LAYOUT.length;
@@ -789,10 +914,12 @@ const CHANCE = [
  {t:'國企系迎新晚會玩得超嗨',fx:[['love',1],['club',1]]},
  {t:'阿明老師幫你補救教學',fx:[['cr',2]]},
  {t:'拿到獎學金，心情大好',fx:[['cr',1],['club',1]]},
+ {t:'多益考到金色證書',fx:[['cr',1]],intl:1},
  {t:'搭校車到旗山吃香蕉冰',move:'s0'},
- {t:'宋江陣邀請你一起出陣',move:'c8'},
+ {t:'籃球系隊缺人，學長拉你去練球',move:'c0'},
  {t:'週末去美濃湖騎單車',move:'s4'},
- {t:'跨系工作坊開放報名，免費多學一項技能',skill:true},
+ {t:'參加海外實習說明會，直接去日本看看',move:'i0'},
+ {t:'參加國際研習營，免費多學一項技能',skill:true},
 ];
 const FATE = [
  {t:'睡過頭錯過校車（內門山上真的遠）',skip:1},
@@ -811,7 +938,7 @@ const TK = ['var(--red)','var(--blue)','var(--leaf)','var(--mustard)'];
 
 /* ---------- 狀態 ---------- */
 let S=null;
-const KEY='usc-ibm-v7';
+const KEY='usc-ibm-v8';
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
 const load=()=>{try{return JSON.parse(localStorage.getItem(KEY))}catch(e){return null}};
 const clear=()=>{try{localStorage.removeItem(KEY)}catch(e){}};
@@ -845,7 +972,10 @@ document.addEventListener('click',e=>{
 });
 document.addEventListener('input',e=>{const t=e.target;if(t.dataset.p!==undefined&&t.tagName==='INPUT')setup.pl[+t.dataset.p].name=t.value});
 
-$('#btnStart').onclick=()=>{setup.t=20;newGame(true);save();startGame()};
+$('#btnStart').onclick=()=>{
+  const nm=setup.pl.slice(0,setup.n).map(p=>((p.name||'').trim()||AV[p.av].name).toLowerCase());
+  if(new Set(nm).size<nm.length){toast('玩家的名字不能重複，請幫每位玩家取不同的名字！');return}
+  setup.t=20;newGame(true);save();Music.autoDefault('demo');startGame()};
 function crushOf(p){
   const want=(AV[p.av]||AV[0]).g==='男'?'女':'男';
   if(p.crush==null||!CRUSHES[p.crush]||CRUSHES[p.crush].g!==want){
@@ -864,7 +994,7 @@ function newGame(withBots){
       const want=AV[p.av].g==='男'?'女':'男';const pool=CRUSHES.map((x,k)=>k).filter(k=>CRUSHES[k].g===want);
       const free=pool.filter(k=>!used.has(k));const c=(free.length?free:pool)[rnd((free.length?free:pool).length)]; used.add(c);
       return {name:(p.name||'').trim()||AV[p.av].name,av:p.av,bot:!!p.bot,pos:0,year:1,cr:0,club:null,clubPt:0,lovePt:0,clubMax:0,loveMax:0,acad:0,
-        skip:0,crush:c,tk:i,turns:0,done:false,skills:[],presented:[],sets:0,combos:[],passed:[0,0,0,0,0,0,0]}})};
+        skip:0,crush:c,tk:i,turns:0,done:false,skills:[],pres:0,intl:0,ex:{r:0,deg:[]},qs:{},passed:COURSES.map(()=>0)}}),ta:{}};
 }
 $('#btnResume').onclick=()=>{S=load();startGame()};
 $('#btnDiscard').onclick=()=>{clear();$('#resume').hidden=true};
@@ -882,16 +1012,17 @@ function gridPos(i){
   if(i<=33) return [1,1+(i-22)];
   return [1+(i-33),12];
 }
+const TILE_IC={course:'課堂',intern:'實習',exch:'交換',chance:'?',fate:'!'};
 function renderBoard(){
   let h='';
   TILES.forEach((t,i)=>{
     const [r,c]=gridPos(i);
-    const cls='tile '+(t.type==='dept'?'dept-'+t.c:t.type);
-    const ic = t.type==='course'?'課堂':t.type==='chance'?'?':t.type==='fate'?'!':'';
+    const cls='tile '+t.type;
+    const ic = TILE_IC[t.type]||'';
     h+=`<button class="${cls}" style="grid-area:${r}/${c}" data-tile="${i}" aria-label="${t.n}">${ic?`<span class="ic">${ic}</span>`:''}<span class="nm">${t.s}</span><span class="got" id="g${i}"></span><span class="tokens" id="tk${i}"></span></button>`;
   });
   h+=`<div class="center">
-    <div class="ttl">我是大學生</div><div class="sub">IBM life at Shih Chien</div>
+    <div class="ttl">青春不被當</div><div class="sub">國企校園大富翁</div>
     <div class="who" id="who"></div>
     <div class="dice"><div class="die" id="d1">?</div><div class="die" id="d2">?</div></div>
     <button class="btn primary" id="btnRoll">擲骰子</button>
@@ -909,23 +1040,26 @@ function renderBoard(){
 function renderDynamic(){
   const P=S.players[S.cur];
   document.querySelectorAll('.tokens').forEach(e=>e.innerHTML='');
-  S.players.forEach(p=>{const el=$('#tk'+p.pos); if(el) el.insertAdjacentHTML('beforeend',`<span class="tok" style="--tk:${TK[p.tk]}">${avatar(AV[p.av])}</span>`)});
+  S.players.forEach((p,i)=>{const el=$('#tk'+p.pos); if(el) el.insertAdjacentHTML(i===S.cur&&!S.over?'afterbegin':'beforeend',`<span class="tok${i===S.cur&&!S.over?' cur':''}" style="--tk:${TK[p.tk]}">${avatar(AV[p.av])}</span>`)});
+  const tas=myTA(P);
   document.querySelectorAll('.tile').forEach(el=>{const t=TILES[+el.dataset.tile];
     el.classList.toggle('mine',t.type==='club'&&P.club===t.idx);
     const g=el.querySelector('.got');
-    if(t.type==='dept'){const n=t.sk.filter(s=>P.skills.includes(s)).length;g.textContent=n?'•'.repeat(n):''}
-    if(t.type==='course'){g.textContent=P.passed[t.idx]?'✓':''}
+    if(t.type==='course'){g.textContent=(tas.includes(t.n)?'TA':'')+(P.passed[t.idx]?'✓':'')}
+    if(t.type==='exch'){g.textContent=P.ex&&P.ex.deg&&P.ex.deg.includes(t.idx)?'✓':''}
   });
   $('#who').innerHTML=`${avatar(AV[P.av])}<div style="text-align:left"><b>${esc(P.name)}</b><small>國企系・${YEAR(P.year)}</small><small class="num">${P.cr} / ${S.target} 學分・技能 ${P.skills.length}</small></div>`;
   $('#log').innerHTML=S.log.slice(0,3).map(l=>`<li>${l}</li>`).join('');
   $('#players').innerHTML=S.players.map((p,i)=>{
-    const cs=stage(p.clubPt), ls=stage(p.lovePt), r=p.skills.length%3;
+    const cs=stage(p.clubPt), ls=stage(p.lovePt), un=p.skills.length-(p.pres||0), ta=myTA(p), deg=(p.ex&&p.ex.deg||[]).map(i=>EXCH[i].country);
     return `<div class="pc ${i===S.cur&&!S.over?'on':''}" style="--tk:${TK[p.tk]}">
       <div class="pc-h">${avatar(AV[p.av])}<div style="min-width:0"><b>${esc(p.name)}</b>${p.bot?' <span class="chips" style="display:inline-flex"><span>電腦代玩</span></span>':''}<small>國際企業管理學系・${p.done?`<b style="color:var(--red)">${rankLabel(p)}</b>`:YEAR(p.year)}</small><small>心儀對象：${crushOf(p).name}${p.club!==null?'・'+CLUBS[p.club].n:''}</small></div></div>
       <div class="track"><div class="th"><span>學業</span><span class="num">${p.cr} / ${S.target} 學分${p.acad?'・'+ACAD[p.acad-1].n:''}</span></div><div class="bar"><i style="width:${Math.min(100,p.cr/S.target*100)}%"></i></div>
         <div class="five">${COURSES.map((c,k)=>`<span class="${p.passed[k]?'y':''}">${c.s}${p.passed[k]>1?'×'+p.passed[k]:''}</span>`).join('')}</div></div>
-      <div class="track"><div class="th"><span>跨系技能</span><span class="num">${p.skills.length} 項（已向玟玟簡報 ${p.presented.length}）・獎勵還差 ${3-r}</span></div><div class="dots skill">${[0,1,2].map(k=>`<i class="${k<r?'y':''}"></i>`).join('')}</div>
-        ${p.skills.length?`<div class="chips">${p.skills.map(s=>`<span>${s}</span>`).join('')}</div>`:''}</div>
+      <div class="track"><div class="th"><span>技能</span><span class="num">${p.skills.length} 項（已簡報 ${p.pres||0}）・${un>=3?'可以向玟玟簡報了':`再 ${3-un} 項可向玟玟簡報`}</span></div><div class="dots skill">${[0,1,2].map(k=>`<i class="${k<Math.min(3,un)?'y':''}"></i>`).join('')}</div>
+        ${p.skills.length?`<div class="chips">${p.skills.map(s=>`<span>${esc(s)}</span>`).join('')}</div>`:''}</div>
+      <div class="track"><div class="th"><span>國際</span><span class="num">國際成就 ${p.intl||0} 項（每 3 項學分 +1）${deg.length?'・雙聯學位：'+deg.join('、'):''}</span></div></div>
+      ${ta.length?`<div class="track"><div class="th"><span>教學 TA</span><span>${ta.join('、')}</span></div></div>`:''}
       <div class="track"><div class="th"><span>社團</span><span>${cs?CLUB_ST[cs-1].n:'尚未入社'}</span></div><div class="dots club">${CLUB_ST.map((st,k)=>`<i class="${k<cs?'y':''}" title="${k+1}. ${st.n}"></i>`).join('')}</div></div>
       <div class="track"><div class="th"><span>戀愛</span><span>${ls?LOVE_ST[ls-1].n:'還沒開始'}</span></div><div class="dots love">${LOVE_ST.map((st,k)=>`<i class="${k<ls?'y':''}" title="${k+1}. ${st.n}"></i>`).join('')}</div></div>
     </div>`}).join('');
@@ -935,40 +1069,42 @@ function log(t){S.log.unshift(t);S.log=S.log.slice(0,12);if(S.online&&typeof pus
 $('#board').addEventListener('click',e=>{
   const b=e.target.closest('[data-tile]'); if(!b||busy) return;
   const t=TILES[+b.dataset.tile], P=S.players[S.cur];
-  const kind={course:'國企系課程',dept:t.c==='biz'?'商學與資訊學院':'文化與創意學院',club:'社團',spot:'景點・約會地點',chance:'機會',fate:'命運',corner:'特殊格'}[t.type];
+  const kind={course:'國企系課程',club:'社團',spot:'景點・約會地點',intern:'海外企業實習',exch:'國外姊妹校交換',chance:'機會',fate:'命運',corner:'特殊格'}[t.type];
   let extra='';
-  if(t.type==='dept'){const got=t.sk.filter(s=>P.skills.includes(s));extra=`<p class="note">${esc(P.name)} 已學會：${got.length?got.join('、'):'還沒有'}</p>`}
-  if(t.type==='club') extra=`<p>${CLUB_INTRO[t.n]||''}</p>`+'<p class="note">還沒入社的人可以在這裡加入；已入社的人在自己的社團推進社團支線。</p>';
+  if(t.type==='course'){const ta=taOf(t.idx);extra=`<p class="note">教學 TA：${ta?esc(ta.name):'還沒有，第一位完成任務的同學就是 TA'}</p>`}
+  if(t.type==='club') extra=`<p>${CLUB_INTRO[t.n]||''}</p><p class="note">入社考驗：${t.test.kind==='judge'?t.test.prompt.replace('入社考驗：',''):t.test.kind==='chords'?'說出五個和弦的名稱':'回答一題選擇題'}。通過可獲得「${t.skill}」（${fxText(t.fx)}）。</p>`;
+  if(t.type==='exch'){const r=(P.ex&&P.ex.r)||0;extra=`<p class="note">${esc(P.name)} 下次的題目：${EX_ROUND[Math.min(2,r)]}</p>`}
   if(t.type==='spot') extra='<p class="note">停在景點會推進戀愛支線。</p>';
-  sheet({tag:kind,title:t.n,body:`<p>${t.d||''}</p>${extra}`,buttons:[{l:'知道了',v:1,p:1}]});
+  sheet({stay:1,tag:kind,title:t.n,body:`<p>${t.d||''}</p>${extra}`,buttons:[{l:'知道了',v:1,p:1}]});
 });
 
 /* ---------- 事件卡 ---------- */
 let sheetAt=0;
-function sheet({tag='',title='',art='',body='',buttons=[],onOpen,human}){
+function sheet({tag='',title='',art='',body='',buttons=[],onOpen,human,stay}){
   return new Promise(res=>{
-    const el=$('#sheet'); el._res=res; sheetAt=Date.now(); el.dataset.human=human?'1':'';
+    const el=$('#sheet'); el._res=res; sheetAt=Date.now(); el.dataset.human=human?'1':''; clearTimeout(el._auto); const tok=el._tok=Symbol();
     if(S&&S.online&&!human&&typeof publishStage==='function') publishStage({tag,title,text:body});
     el.innerHTML=`<div class="tag">${tag}</div>${art?`<div class="art">${art}<h2>${title}</h2></div>`:`<h2>${title}</h2>`}
       <div style="display:flex;flex-direction:column;gap:8px">${body}</div>
       <div class="opts">${buttons.map((b,i)=>`<button class="btn ${b.p?'primary':''}" data-i="${i}">${b.l}</button>`).join('')}</div>`;
     $('#scrim').hidden=false;
-    el.querySelectorAll('[data-i]').forEach(b=>b.onclick=()=>{$('#scrim').hidden=true;res(buttons[+b.dataset.i].v)});
+    el.querySelectorAll('[data-i]').forEach(b=>b.onclick=()=>{if(el._tok!==tok)return;el._tok=null;clearTimeout(el._auto);$('#scrim').hidden=true;res(buttons[+b.dataset.i].v)});
     const first=el.querySelector("[data-i]"); first&&first.focus({preventScroll:true}); el.scrollTop=0;
+    if(!human&&!stay&&buttons.length===1&&first){first.insertAdjacentHTML('beforeend','<i class="autobar"></i>');el._auto=setTimeout(()=>{if(el._tok===tok&&!$('#scrim').hidden)first.click()},2000)}
     onOpen&&onOpen(el);
   });
 }
 async function diceCheck({tag,title,art,text,need}){
   const chk=`<p>${text}</p><div class="chk"><div class="die" id="cd">?</div><div id="cdt">擲出 <b>${need}</b> 點以上就成功</div></div>`;
-  await sheet({tag,title,art,body:chk,buttons:[{l:'擲骰挑戰',v:1,p:1}]});
+  await sheet({stay:1,tag,title,art,body:chk,buttons:[{l:'擲骰挑戰',v:1,p:1}]});
   const n=1+rnd(6);
   await sheet({tag,title,art,body:chk,buttons:[],onOpen:async el=>{
     const d=el.querySelector('#cd'); d.classList.add('roll');
     for(let k=0;k<8;k++){d.textContent=1+rnd(6);await sleep(70)}
     d.classList.remove('roll'); d.textContent=n;
     el.querySelector('#cdt').innerHTML=n>=need?`<span class="good">${n} 點，成功！</span>`:`<span class="bad">${n} 點，失敗了…</span>`;
-    el.querySelector('.opts').innerHTML='<button class="btn primary" id="cdok">繼續</button>';
-    const ok=el.querySelector('#cdok'); ok.focus(); ok.onclick=()=>{$('#scrim').hidden=true;el._res(1)};
+    el.querySelector('.opts').innerHTML='<button class="btn primary" id="cdok">繼續<i class="autobar"></i></button>';
+    const tok=el._tok; let fired=false; const ok=el.querySelector('#cdok'); ok.focus(); ok.onclick=()=>{if(fired||el._tok!==tok)return;fired=true;$('#scrim').hidden=true;el._res(1)}; setTimeout(()=>ok.click(),2000);
   }});
   return n>=need;
 }
@@ -988,7 +1124,7 @@ function addBr(p,br,d){
   const s=stage(p[key]);
   while(p[maxKey]<s){
     const st=list[p[maxKey]]; p[maxKey]++;
-    if(br==='club'&&p.club===null){p.club=CLUBS.findIndex(c=>c.n==='系學會');pending.push({br:'社團',n:'系學會找上門',d:'國企系學會學長姐邀你入會，你就這樣成了系學會的一員。',fx:[]})}
+    if(br==='club'&&p.club===null){p.club=CLUBS.findIndex(c=>c.n==='國企系學會');pending.push({br:'社團',n:'系學會找上門',d:'國企系學會學長姐邀你入會，你就這樣成了系學會的一員。',fx:[]})}
     pending.push({br:br==='club'?'社團成就':'戀愛成就',n:st.n,d:st.d,fx:st.fx}); applyFx(p,st.fx);
   }
 }
@@ -1001,18 +1137,7 @@ async function flushPending(p){
     buttons:[{l:'太好了',v:1,p:1}]});
   list.forEach(a=>log(`${esc(p.name)} 解鎖「${a.n}」`));
 }
-function learnSkill(p,skill){
-  p.skills.push(skill);
-  if(p.skills.length%3===0){
-    const r=SET_REWARDS[Math.min(p.sets,SET_REWARDS.length-1)]; p.sets++;
-    pending.push({br:`集滿 ${p.skills.length} 項跨系技能`,n:r.n,d:r.d,fx:r.fx}); applyFx(p,r.fx);
-  }
-  COMBOS.forEach(c=>{
-    if(!p.combos.includes(c.n)&&c.need.every(s=>p.skills.includes(s))){
-      p.combos.push(c.n); pending.push({br:'技能組合',n:c.n,d:`${c.need.join(' + ')}：${c.d}`,fx:c.fx}); applyFx(p,c.fx);
-    }
-  });
-}
+function learnSkill(p,skill){ p.skills.push(skill) }
 
 /* ---------- 電腦代玩 ---------- */
 let botTimer=null;
@@ -1035,11 +1160,11 @@ let busy=false;
 async function takeTurn(){
   if(busy||S.over) return;
   if(S.online&&S.roomMode==='turn'&&S.turnUid!==uid){toast('還沒輪到你喔，等一下！');return}
-  busy=true; $('#btnRoll').disabled=true;
+  busy=true; $('#btnRoll').disabled=true; Music.kick();
   const p=S.players[S.cur];
   if(p.skip>0){
-    p.skip--; log(`${esc(p.name)} 在圖書館閉關，暫停一回合`);
-    await sheet({tag:'圖書館閉關',title:'這回合要乖乖讀書',art:avatar(AV[p.av]),body:'<p>把落後的進度補一補，下回合再出發。</p>',buttons:[{l:'下一位',v:1,p:1}]});
+    p.skip--; const why=p.skipWhy||'圖書館閉關'; p.skipWhy=''; log(`${esc(p.name)} ${why}，暫停一回合`);
+    await sheet({tag:why,title:why==='遣返回國'?'被遣返回國，暫停一回合':'這回合要乖乖讀書',art:avatar(AV[p.av]),body:why==='遣返回國'?'<p>先在台灣把出國條件、英文和匯率準備好，下回合再出發。</p>':'<p>把落後的進度補一補，下回合再出發。</p>',buttons:[{l:'下一位',v:1,p:1}]});
     return endTurn();
   }
   const a=1+rnd(6), b=1+rnd(6);
@@ -1050,7 +1175,7 @@ async function takeTurn(){
   log(`${esc(p.name)} 擲出 ${a+b} 點，來到「${TILES[p.pos].n}」`);
   if(S.online) publishStage({tag:'擲骰子',title:`擲出 ${a+b} 點！`,text:`來到「${TILES[p.pos].n}」。${TILES[p.pos].d||''}`,roll:a+b});
   await resolve(p,0);
-  if(p._reg){delete p._reg;await doOffice(p)}
+  if(p._reg) delete p._reg;
   endTurn();
 }
 async function moveSteps(p,n){
@@ -1067,6 +1192,7 @@ async function jumpTo(p,code){await moveSteps(p,(posOf(code)-p.pos+N)%N)}
 async function endTurn(){
   const p=S.players[S.cur];
   p.turns=(p.turns||0)+1;
+  if(!p.done) await doOffice(p);
   await flushPending(p);
   renderDynamic();
   if(p.cr>=S.target&&!p.done&&S.online){
@@ -1090,149 +1216,300 @@ async function endTurn(){
 async function resolve(p,depth){
   const t=TILES[p.pos];
   if(t.type==='course') return doCourse(p,t);
-  if(t.type==='dept') return doSkill(p,t);
   if(t.type==='club') return doClub(p,t);
   if(t.type==='spot') return doSpot(p,t);
+  if(t.type==='intern') return doIntern(p,t);
+  if(t.type==='exch') return doExchange(p,t);
   if(t.type==='chance'||t.type==='fate') return doCard(p,t,depth);
   return doCorner(p,t);
 }
 
 const qq=s=>`<blockquote style="margin:0;padding:8px 12px;border-left:3px solid var(--mustard);background:var(--paper);border-radius:0 8px 8px 0">${esc(s)}</blockquote>`;
-function statsQ(){
-  const k=rnd(3);
-  if(k===0){const a=[0,0,0].map(()=>50+rnd(50));const r=(4-a.reduce((x,y)=>x+y,0)%4)%4;a.push(60+r+4*rnd(8));
-    return {en:`What is the mean of ${a.join(', ')}?`,zh:'平均數',ans:a.reduce((x,y)=>x+y,0)/4}}
-  if(k===1){const a=[0,0,0,0,0].map(()=>10+rnd(90));const b=[...a].sort((x,y)=>x-y);
-    return {en:`What is the median of ${a.join(', ')}?`,zh:'中位數',ans:b[2]}}
-  const a=[0,0,0,0,0,0].map(()=>20+rnd(80));
-  return {en:`What is the range of ${a.join(', ')}?`,zh:'全距＝最大值－最小值',ans:Math.max(...a)-Math.min(...a)};
+const LET='ABCD';
+/* 單選題：先選再按「確認答案」，作答前不顯示答案；回傳選項編號（放棄則為 null） */
+function mcqSheet({tag,title,art,intro,q,o,giveUp}){
+  return sheet({stay:1,tag,title,art,
+    body:`${intro?`<p>${intro}</p>`:''}<p style="font-weight:700;font-size:16px">${esc(q)}</p><div class="mcq">${o.map((x,i)=>`<button type="button" class="btn" data-o="${i}" aria-pressed="false"><b>${LET[i]}.</b> ${esc(x)}</button>`).join('')}</div>`,
+    buttons:[],onOpen:el=>{
+      let sel=null, done=false;
+      const opts=el.querySelector('.opts');
+      opts.innerHTML=`<button class="btn primary" id="mok" disabled>確認答案</button>${giveUp?'<button class="btn" id="mgive">這次先放棄（學分 +0）</button>':''}`;
+      el.querySelectorAll('[data-o]').forEach(b=>b.onclick=()=>{if(done)return;sel=+b.dataset.o;el.querySelectorAll('[data-o]').forEach(x=>x.setAttribute('aria-pressed',x===b));el.querySelector('#mok').disabled=false});
+      el.querySelector('#mok').onclick=()=>{if(done||sel===null)return;done=true;el.querySelectorAll('button').forEach(x=>x.disabled=true);$('#scrim').hidden=true;el._res(sel)};
+      const g=el.querySelector('#mgive'); if(g) g.onclick=()=>{if(done)return;done=true;$('#scrim').hidden=true;el._res(null)};
+    }});
 }
-const TASKS={
-  stats:p=>{const q=statsQ();return {
-    intro:`武哥老師全英授課：「${q.en}」<br><small class="note">（${q.zh}）</small>`,
-    fields:[{id:'a',label:'Your answer',type:'number',ph:'輸入數字'}],
-    check:v=>v.a.trim()===''?{retry:'先輸入答案再提交。'}:{ok:Math.abs(+v.a-q.ans)<1e-9,final:1},
-    win:()=>`Excellent! 武哥老師開心地唱起德文歌，全班跟著打拍子，你也上台合唱了一段（社團 +1）。`,fx:[['club',1]],
-    lose:`正確答案是 ${q.ans}。武哥老師說：「Never give up!」`,say:v=>`答案 ${v.a}`}},
-  intro:p=>({
-    intro:'艾瑞克老師：「品牌行銷的第一課，就是行銷你自己！請向全班自我介紹，說說你的名字、興趣和你的亮點。」',
-    fields:[{id:'a',label:'自我介紹（至少 20 字）',type:'textarea',ph:`大家好，我是${p.name}，我喜歡…`}],
-    check:v=>v.a.trim().length<20?{retry:`再多說一點，目前 ${v.a.trim().length} 字，至少要 20 字。`}:{ok:1},
-    win:()=>'艾瑞克老師：「很好！你已經懂得把自己當成品牌經營了。」台下有人默默記住了你（戀愛 +1）。',fx:[['love',1]],
-    say:v=>v.a}),
-  ethics:p=>({
-    intro:'系主任仲哥老師：「企業不只要賺錢，也要做對的事。請舉一家形象正面的知名企業，並說出你欣賞它的理由。」',
-    fields:[{id:'c',label:'企業名稱',type:'text',ph:'例如：某某公司'},{id:'r',label:'為什麼它形象正面？',type:'textarea',ph:'它做了什麼好事…'}],
-    check:v=>v.c.trim().length<2?{retry:'請寫出企業名稱。'}:v.r.trim().length<6?{retry:'理由再多寫一點（至少 6 字）。'}:{ok:1},
-    win:v=>`系主任仲哥老師點點頭：「${esc(v.c.trim())} 的確是很好的例子，企業社會責任就是這樣。」`,
-    say:v=>`${v.c}：${v.r}`}),
-  jp:p=>({
-    intro:'雙慧老師：「今天每個人都要開口說一句日文！說完把它寫下來。」',
-    fields:[{id:'a',label:'你的日文句子',type:'text',ph:'例如：はじめまして'}],
-    check:v=>/[぀-ヿ]/.test(v.a)?{ok:1}:{retry:'句子裡要有平假名或片假名喔，例如「はじめまして」「ありがとうございます」。'},
-    win:()=>'雙慧老師：「すごい！發音很標準。」',say:v=>v.a}),
-  econ:p=>({
-    intro:'阿金老師：「經濟學就在生活裡！請舉一個因為供給或需求改變，讓某樣東西漲價或降價的例子。」',
-    fields:[{id:'g',label:'什麼東西？',type:'text',ph:'例如：高麗菜'},{id:'r',label:'發生什麼事、價格怎麼變？',type:'textarea',ph:'例如：颱風後產量變少，所以…'}],
-    check:v=>v.g.trim().length<1?{retry:'先寫是什麼東西。'}:v.r.trim().length<8?{retry:'原因再多寫一點（至少 8 字）。'}:
-      !/漲|跌|貴|便宜|降|升|高|低|價/.test(v.r)?{retry:'記得說出價格是變貴還是變便宜喔。'}:{ok:1},
-    win:v=>`阿金老師摸摸光頭笑說：「${esc(v.g.trim())} 這個例子很好，供需一變，價格就跟著動！」`,
-    say:v=>`${v.g}：${v.r}`}),
-  acct:p=>{const L=(2+rnd(18))*10, E=(3+rnd(20))*10, k=rnd(3);
-    const q=k===0?{t:`公司的負債是 ${L} 萬元，權益是 ${E} 萬元，資產是多少萬元？`,a:L+E}
-      :k===1?{t:`公司的資產是 ${L+E} 萬元，負債是 ${L} 萬元，權益是多少萬元？`,a:E}
-      :{t:`公司的資產是 ${L+E} 萬元，權益是 ${E} 萬元，負債是多少萬元？`,a:L};
-    return {
-    intro:`阿明老師：「會計第一課，資產 ＝ 負債 ＋ 權益。」<br>${q.t}`,
-    fields:[{id:'a',label:'答案（萬元）',type:'number',ph:'輸入數字'}],
-    check:v=>v.a.trim()===''?{retry:'先輸入答案再提交。'}:{ok:Math.abs(+v.a-q.a)<1e-9},
-    win:()=>'阿明老師笑著比 YA：「算得好！帳一平，心就安。」',
-    lose:`正確答案是 ${q.a} 萬元。阿明老師說：「沒關係，資產＝負債＋權益，多練幾次就熟了！」`,
-    say:v=>`${v.a} 萬元`}},
-  kr:p=>({
-    intro:'英子老師：「오늘은 한국어로 한마디！今天請用韓文說一句話，再把它寫下來。」',
-    fields:[{id:'a',label:'你的韓文句子',type:'text',ph:'用韓文字寫一句話'}],
-    check:v=>/[가-힣]/.test(v.a)?{ok:1}:{retry:'句子要用韓文字（한글）寫喔，例如打招呼的「안녕하세요」。'},
-    win:()=>'英子老師：「잘했어요！很有語感。」',say:v=>v.a}),
-};
+/* 口說類任務：線上教室由老師在大螢幕按「通過／不通過」；展示試玩由在場的人判定 */
+async function judgeSheet(p,{tag,title,art,prompt,label}){
+  if(p.bot) return Math.random()<.8;
+  if(S.online&&fb&&uid){
+    const ref=fb.ref(`rooms/${S.online.code}`), jid=Date.now().toString(36)+rnd(1000);
+    try{await ref.child('judge/'+uid).set({id:jid,name:p.name,av:p.av,task:String(label||tag).slice(0,40),prompt:plain(prompt).slice(0,280),at:TS()})}
+    catch(e){toast('送出判定失敗：'+errMsg(e));return null}
+    return new Promise(res=>{
+      let done=false; const rref=ref.child('judgeRes/'+uid);
+      const fin=v=>{if(done)return;done=true;rref.off('value',fn);ref.child('judge/'+uid).remove().catch(()=>{});$('#scrim').hidden=true;res(v)};
+      const fn=sn=>{const r=sn.val();if(r&&r.id===jid)fin(r.v==='pass')};
+      rref.on('value',fn);
+      sheet({stay:1,tag:'老師判定中・'+tag,title,art,body:`<p>${prompt}</p><div class="chk" style="flex-direction:column;align-items:flex-start"><b>請現在說出來（或做出來）！</b><span class="note">老師會在大螢幕上按「通過」或「不通過」。</span></div><p class="note" id="jwait">⏳ 等待老師判定中…</p>`,buttons:[],
+        onOpen:el=>{setTimeout(()=>{if(done||!el.isConnected)return;const o=el.querySelector('.opts');if(!o)return;o.innerHTML='<button class="btn" id="jgive">老師沒空？這次先放棄</button>';o.querySelector('#jgive').onclick=()=>fin(null)},45000)}});
+    });
+  }
+  return sheet({stay:1,tag,title,art,body:`<p>${prompt}</p><div class="chk" style="flex-direction:column;align-items:flex-start"><b>請說出來（或做出來）！</b><span class="note">由在場的老師或同學判定。</span></div>`,
+    buttons:[{l:'✓ 通過',v:true,p:1},{l:'✗ 不通過',v:false}]});
+}
 function taskSheet({tag,title,art,intro,fields}){
   const body=`<p>${intro}</p><form id="tf" style="display:flex;flex-direction:column;gap:8px" novalidate>
     ${fields.map(f=>`<label style="display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--ink-soft)">${f.label}
       ${f.type==='textarea'?`<textarea id="tf_${f.id}" rows="3" placeholder="${esc(f.ph)}" style="font:inherit;font-size:15px;color:var(--ink);background:var(--paper);border:1.5px solid var(--line);border-radius:10px;padding:8px 10px;resize:vertical"></textarea>`
-      :`<input id="tf_${f.id}" type="${f.type==='number'?'text':'text'}" ${f.type==='number'?'inputmode="decimal"':''} placeholder="${esc(f.ph)}" autocomplete="off">`}</label>`).join('')}
+      :`<input id="tf_${f.id}" type="text" ${f.type==='number'?'inputmode="decimal"':''} placeholder="${esc(f.ph)}" autocomplete="off">`}</label>`).join('')}
     <p id="tmsg" class="bad" style="font-size:13px" hidden></p>
     <button class="btn primary" type="submit">提交</button>
     <button class="btn" type="button" id="tgive">這次先放棄（學分 +0）</button></form>`;
-  return sheet({tag,title,art,body,buttons:[],onOpen:el=>{
+  return sheet({stay:1,tag,title,art,body,buttons:[],onOpen:el=>{
     const first=el.querySelector('input,textarea'); first&&first.focus();
     el.querySelector('#tgive').onclick=()=>{$('#scrim').hidden=true;el._res(null)};
     el.querySelector('#tf').onsubmit=e=>{e.preventDefault();
       const v={}; fields.forEach(f=>v[f.id]=el.querySelector('#tf_'+f.id).value);
       const r=el._check(v);
       if(r.retry){const m=el.querySelector('#tmsg');m.textContent=r.retry;m.hidden=false;return}
-      $('#scrim').hidden=true; el._res({ok:!!r.ok,v});
+      $('#scrim').hidden=true; el._res({ok:!!r.ok,v,r});
     };
   }});
 }
-async function doCourse(p,t){
-  const c=COURSES[t.idx], T=T_BY(c.t), art=avatar(T.av), spec=TASKS[c.task](p);
-  const who=`${T.name}老師${T.name==='仲哥'?'（系主任）':''}`;
-  const tag=`國企系課程・${c.n}`;
+
+/* ---------- 課堂任務 ---------- */
+function statsQ(){
+  const k=rnd(4);
+  if(k===0){const a=[0,0,0].map(()=>50+rnd(50));const r=(4-a.reduce((x,y)=>x+y,0)%4)%4;a.push(60+r+4*rnd(8));
+    return {en:`What is the mean of ${a.join(', ')}?`,zh:'平均數',ans:a.reduce((x,y)=>x+y,0)/4}}
+  if(k===1){const a=[0,0,0,0,0].map(()=>10+rnd(90));const b=[...a].sort((x,y)=>x-y);
+    return {en:`What is the median of ${a.join(', ')}?`,zh:'中位數',ans:b[2]}}
+  if(k===2){const m=10+rnd(80);const set=new Set([m]);while(set.size<4)set.add(10+rnd(80));const a=[m,...set].sort(()=>Math.random()-.5);
+    return {en:`What is the mode of ${a.join(', ')}?`,zh:'眾數：出現最多次的數',ans:m}}
+  const a=[0,0,0,0,0,0].map(()=>20+rnd(80));
+  return {en:`What is the range of ${a.join(', ')}?`,zh:'全距＝最大值－最小值',ans:Math.max(...a)-Math.min(...a)};
+}
+function mathQ(){
+  const k=rnd(6);
+  if(k===0){const x=2+rnd(9),a=2+rnd(7),b=1+rnd(20);return {t:`解方程式：${a}x + ${b} = ${a*x+b}，x 等於多少？`,a:x}}
+  if(k===1){const a1=2+rnd(9),d=2+rnd(6),n=6+rnd(10);return {t:`等差數列首項是 ${a1}、公差是 ${d}，第 ${n} 項是多少？`,a:a1+(n-1)*d}}
+  if(k===2){const a1=1+rnd(4),r=2+rnd(2),n=4+rnd(2);return {t:`等比數列首項是 ${a1}、公比是 ${r}，第 ${n} 項是多少？`,a:a1*Math.pow(r,n-1)}}
+  if(k===3){const e=3+rnd(6);return {t:`若 2 的 x 次方等於 ${Math.pow(2,e)}，x 等於多少？（也就是 log₂${Math.pow(2,e)}）`,a:e}}
+  if(k===4){const n=5+rnd(8);return {t:`班上 ${n} 位同學要選出 2 位當代表（不分職位），共有幾種選法？`,a:n*(n-1)/2}}
+  const P=(4+rnd(16))*100;return {t:`一件外套原價 ${P} 元，先打 8 折，再打 9 折，最後賣多少元？`,a:Math.round(P*0.72)};
+}
+function dataQ(){
+  const M=['1 月','2 月','3 月','4 月','5 月'], k=rnd(3);
+  if(k===2){const base=[20,25,40,50][rnd(4)],g=[10,20,25,50][rnd(4)];const v=[0,0,0,0,0].map(()=>10+rnd(60));v[1]=base;v[2]=base*(100+g)/100;
+    return {v,M,t:'3 月的銷售額比 2 月成長了百分之幾？（只填數字）',a:g}}
+  const v=[0,0,0,0,0].map(()=>10+rnd(60));
+  if(k===0){const s=v.reduce((x,y)=>x+y,0);v[4]+=(5-s%5)%5;return {v,M,t:'這 5 個月平均每月銷售額是多少萬元？',a:v.reduce((x,y)=>x+y,0)/5}}
+  return {v,M,t:'銷售額最高的月份比最低的月份多了多少萬元？',a:Math.max(...v)-Math.min(...v)};
+}
+const BANK_NAMES=['台灣銀行','臺灣銀行','土地銀行','合作金庫','第一銀行','一銀','華南','彰化銀行','彰銀','兆豐','國泰世華','國泰','中國信託','中信','玉山','台新','富邦','永豐','遠東','元大','凱基','星展','渣打','匯豐','上海商銀','上海商業儲蓄','聯邦','新光','王道','將來','樂天','LINE Bank','連線銀行','高雄銀行','臺灣企銀','台灣企銀','台企銀','陽信','京城','板信','三信','安泰','花旗','華泰','台中銀行','臺中銀行','瑞興','日盛','郵局','中華郵政','渣打','DBS','HSBC','Citi'];
+function bankKey(s){s=String(s||'').trim().replace(/\s+/g,'');if(s.length<2)return null;
+  const hit=BANK_NAMES.find(b=>s.toLowerCase().includes(b.replace(/\s+/g,'').toLowerCase()));
+  if(hit) return hit.replace('臺','台').replace(/^一銀$/,'第一銀行').replace(/^彰銀$/,'彰化銀行').replace(/^中信$/,'中國信託').replace(/^國泰$/,'國泰世華').replace(/^中華郵政$/,'郵局');
+  if(/(銀行|商銀|Bank)$/i.test(s)&&s.length>=3) return s;
+  return null}
+const CHORD_RE=/^[A-G](#|b|♯|♭)?(m|M|maj|min|maj7|M7|m7|7|sus2|sus4|dim|aug|add9|6|9)?$/;
+function parseList(s){return String(s||'').split(/[\s,，、/／;；]+/).map(x=>x.trim()).filter(Boolean)}
+const ECON_V=[
+  {intro:'阿金老師：「經濟學就在生活裡！請舉一個因為供給或需求改變，讓某樣東西漲價或降價的例子。」',fields:[{id:'g',label:'什麼東西？',type:'text',ph:'例如：高麗菜'},{id:'r',label:'發生什麼事、價格怎麼變？',type:'textarea',ph:'例如：颱風後產量變少，所以…'}],
+    check:v=>v.g.trim().length<1?{retry:'先寫是什麼東西。'}:v.r.trim().length<8?{retry:'原因再多寫一點（至少 8 字）。'}:!/漲|跌|貴|便宜|降|升|高|低|價/.test(v.r)?{retry:'記得說出價格是變貴還是變便宜喔。'}:{ok:1},say:v=>`${v.g}：${v.r}`},
+  {intro:'阿金老師：「什麼是『替代品』？就是 A 變貴時，大家改買 B。請舉一組替代品的例子。」',fields:[{id:'a',label:'A（變貴的東西）',type:'text',ph:'例如：計程車'},{id:'b',label:'B（大家改買的東西）',type:'text',ph:'例如：捷運'}],
+    check:v=>v.a.trim().length<1||v.b.trim().length<1?{retry:'A 和 B 都要寫喔。'}:v.a.trim()===v.b.trim()?{retry:'A 和 B 要是不同的東西。'}:{ok:1},say:v=>`${v.a} 變貴就改買 ${v.b}`},
+  {intro:'阿金老師：「『互補品』就是常常一起用的東西，一個變貴，另一個也會賣得比較少。請舉一組互補品。」',fields:[{id:'a',label:'東西 1',type:'text',ph:'例如：印表機'},{id:'b',label:'東西 2',type:'text',ph:'例如：墨水匣'}],
+    check:v=>v.a.trim().length<1||v.b.trim().length<1?{retry:'兩樣東西都要寫喔。'}:v.a.trim()===v.b.trim()?{retry:'要寫兩樣不同的東西。'}:{ok:1},say:v=>`${v.a} + ${v.b}`},
+  {intro:'阿金老師：「『機會成本』就是你做了一個選擇，所放棄的最好的另一個選擇。你今天來上課，放棄了什麼？」',fields:[{id:'a',label:'你放棄了什麼？為什麼它是你的機會成本？',type:'textarea',ph:'例如：放棄去打工賺 400 元…'}],
+    check:v=>v.a.trim().length<6?{retry:'再多寫一點（至少 6 字）。'}:{ok:1},say:v=>v.a},
+  {intro:'阿金老師：「『通貨膨脹』就是東西普遍變貴、錢變薄。請舉一個你生活中感受到的例子。」',fields:[{id:'a',label:'你的例子',type:'textarea',ph:'例如：便當從 70 元漲到 90 元…'}],
+    check:v=>v.a.trim().length<8?{retry:'再多寫一點（至少 8 字）。'}:!/漲|貴|變|價|元|塊/.test(v.a)?{retry:'記得說出什麼東西、價格怎麼變。'}:{ok:1},say:v=>v.a},
+];
+const ETHICS_V=[
+  {intro:'系主任仲哥老師：「企業不只要賺錢，也要做對的事。請舉一家形象正面的知名企業，並說出你欣賞它的理由。」',fields:[{id:'c',label:'企業名稱',type:'text',ph:'例如：某某公司'},{id:'r',label:'為什麼它形象正面？',type:'textarea',ph:'它做了什麼好事…'}],
+    check:v=>v.c.trim().length<2?{retry:'請寫出企業名稱。'}:v.r.trim().length<6?{retry:'理由再多寫一點（至少 6 字）。'}:{ok:1},say:v=>`${v.c}：${v.r}`},
+  {intro:'系主任仲哥老師：「請舉一個企業做『企業社會責任（CSR）』的例子，例如環保、公益、照顧員工。」',fields:[{id:'a',label:'你的例子',type:'textarea',ph:'哪家企業、做了什麼…'}],check:v=>v.a.trim().length<10?{retry:'再多寫一點（至少 10 字）。'}:{ok:1},say:v=>v.a},
+  {intro:'系主任仲哥老師：「打工時，店長要你把快過期的食品換新標籤再賣，你會怎麼做？為什麼？」',fields:[{id:'a',label:'你會怎麼做？',type:'textarea',ph:'我會…因為…'}],check:v=>v.a.trim().length<10?{retry:'再多寫一點（至少 10 字）。'}:{ok:1},say:v=>v.a},
+  {intro:'系主任仲哥老師：「如果你當老闆，你會怎麼對待員工？寫出一個具體做法。」',fields:[{id:'a',label:'你的做法',type:'textarea',ph:'例如：準時發薪水、提供教育訓練…'}],check:v=>v.a.trim().length<8?{retry:'再多寫一點（至少 8 字）。'}:{ok:1},say:v=>v.a},
+  {intro:'系主任仲哥老師：「舉一個違反企業倫理的狀況（新聞或你聽過的），說說哪裡不對。」',fields:[{id:'a',label:'什麼狀況？哪裡不對？',type:'textarea',ph:'例如：黑心食品…'}],check:v=>v.a.trim().length<10?{retry:'再多寫一點（至少 10 字）。'}:{ok:1},say:v=>v.a},
+];
+const JP_V=['用日文打招呼','用日文說「謝謝」','用日文做一句自我介紹','用日文說「我是大學生」','用日文在餐廳點一杯咖啡'];
+const KR_V=['用韓文打招呼','用韓文說「謝謝」','用韓文做一句自我介紹','用韓文說「我是大學生」','用韓文說「很高興認識你」'];
+const SPEECH_V=['用 30 秒向全班自我介紹：名字、興趣、你的亮點。','介紹你的家鄉一個值得去的地方，說服大家去看看。','拿起身上一樣東西，用 30 秒推銷給全班。','介紹你最喜歡的一個品牌，說出它厲害在哪裡。','用一句話說服大家加入你喜歡的社團。'];
+const TASKS={
+  stats:p=>{const q=statsQ();return {kind:'form',
+    intro:`武哥老師全英授課：「${q.en}」<br><small class="note">（${q.zh}）</small>`,
+    fields:[{id:'a',label:'Your answer',type:'number',ph:'輸入數字'}],
+    check:v=>v.a.trim()===''?{retry:'先輸入答案再提交。'}:{ok:Math.abs(+v.a-q.ans)<1e-9},
+    win:()=>`Excellent! 武哥老師開心地唱起德文歌，全班跟著打拍子（社團 +1）。`,fx:[['club',1]],
+    lose:`正確答案是 ${q.ans}。武哥老師說：「Never give up!」`,say:v=>`答案 ${v.a}`}},
+  math:p=>{const q=mathQ();return {kind:'form',intro:`阿明老師：「會計人一定要會算！來一題高三數學暖身。」<br>${q.t}`,
+    fields:[{id:'a',label:'答案',type:'number',ph:'輸入數字'}],
+    check:v=>v.a.trim()===''?{retry:'先輸入答案再提交。'}:{ok:Math.abs(+v.a-q.a)<1e-9},
+    win:()=>'阿明老師笑著比 YA：「算得好！數字清楚，帳就清楚。」',lose:`正確答案是 ${q.a}。阿明老師說：「沒關係，多練幾次就熟了！」`,say:v=>`答案 ${v.a}`}},
+  data:p=>{const q=dataQ();const tb=`<table class="dtab"><tr>${q.M.map(m=>`<th>${m}</th>`).join('')}</tr><tr>${q.v.map(x=>`<td>${x}</td>`).join('')}</tr></table><small class="note">單位：萬元</small>`;
+    return {kind:'form',intro:`阿明老師：「資料會說話！這是某家店前 5 個月的銷售額。」${tb}${q.t}`,
+    fields:[{id:'a',label:'答案',type:'number',ph:'輸入數字'}],
+    check:v=>v.a.trim()===''?{retry:'先輸入答案再提交。'}:{ok:Math.abs(+v.a-q.a)<1e-9},
+    win:()=>'阿明老師：「很好！你已經會用數據看出問題了。」',lose:`正確答案是 ${q.a}。`,say:v=>`答案 ${v.a}`}},
+  econ:p=>{const s=ECON_V[pickIdx(p,'econ',ECON_V.length)];return {kind:'form',...s,win:()=>'阿金老師摸摸光頭笑說：「這個例子很好，經濟學就在生活裡！」'}},
+  ethics:p=>{const s=ETHICS_V[pickIdx(p,'ethics',ETHICS_V.length)];return {kind:'form',...s,win:()=>'系主任仲哥老師點點頭：「想得很清楚，這就是企業倫理。」'}},
+  consumer:p=>({kind:'mcq',intro:'仲哥老師：「消費者心裡在想什麼？懂了就會做行銷。」',...pickBank(p,'consumer')}),
+  scm:p=>({kind:'mcq',intro:'阿金老師：「東西怎麼從工廠到你手上？這就是供應鏈。」',...pickBank(p,'scm')}),
+  trade:p=>({kind:'mcq',intro:'雙慧老師：「做國際生意，這些都要懂！」',...pickBank(p,'trade')}),
+  banks:p=>({kind:'form',intro:`武哥老師：「金融市場第一課，先認識銀行！請寫出三家常見的銀行${(p.banksUsed||[]).length?'，<b>不能和你之前寫過的重複</b>':''}。」${(p.banksUsed||[]).length?`<br><small class="note">你寫過：${p.banksUsed.join('、')}</small>`:''}`,
+    fields:[{id:'a',label:'銀行 1',type:'text',ph:'例如：台灣銀行'},{id:'b',label:'銀行 2',type:'text',ph:''},{id:'c',label:'銀行 3',type:'text',ph:''}],
+    check:v=>{const ks=[v.a,v.b,v.c].map(bankKey);if(ks.some(k=>!k))return {retry:'有一家看起來不是銀行，請寫出完整的銀行名稱（例如：第一銀行、玉山銀行）。'};
+      if(new Set(ks).size<3)return {retry:'三家銀行不能重複喔。'};const used=p.banksUsed||[];const dup=ks.find(k=>used.includes(k));if(dup)return {retry:`「${dup}」你之前寫過了，換一家吧！`};return {ok:1,keys:ks}},
+    win:()=>'武哥老師：「Very good! 認識銀行，就是認識金融市場的第一步。」',say:v=>[v.a,v.b,v.c].join('、'),after:r=>{p.banksUsed=[...(p.banksUsed||[]),...(r.keys||[])]}}),
+  tactics:p=>({kind:'form',intro:`艾瑞克老師：「品牌行銷有很多招！請說出三個行銷手段${(p.tacUsed||[]).length?'，<b>不能和你之前說過的重複</b>':''}。」<br><small class="note">例如：網紅業配、限時折扣、會員集點、聯名商品、直播帶貨、快閃店…</small>${(p.tacUsed||[]).length?`<br><small class="note">你說過：${p.tacUsed.join('、')}</small>`:''}`,
+    fields:[{id:'a',label:'行銷手段 1',type:'text',ph:''},{id:'b',label:'行銷手段 2',type:'text',ph:''},{id:'c',label:'行銷手段 3',type:'text',ph:''}],
+    check:v=>{const ks=[v.a,v.b,v.c].map(x=>x.trim());if(ks.some(k=>k.length<2))return {retry:'三個都要寫，每個至少 2 個字。'};
+      if(new Set(ks).size<3)return {retry:'三個行銷手段不能重複喔。'};const used=p.tacUsed||[];const dup=ks.find(k=>used.includes(k));if(dup)return {retry:`「${dup}」你之前說過了，換一個吧！`};return {ok:1,keys:ks}},
+    win:()=>'艾瑞克老師：「很好！懂得組合不同的行銷手段，品牌就會被記住。」',fx:[['love',1]],say:v=>[v.a,v.b,v.c].join('、'),after:r=>{p.tacUsed=[...(p.tacUsed||[]),...(r.keys||[])]}}),
+  jp:p=>{const s=JP_V[pickIdx(p,'jp',JP_V.length)];return {kind:'choice',prompt:`雙慧老師：「${s}！」`,
+    form:{intro:`雙慧老師：「${s}！」打字回答，句子裡要有平假名或片假名。`,fields:[{id:'a',label:'你的日文句子',type:'text',ph:'例如：はじめまして'}],
+      check:v=>/[぀-ヿ]/.test(v.a)?{ok:1}:{retry:'句子裡要有平假名或片假名喔，例如「はじめまして」「ありがとうございます」。'},say:v=>v.a},
+    win:()=>'雙慧老師：「すごい！說得很好。」'}},
+  kr:p=>{const s=KR_V[pickIdx(p,'kr',KR_V.length)];return {kind:'choice',prompt:`英子老師：「${s}！」`,
+    form:{intro:`英子老師：「${s}！」打字回答，要用韓文字（한글）。`,fields:[{id:'a',label:'你的韓文句子',type:'text',ph:'例如：안녕하세요'}],
+      check:v=>/[가-힣]/.test(v.a)?{ok:1}:{retry:'句子要用韓文字（한글）寫喔，例如打招呼的「안녕하세요」。'},say:v=>v.a},
+    win:()=>'英子老師：「잘했어요！很有語感。」',skill:'韓語會話技能'}},
+  speech:p=>{const s=SPEECH_V[pickIdx(p,'speech',SPEECH_V.length)];return {kind:'judge',prompt:`艾瑞克老師：「${s}」`,
+    win:()=>'艾瑞克老師：「台風很穩！這就是公關人的基本功。」台下有人默默記住了你（戀愛 +1）。',fx:[['love',1]]}},
+};
+/* 執行一個任務規格，回傳 {ok, said}；放棄回傳 null */
+async function runTask(p,spec,ctx){
+  if(spec.kind==='mcq'){
+    const i=await mcqSheet({...ctx,intro:spec.intro,q:spec.q,o:spec.o,giveUp:1});
+    if(i===null) return null;
+    return {ok:i===spec.a,said:`${LET[i]}. ${spec.o[i]}`,lose:`正確答案是 ${LET[spec.a]}. ${spec.o[spec.a]}。${spec.ex||''}`,win:spec.ex};
+  }
+  if(spec.kind==='judge'){
+    const v=await judgeSheet(p,{...ctx,prompt:spec.prompt,label:ctx.tag});
+    if(v===null) return null;
+    return {ok:v,said:'（口頭回答）',lose:'這次老師判定還沒通過，下次停在這裡再挑戰！'};
+  }
+  if(spec.kind==='choice'){
+    const how=await sheet({stay:1,...ctx,body:`<p>${spec.prompt}</p><p class="note">可以用說的，也可以用打字回答。</p>`,
+      buttons:[{l:'用說的（'+(S.online?'老師在大螢幕判定':'現場判定')+'）',v:'say',p:1},{l:'用打字回答',v:'type'},{l:'這次先放棄（學分 +0）',v:null}]});
+    if(!how) return null;
+    if(how==='say'){const v=await judgeSheet(p,{...ctx,prompt:spec.prompt,label:ctx.tag});if(v===null)return null;return {ok:v,said:'（口頭回答）',lose:'這次老師判定還沒通過，下次再挑戰！'}}
+    $('#sheet')._check=spec.form.check;
+    const r=await taskSheet({...ctx,intro:spec.form.intro,fields:spec.form.fields});
+    if(!r) return null; return {ok:r.ok,said:spec.form.say(r.v),lose:spec.lose};
+  }
   $('#sheet')._check=spec.check;
-  const r=p.bot?{ok:Math.random()<.7,v:null,bot:1}:await taskSheet({tag,title:`${who}的課`,art,intro:spec.intro,fields:spec.fields});
-  let got, msg='', said='';
-  if(!r){got=0;msg='這次先放棄，下次停在這裡再挑戰。'}
-  else{
-    said=r.bot?'（電腦代答）':spec.say(r.v);
-    if(r.ok){got=4;msg=r.bot?`${who}點點頭，${esc(p.name)} 順利完成課堂任務。`:spec.win(r.v);p.passed[t.idx]++;if(spec.fx)applyFx(p,spec.fx);
-      if(c.task==='kr'&&!p.skills.includes('韓語會話')){learnSkill(p,'韓語會話');msg+='<br>你學會了外語技能「韓語會話」，也算一項跨系技能！'}}
-    else{got=1;msg=spec.lose||'差一點，補救拿 1 學分。'}
-  }
+  const r=await taskSheet({...ctx,intro:spec.intro,fields:spec.fields});
+  if(!r) return null;
+  if(r.ok&&spec.after) spec.after(r.r||{});
+  return {ok:r.ok,said:spec.say(r.v),lose:spec.lose};
+}
+/* 教學 TA：第一位完成任務的同學成為該課 TA；之後別人停在這門課，TA 就得到 1 個教學技能 */
+let taMap={};
+function taOf(idx){
+  if(S.online){const t=taMap[idx];return t?{uid:t.uid,name:t.name}:null}
+  const k=(S.ta||{})[idx];return k==null?null:{i:k,name:S.players[k].name};
+}
+function addTeach(q,idx,from){q.skills.push(`教學技能（${COURSES[idx].n}）`);q.taGot=(q.taGot||0)+1;log(`${esc(from)} 來上${COURSES[idx].n}，TA ${esc(q.name)} 獲得 1 個教學技能`)}
+function taVisit(p,idx){
+  const ta=taOf(idx); if(!ta) return '';
+  if(S.online){ if(ta.uid===uid) return '';
+    fb.ref(`rooms/${S.online.code}/taGift/${ta.uid}`).push({c:idx,from:p.name,at:TS()}).catch(()=>{});
+    return `這門課的教學 TA 是 ${esc(ta.name)}，TA 因為你來上課獲得 1 個教學技能。`}
+  const q=S.players[ta.i]; if(!q||q===p) return '';
+  addTeach(q,idx,p.name); return `這門課的教學 TA 是 ${esc(q.name)}，TA 因為你來上課獲得 1 個教學技能。`;
+}
+async function taClaim(p,idx){
+  if(taOf(idx)) return false;
+  if(S.online){try{const r=await fb.ref(`rooms/${S.online.code}/ta/${idx}`).transaction(v=>v?undefined:{uid,name:p.name,av:p.av});return !!(r.committed&&r.snapshot.val()&&r.snapshot.val().uid===uid)}catch(e){return false}}
+  S.ta=S.ta||{}; S.ta[idx]=S.players.indexOf(p); return true;
+}
+function myTA(p){
+  if(S.online) return Object.entries(taMap).filter(([k,v])=>v&&v.uid===uid).map(([k])=>COURSES[+k].n);
+  const i=S.players.indexOf(p); return Object.entries(S.ta||{}).filter(([k,v])=>v===i).map(([k])=>COURSES[+k].n);
+}
+async function doCourse(p,t){
+  const c=COURSES[t.idx], T=T_BY(c.t), art=avatar(T.av), who=`${T.name}老師${T.name==='仲哥'?'（系主任）':''}`, tag=`國企系課程・${c.n}`;
+  const taNote=taVisit(p,t.idx);
+  let res;
+  if(p.bot) res=Math.random()<.72?{ok:true,said:'（電腦代答）'}:{ok:false,said:'（電腦代答）',lose:'這次沒有完成任務。'};
+  else{ const spec=TASKS[c.task](p); res=await runTask(p,spec,{tag,title:`${who}的課`,art}); if(res){res.win=res.win||'';res.spec=spec} }
+  let got=0, msg='';
+  if(!res){msg='這次先放棄，下次停在這裡再挑戰。'}
+  else if(res.ok){
+    got=CR_COURSE; p.passed[t.idx]=(p.passed[t.idx]||0)+1;
+    const spec=res.spec||{}; msg=p.bot?`${who}點點頭，${esc(p.name)} 順利完成課堂任務。`:(spec.win?spec.win():'任務完成！')+(res.win&&spec.kind==='mcq'?`<br><small class="note">${esc(res.win)}</small>`:'');
+    if(spec.fx) applyFx(p,spec.fx);
+    if(spec.skill&&!p.skills.includes(spec.skill)){learnSkill(p,spec.skill);msg+=`<br>你獲得了「${spec.skill}」！`}
+    if(await taClaim(p,t.idx)){msg+=`<br><b>🎓 你是第一位完成「${c.n}」任務的同學，成為這門課的教學 TA！</b>之後別人停在這門課，你就會獲得教學技能。`;log(`${esc(p.name)} 成為${c.n}的教學 TA`)}
+  } else {msg=(res.lose||'差一點！')+'<br>任務沒完成，這次沒有學分，下次停在這裡再挑戰。'}
   addCr(p,got);
-  log(`${esc(p.name)} 在${c.s}課${said?`：「${esc(said.length>22?said.slice(0,22)+'…':said)}」`:'先放棄了'}${got?`（+${got} 學分）`:''}`);
-  await sheet({tag,title:got===4?`任務完成 +4 學分`:got?`補救 +${got} 學分`:'這次沒拿到學分',art:avatar(AV[p.av]),
-    body:`${said?`<small class="note">${esc(p.name)} 的回答</small>${qq(said)}`:''}<p>${msg}</p><p class="note num">目前 ${p.cr} / ${S.target} 學分</p>`,
+  log(`${esc(p.name)} 在${c.s}課${res?`：「${esc((res.said||'').length>22?res.said.slice(0,22)+'…':res.said)}」`:'先放棄了'}${got?`（+${got} 學分）`:'（沒拿到學分）'}`);
+  await sheet({tag,title:got?`任務完成 +${got} 學分`:'這次沒拿到學分',art:avatar(AV[p.av]),
+    body:`${res&&res.said?`<small class="note">${esc(p.name)} 的回答</small>${qq(res.said)}`:''}<p>${msg}</p>${taNote?`<p class="note">${taNote}</p>`:''}<p class="note num">目前 ${p.cr} / ${S.target} 學分</p>`,
     buttons:[{l:'繼續',v:1,p:1}]});
 }
 
+/* 玟玟執秘：累積 3 項沒簡報過的技能，就能簡報換學分（每項 1 學分） */
 async function doOffice(p){
-  const T=T_BY('玟玟'), art=avatar(T.av), todo=p.skills.filter(s=>!p.presented.includes(s));
-  if(!todo.length) return;
-  const n=todo.length, bonus=n>=3?1:0;
-  const v=await sheet({tag:'國企系辦・新學年註冊',title:'玟玟執秘找你',art,
-    body:`<p>「學期跨系學到的技能，來系辦做個簡報吧！每項技能可以換 1 學分，一次簡報三項以上再多送 1 學分喔。」</p>
-      <div class="chips">${todo.map(s=>`<span>${s}</span>`).join('')}</div>`,
-    buttons:[{l:`簡報這 ${n} 項技能（學分 +${n+bonus}）`,v:1,p:1},{l:'下次再說',v:0}]});
+  p.pres=p.pres||0; const todo=p.skills.slice(p.pres); if(todo.length<3) return;
+  const T=T_BY('玟玟'), art=avatar(T.av), n=todo.length;
+  if(p.bot){p.pres=p.skills.length;addCr(p,n);log(`${esc(p.name)} 向玟玟簡報 ${n} 項技能，學分 +${n}`);return}
+  const v=await sheet({tag:'國企系辦',title:'玟玟執秘找你',art,
+    body:`<p>「你已經累積 ${n} 項技能了！來系辦做個簡報吧，每項技能可以換 1 學分。」</p><div class="chips">${todo.map(s=>`<span>${esc(s)}</span>`).join('')}</div>`,
+    buttons:[{l:`簡報這 ${n} 項技能（學分 +${n}）`,v:1,p:1},{l:'下次再說',v:0}]});
   if(!v) return;
-  p.presented.push(...todo); addCr(p,n+bonus);
-  log(`${esc(p.name)} 向玟玟簡報 ${n} 項技能，學分 +${n+bonus}`);
-  await sheet({tag:'國企系辦',title:`簡報完成 +${n+bonus} 學分`,art,body:'<p>玟玟執秘幫你把成果登錄進系統，還拍了照要放系網。</p>',buttons:[{l:'繼續',v:1,p:1}]});
+  p.pres=p.skills.length; addCr(p,n);
+  log(`${esc(p.name)} 向玟玟簡報 ${n} 項技能，學分 +${n}`);
+  await sheet({tag:'國企系辦',title:`簡報完成 +${n} 學分`,art,body:'<p>玟玟執秘幫你把成果登錄進系統，還拍了照要放系網。</p>',buttons:[{l:'繼續',v:1,p:1}]});
 }
+function giveRandomSkill(p){const left=SKILL_POOL.filter(s=>!p.skills.includes(s));const sk=left.length?left[rnd(left.length)]:SKILL_POOL[rnd(SKILL_POOL.length)]+'（進階）';learnSkill(p,sk);return sk}
+/* 國際成就：雙聯學位、交換題目答對、多益證書…每累積 3 項，學分 +1 */
+function addIntl(p,why){p.intl=(p.intl||0)+1;(p.intlLog=p.intlLog||[]).push(why);
+  if(p.intl%3===0){addCr(p,1);pending.push({br:'國際成就',n:`累積 ${p.intl} 項國際成就`,d:'各種國際成就每累積 3 項，學分 +1。',fx:[['cr',1]],noApply:1})}}
 
-async function doSkill(p,t,free){
-  const left=t.sk.filter(s=>!p.skills.includes(s)), tag=free?'跨系工作坊':`跨系學習・${t.n}`;
-  if(!left.length){
-    addCr(p,1); log(`${esc(p.name)} 到${t.s}當小老師`);
-    return sheet({tag,title:`${t.s}技能全制霸`,art:avatar(AV[p.av]),body:`<p>${t.n}的三項技能你都學會了，這次回來當小老師，學分 +1。</p>`,buttons:[{l:'繼續',v:1,p:1}]});
+/* ---------- 社團：入社考驗 ---------- */
+async function clubTest(p,t,art){
+  const tag=`社團・${t.n}・入社考驗`;
+  if(p.bot) return Math.random()<.75;
+  const T=t.test;
+  if(T.kind==='judge') return await judgeSheet(p,{tag,title:`${t.n} 入社考驗`,art,prompt:T.prompt,label:`${t.n}入社考驗`});
+  if(T.kind==='mcq'){const q=pickBank(p,T.bank);const i=await mcqSheet({tag,title:`${t.n} 入社考驗`,art,intro:'入社考驗：答對就能入社！',q:q.q,o:q.o,giveUp:1});
+    if(i===null) return null; if(i!==q.a){p._clubWhy=`正確答案是 ${LET[q.a]}. ${q.o[q.a]}。${q.ex}`} return i===q.a}
+  if(T.kind==='chords'){
+    const how=await sheet({stay:1,tag,title:`${t.n} 入社考驗`,art,body:'<p>入社考驗：說出五個和弦的名稱（例如 C、G、Am、F、Em）。</p>',
+      buttons:[{l:'用說的（'+(S.online?'老師在大螢幕判定':'現場判定')+'）',v:'say',p:1},{l:'用打字回答',v:'type'},{l:'再看看',v:null}]});
+    if(!how) return null;
+    if(how==='say') return await judgeSheet(p,{tag,title:`${t.n} 入社考驗`,art,prompt:'入社考驗：說出五個和弦的名稱（例如 C、G、Am、F、Em）。',label:`${t.n}入社考驗`});
+    $('#sheet')._check=v=>{const xs=parseList(v.a).map(x=>x.replace('♯','#').replace('♭','b'));if(xs.length<5)return {retry:`要寫五個和弦喔，目前 ${xs.length} 個（用空白或逗號隔開）。`};
+      const bad=xs.find(x=>!CHORD_RE.test(x));if(bad)return {retry:`「${bad}」看起來不是和弦名稱，例如 C、Dm、G7、Am。`};if(new Set(xs).size<5)return {retry:'五個和弦不能重複喔。'};return {ok:1}};
+    const r=await taskSheet({tag,title:`${t.n} 入社考驗`,art,intro:'寫出五個不同的和弦名稱，用空白或逗號隔開。',fields:[{id:'a',label:'五個和弦',type:'text',ph:'例如：C G Am F Em'}]});
+    if(!r) return null; return r.ok;
   }
-  const sk=left[rnd(left.length)];
-  learnSkill(p,sk); addCr(p,free?0:1);
-  log(`${esc(p.name)} 在${t.s}學會「${sk}」`);
-  const r=p.skills.length%3;
-  await sheet({tag,title:'習得特殊技能',art:avatar(AV[p.av]),
-    body:`<div class="skillcard"><small>${t.n}</small><b>${sk}</b></div>
-      <p>${free?'':'跨系選修也算學分，學分 +1。'}${r===0?'剛好集滿三項，有獎勵！':`再學 ${3-r} 項就能換一份獎勵。`}</p>`,
-    buttons:[{l:'繼續',v:1,p:1}]});
+  return true;
 }
-
 async function doClub(p,t){
   const art=avatar(AV[p.av]), tag=`社團・${t.n}`;
   p.seenClubs=p.seenClubs||[];
   if(!p.seenClubs.includes(t.idx)){p.seenClubs.push(t.idx);
     await sheet({tag:'第一次來到這個社團',title:t.n,art:sprig('sprig'),body:`<p>${CLUB_INTRO[t.n]||t.d}</p>`,buttons:[{l:'繼續',v:1,p:1}]})}
   if(p.club===null){
-    const v=await sheet({tag,title:`${t.n} 招生中`,art,body:`<p>${t.d}</p><p>要加入嗎？加入後，停在這裡就能推進社團支線。</p>`,buttons:[{l:`加入${t.n}`,v:1,p:1},{l:'再看看',v:0}]});
-    if(v){p.club=t.idx;log(`${esc(p.name)} 加入了${t.n}`);addBr(p,'club',2-(p.clubPt%2));renderDynamic()}
+    const testTxt=t.test.kind==='judge'?t.test.prompt.replace('入社考驗：',''):t.test.kind==='chords'?'說出五個和弦的名稱':`回答一題${t.s}相關的選擇題`;
+    const v=p.bot?Math.random()<.7:await sheet({tag,title:`${t.n} 招生中`,art,body:`<p>${t.d}</p><p><b>入社考驗：</b>${testTxt}</p><p class="note">通過就能入社，並獲得「${t.skill}」（${fxText(t.fx)}）。入社後，停在這裡就能推進社團支線。</p>`,buttons:[{l:'挑戰入社考驗',v:1,p:1},{l:'再看看',v:0}]});
+    if(!v) return;
+    p._clubWhy='';
+    const ok=await clubTest(p,t,art);
+    if(ok){
+      p.club=t.idx; log(`${esc(p.name)} 通過考驗，加入了${t.n}`);
+      learnSkill(p,t.skill); applyFx(p,t.fx); addBr(p,'club',2-(p.clubPt%2)); renderDynamic();
+      await sheet({tag,title:`歡迎加入${t.n}！`,art,body:`<div class="skillcard"><small>獲得技能</small><b>${t.skill}</b></div><p class="fx">${fxText(t.fx)}</p>`,buttons:[{l:'繼續',v:1,p:1}]});
+    }else if(ok===false){
+      log(`${esc(p.name)} 這次沒通過${t.n}的入社考驗`);
+      await sheet({tag,title:'這次沒通過入社考驗',art,body:`<p>${p._clubWhy||'沒關係，下次停在這裡可以再挑戰一次！'}</p>`,buttons:[{l:'繼續',v:1,p:1}]});
+    }
     return;
   }
   if(p.club===t.idx){
@@ -1276,32 +1553,83 @@ async function doSpot(p,t){
   if(!ok) await sheet({tag,title:'時機還沒到',art,body:'<p>話到嘴邊又吞回去了，不過兩人的距離還是近了一點（戀愛 +1）。</p>',buttons:[{l:'繼續',v:1,p:1}]});
 }
 
+/* ---------- 海外實習知識問答 ---------- */
+const svgBox=inner=>`<svg viewBox="0 0 200 150" aria-hidden="true"><g filter="url(#wc)">${inner}</g></svg>`;
+async function doIntern(p,t){
+  const I=INTERNS[t.idx], tag='海外企業實習', pic=svgBox(ART[I.art]());
+  if(p.bot){const ok=Math.random()<.75,g=ok?2:1;addCr(p,g);log(`${esc(p.name)} 在${I.n}${ok?'答對':'答錯'}（+${g} 學分）`);
+    await sheet({tag,title:I.n,art:avatar(AV[p.av]),body:`<p>${esc(p.name)} 回答實習知識問答：${ok?'答對了':'答錯了'}，學分 +${g}。</p>`,buttons:[{l:'繼續',v:1,p:1}]});return}
+  await sheet({stay:1,tag,title:I.n,body:`<div class="ipic">${pic}</div><p>${I.intro}</p>`,buttons:[{l:'開始答題',v:1,p:1}]});
+  const pick=await mcqSheet({tag:I.n,title:'實習知識問答',q:I.q,o:I.o});
+  const ok=pick===I.a, g=ok?2:1; addCr(p,g);
+  log(`${esc(p.name)} 在${I.n}${ok?'答對':'答錯'}（+${g} 學分）`);
+  await sheet({stay:1,tag:I.n,title:ok?'答對了！':'答錯了',art:avatar(AV[p.av]),
+    body:`<p>你的答案：${LET[pick]}. ${esc(I.o[pick])}</p><p>正確答案：<b class="good">${LET[I.a]}. ${esc(I.o[I.a])}</b></p><p><b>解析：</b>${esc(I.ex)}</p>
+      <p class="fx num" style="font-size:15px">本題獲得 ${g} 學分・目前累積 ${p.cr} / ${S.target} 學分</p>`,
+    buttons:[{l:'繼續遊戲',v:1,p:1}]});
+}
+
+/* ---------- 國外姊妹校交換（每次停留問一輪） ---------- */
+function fxQ(X){
+  const amt=X.unit===1?[100,200,300,500,800][rnd(5)]:[1000,3000,5000,10000,20000][rnd(5)];
+  const ans=Math.round(amt/X.unit*X.twd);
+  const item=X.unit===1?`${amt} ${X.cur}`:`${amt.toLocaleString()} ${X.cur}`;
+  const wrong=[Math.round(ans*10),Math.round(ans/10),Math.round(ans*2)].filter(v=>v!==ans&&v>0);
+  const o=[ans,...wrong].slice(0,4);while(o.length<4)o.push(ans+o.length*7);
+  const it={q:`假設 ${X.unit===1?'1':X.unit} ${X.cur} ≈ ${X.twd} 新台幣。在${X.country}買一樣 ${item} 的東西，大約等於多少新台幣？`,o:o.map(v=>`${v.toLocaleString()} 元`),a:0,
+    ex:`${item} ÷ ${X.unit} × ${X.twd} ≈ ${ans.toLocaleString()} 元新台幣。`};
+  return shuffleQ(it);
+}
+async function doExchange(p,t){
+  const X=EXCH[t.idx], tag=`國外姊妹校交換・${X.country}`, art=svgBox(ART.plane(X));
+  p.ex=p.ex||{r:0,deg:[]};
+  const got=[];
+  if(!p.skills.includes(X.lang)){learnSkill(p,X.lang);got.push(`語言技能 +1（${X.lang}）`)}
+  addCr(p,1); got.push('學分 +1');
+  if(!p.ex.deg.includes(t.idx)){p.ex.deg.push(t.idx);addIntl(p,'雙聯學位・'+X.n);got.push(`雙聯制學位 +1（${X.n}）`)}
+  const round=p.ex.r<3?p.ex.r:1+rnd(2);
+  log(`${esc(p.name)} 到${X.n}交換（${got.join('、')}）`);
+  let ok, q;
+  if(p.bot){ok=Math.random()<.7}
+  else{
+    await sheet({stay:1,tag,title:X.n,art,body:`<p>恭喜你獲選到${X.country}的姊妹校交換！</p><div class="chips">${got.map(s=>`<span>${s}</span>`).join('')}</div><p>接下來是<b>${EX_ROUND[round]}</b>的題目。<span class="bad">答錯會被遣返回國，暫停一回合。</span></p>`,buttons:[{l:'開始答題',v:1,p:1}]});
+    q=round===0?pickBank(p,'abroad'):round===1?pickBank(p,'toeic'):fxQ(X);
+    const i=await mcqSheet({tag:`${X.country}交換・${EX_ROUND[round]}`,title:EX_ROUND[round],q:q.q,o:q.o});
+    ok=i===q.a;
+  }
+  let rew='';
+  if(ok){ if(round===0){addCr(p,1);rew='學分 +1'} else {addIntl(p,EX_ROUND[round]);rew='國際成就 +1'} if(p.ex.r<3) p.ex.r++ }
+  else {p.skip=1;p.skipWhy='遣返回國'}
+  log(`${esc(p.name)} ${EX_ROUND[round]}${ok?`答對（${rew}）`:'答錯，被遣返回國'}`);
+  await sheet({stay:!p.bot,tag,title:ok?`答對了！${rew}`:'答錯了，被遣返回國',art:avatar(AV[p.av]),
+    body:`${q?`<p>正確答案：<b class="good">${LET[q.a]}. ${esc(q.o[q.a])}</b></p><p class="note">${esc(q.ex||'')}</p>`:''}<p>${ok?(p.ex.r>=3&&round===2?'三輪題目全部通過，你是國際交換達人！':'下次停在姊妹校，會進入下一輪題目。'):'先回台灣準備好，下回合暫停一次。'}</p>
+      <p class="fx num">國際成就 ${p.intl||0} 項（每 3 項學分 +1）・目前 ${p.cr} / ${S.target} 學分</p>`,buttons:[{l:'繼續遊戲',v:1,p:1}]});
+}
+
 async function doCard(p,t,depth){
   const deck=t.type==='chance'?CHANCE:FATE, c=deck[rnd(deck.length)];
   let res='';
   if(c.fx){res=c.fx.length?fxText(c.fx):'沒有變化';applyFx(p,c.fx)}
+  if(c.intl){addIntl(p,c.t);res+=(res?'、':'')+'國際成就 +1'}
   if(c.skip){p.skip+=c.skip;res='暫停一回合'}
   if(c.back) res='往回走 3 格';
   if(c.jail) res='前往圖書館閉關，暫停一回合';
   if(c.move) res=`前往${TILES[posOf(c.move)].n}`;
-  if(c.skill) res='隨機習得一項跨系技能';
+  let sk='';
+  if(c.skill){sk=giveRandomSkill(p);res=`獲得「${sk}」`}
   log(`${esc(p.name)} 抽到${t.n}：${c.t}`);
   await sheet({tag:t.n+'卡',title:c.t,art:sprig('sprig'),body:`<p class="fx" style="font-size:15px">${res}</p>`,buttons:[{l:'繼續',v:1,p:1}]});
   if(c.back){await moveSteps(p,-3); if(depth<1) await resolve(p,depth+1)}
   if(c.jail){p.pos=posOf('L');p.skip=1;renderDynamic()}
   if(c.move){await jumpTo(p,c.move); if(depth<1) await resolve(p,depth+1)}
-  if(c.skill){
-    const opts=TILES.filter(x=>x.type==='dept'&&x.sk.some(s=>!p.skills.includes(s)));
-    if(opts.length) await doSkill(p,opts[rnd(opts.length)],true);
-  }
 }
 
 async function doCorner(p,t){
   const art=avatar(AV[p.av]);
-  if(t.code==='S') return sheet({tag:'報到處',title:'回到報到處',art,body:`<p>新學年開始！你現在是${YEAR(p.year)}。</p>${p.skills.some(s=>!p.presented.includes(s))?'<p class="note">玟玟執秘在系辦等你簡報跨系技能。</p>':''}`,buttons:[{l:'繼續',v:1,p:1}]});
+  if(t.code==='S'){const n=p.skills.length-(p.pres||0);return sheet({tag:'報到處',title:'回到報到處',art,body:`<p>新學年開始！你現在是${YEAR(p.year)}。</p><p class="note">${n>=3?'玟玟執秘在系辦等你簡報技能。':`再累積 ${3-n} 項技能，就能向玟玟執秘簡報換學分。`}</p>`,buttons:[{l:'繼續',v:1,p:1}]})}
   if(t.code==='L') return sheet({tag:'圖書館',title:'只是來借書',art,body:'<p>路過圖書館，順便借了本管理學經典。</p>',buttons:[{l:'繼續',v:1,p:1}]});
   if(t.code==='R'){
-    const v=await sheet({tag:'學生宿舍',title:'宿舍夜談',art,body:'<p>熄燈後大家都還醒著，今晚你想做什麼？</p>',buttons:[
+    const v=p.bot?['cr','club','love'][rnd(3)]:await sheet({tag:'學生宿舍',title:'宿舍夜談',art,body:'<p>熄燈後大家都還醒著，今晚你想做什麼？</p>',buttons:[
       {l:'挑燈夜讀（學分 +1）',v:'cr'},{l:'討論社團企劃（社團 +1）',v:'club'},{l:`跟室友聊 ${crushOf(p).name}（戀愛 +1）`,v:'love'}]});
     applyFx(p,[[v,1]]); log(`${esc(p.name)} 在宿舍夜談（${FXNAME[v]} +1）`); return;
   }
@@ -1316,20 +1644,22 @@ async function doCorner(p,t){
 async function graduate(p,place,final){
   const cs=stage(p.clubPt), ls=stage(p.lovePt);
   const badges=[p.year<=4?`${YEAR(p.year)}如期畢業`:`${YEAR(p.year)}，終於畢業`];
-  if(p.passed.every(x=>x)) badges.push('七門課全修');
+  if(p.passed.every(x=>x)) badges.push(`${COURSES.length} 門課全修`);
   if(p.acad>=2) badges.push(ACAD[p.acad-1].n);
-  if(p.skills.length) badges.push(`跨系技能 ${p.skills.length} 項`);
-  p.combos.forEach(c=>badges.push(c));
+  if(p.skills.length) badges.push(`技能 ${p.skills.length} 項`);
+  const tas=myTA(p); if(tas.length) badges.push(`教學 TA：${tas.join('、')}`);
+  if(p.intl) badges.push(`國際成就 ${p.intl} 項`);
+  (p.ex&&p.ex.deg||[]).forEach(i=>badges.push(`雙聯學位・${EXCH[i].country}`));
   if(cs) badges.push(CLUB_ST[cs-1].n+(p.club!==null?'・'+CLUBS[p.club].n:''));
   if(ls) badges.push(`${LOVE_ST[ls-1].n}・${crushOf(p).name}`);
-  const title = cs>=7&&ls>=8?'人生勝利組':cs>=7?'大專青年楷模':ls>=8?'校園模範CP':p.skills.length>=9?'跨域斜槓王':p.combos.length?p.combos[0]:cs>=5?'社團風雲人物':'認真的國企人';
+  const title = cs>=7&&ls>=8?'人生勝利組':cs>=7?'大專青年楷模':ls>=8?'校園模範CP':(p.intl||0)>=4?'國際移動力達人':tas.length>=3?'金牌教學 TA':p.skills.length>=8?'斜槓技能王':cs>=5?'社團風雲人物':'認真的國企人';
   const multi=S.players.length>1||!!S.online;
   log(`${esc(p.name)} 修滿學分，領到畢業證書！（第 ${p.turns} 回合）`); renderDynamic();
   const v=await sheet({tag:'恭喜',title:'畢業典禮',body:`<div class="cert">
       <div class="ct">畢業證書</div>${avatar({...AV[p.av],v:'r'})}
       <div style="font-family:var(--display);font-size:22px">${esc(p.name)}</div>
       <div>國際企業管理學系</div>
-      ${multi&&!(S.players.length===1&&!S.online)?`<div style="font-family:var(--display);font-size:20px;color:var(--red)">第 ${p.turns} 回合修滿學分</div><div class="note">同一回合畢業的同學會再比跨系技能數、社團、戀愛進度，最終名次看頒獎台</div>`:''}
+      ${multi&&!(S.players.length===1&&!S.online)?`<div style="font-family:var(--display);font-size:20px;color:var(--red)">第 ${p.turns} 回合修滿學分</div><div class="note">同一回合畢業的同學會再比技能數、社團、戀愛進度，最終名次看頒獎台</div>`:''}
       <div class="note num">修滿 ${p.cr} 學分・共 ${p.turns} 回合・${p.gradAt} 畢業</div>
       <div class="badges">${badges.map(b=>`<span>${b}</span>`).join('')}</div>
       <div style="font-family:var(--display);font-size:18px;color:var(--red)">稱號：${title}</div>
@@ -1339,7 +1669,7 @@ async function graduate(p,place,final){
   if(v) backToSetup();
   if(S&&S.online){const lp=$('#livePanel');lp&&lp.scrollIntoView({behavior:'smooth'})}
 }
-/* 排名：畢業回合數少者優先；同回合依序比跨系技能數、社團進度、戀愛進度 */
+/* 排名：畢業回合數少者優先；同回合依序比技能數、社團進度、戀愛進度 */
 function rkv(p){const sk=Array.isArray(p.skills)?p.skills.length:(+p.skills||0);
   const cl=p.clubSt!=null?+p.clubSt:(p.clubPt!=null?stage(p.clubPt):0), lv=p.loveSt!=null?+p.loveSt:(p.lovePt!=null?stage(p.lovePt):0);
   return {d:p.done?1:0,t:+p.turns||0,sk,cl,lv,cr:+p.cr||0}}
@@ -1352,7 +1682,7 @@ function tieNotes(list){
   const clN=v=>v?CLUB_ST[v-1].n:'未入社', lvN=v=>v?LOVE_ST[v-1].n:'還沒開始';
   for(let i=0;i<Math.min(3,top.length-1);i++){const a=top[i],b=top[i+1],x=rkv(a),y=rkv(b); if(x.t!==y.t) continue;
     let t=`${nm(a)} 與 ${nm(b)} 都在第 ${x.t} 回合畢業`;
-    if(x.sk!==y.sk) t+=`，比跨系技能：${nm(a)} ${x.sk} 項、${nm(b)} ${y.sk} 項`;
+    if(x.sk!==y.sk) t+=`，比技能數：${nm(a)} ${x.sk} 項、${nm(b)} ${y.sk} 項`;
     else if(x.cl!==y.cl) t+=`，技能數相同（${x.sk} 項），比社團進度：${nm(a)}「${clN(x.cl)}」、${nm(b)}「${clN(y.cl)}」`;
     else if(x.lv!==y.lv) t+=`，技能與社團都相同，比戀愛進度：${nm(a)}「${lvN(x.lv)}」、${nm(b)}「${lvN(y.lv)}」`;
     else t+='，技能、社團、戀愛進度也完全相同，並列同名次';
@@ -1360,7 +1690,7 @@ function tieNotes(list){
   return out;
 }
 function rankRuleHTML(list){
-  return `<p class="note" style="margin:8px 0 0">排名規則：畢業回合數少的優先；同一回合畢業的，再依序比跨系技能數、社團進度、戀愛進度。</p>`+
+  return `<p class="note" style="margin:8px 0 0">排名規則：畢業回合數少的優先；同一回合畢業的，再依序比技能數、社團進度、戀愛進度。</p>`+
     tieNotes(list).map(t=>`<p class="note" style="margin:3px 0 0;color:var(--ink)">・${t}</p>`).join('');
 }
 function standings(){ return [...S.players].sort(rankCmp) }
@@ -1424,17 +1754,106 @@ function rankList(players){
   const arr=Object.entries(players||{}).map(([id,p])=>({id,...p}));
   return arr.sort(rankCmp);
 }
-function liveItems(list,target,meId){
-  return list.map((p,i)=>`<li class="${p.id===meId?'me':''} ${p.done&&i<3?'gold':''}">
+function liveItems(list,target,meId,kick){
+  return list.map((p,i)=>`<li class="${p.id===meId?'me':''} ${p.done&&i<3?'gold':''} ${kick?'k':''}">
     <span class="rk">${i+1}</span>${avatar(avOf(p.av))}
-    <span class="nm"><b>${esc(p.name||'同學')}</b><small>${p.done?`第 ${p.turns||0} 回合畢業・技能 ${p.skills||0}`:`${YEAR(p.year||1)}・技能 ${p.skills||0}${p.club?'・'+esc(p.club):''}${p.love?'・'+esc(p.love):''}`}</small></span>
-    <span class="cr">${p.cr||0}/${target}</span></li>`).join('');
+    <span class="nm"><b>${esc(p.name||'同學')}</b><small>${kick&&isOffline(p)?'<span class="off">離線・</span>':''}${p.done?`第 ${p.turns||0} 回合畢業・技能 ${p.skills||0}`:`${YEAR(p.year||1)}・技能 ${p.skills||0}${p.club?'・'+esc(p.club):''}${p.love?'・'+esc(p.love):''}`}</small></span>
+    <span class="cr">${p.cr||0}/${target}</span>${kick?`<button class="kick" data-kick="${esc(p.id)}">移出</button>`:''}</li>`).join('');
 }
 function podiumHTML(list){
   const lab=['冠軍','亞軍','季軍'];
   const col=(p,k)=>p?`<div class="p${k+1}">${avatar({...avOf(p.av),v:k===0?'r':undefined})}<b>${esc(p.name||'同學')}</b><small class="note num">${p.done?`${p.turns||0} 回合畢業`:`${p.cr||0} 學分`}</small><div class="step">${lab[k]}</div></div>`:'<div></div>';
   return `<div class="podium">${col(list[1],1)}${col(list[0],0)}${col(list[2],2)}</div>`+rankRuleHTML(list);
 }
+
+/* ---------- 背景音樂（原創旋律，用瀏覽器即時合成，沒有任何外部音檔） ---------- */
+const Music={ctx:null,out:null,timer:null,on:false,step:0,nextT:0,
+  MEL:[76,79,81,79,76,0,74,72, 72,76,74,72,69,0,72,74, 77,76,74,72,74,0,76,77, 79,0,74,76,74,0,71,74,
+       76,79,84,81,79,0,76,79, 81,79,76,74,72,0,69,72, 74,77,76,74,72,0,74,76, 74,0,72,71,72,0,0,0],
+  BASS:[48,45,41,43,48,45,50,43],
+  pref(){try{return localStorage.getItem('usc-music')}catch(e){return null}},
+  setPref(v){try{localStorage.setItem('usc-music',v)}catch(e){}},
+  ensure(){if(this.ctx)return true;const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return false;
+    try{this.ctx=new AC();this.out=this.ctx.createGain();this.out.gain.value=.05;this.out.connect(this.ctx.destination);return true}catch(e){return false}},
+  hz(m){return 440*Math.pow(2,(m-69)/12)},
+  tone(m,t,d,type,v){const c=this.ctx,o=c.createOscillator(),g=c.createGain();o.type=type;o.frequency.value=this.hz(m);
+    g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+.02);g.gain.exponentialRampToValueAtTime(.0005,t+d);o.connect(g);g.connect(this.out);o.start(t);o.stop(t+d+.05)},
+  hat(t){const c=this.ctx,n=c.createBufferSource(),b=c.createBuffer(1,1800,c.sampleRate),dd=b.getChannelData(0);for(let i=0;i<dd.length;i++)dd[i]=(Math.random()*2-1)*(1-i/dd.length);
+    n.buffer=b;const f=c.createBiquadFilter();f.type='highpass';f.frequency.value=6500;const g=c.createGain();g.gain.value=.18;n.connect(f);f.connect(g);g.connect(this.out);n.start(t)},
+  sched(){if(!this.on||!this.ctx)return;const e=60/104/2;
+    while(this.nextT<this.ctx.currentTime+.3){const s=this.step%64,bar=s>>3,t=this.nextT,m=this.MEL[s];
+      if(m) this.tone(m,t,e*1.7,'triangle',.55);
+      if(s%8===0) this.tone(this.BASS[bar],t,e*3.6,'sine',.7);
+      if(s%8===4) this.tone(this.BASS[bar]+7,t,e*3.2,'sine',.45);
+      if(s%2===1) this.hat(t);
+      this.nextT+=e;this.step++}},
+  start(){if(!this.ensure())return;if(this.ctx.state==='suspended')this.ctx.resume();if(this.on)return;
+    this.on=true;this.step=0;this.nextT=this.ctx.currentTime+.08;this.timer=setInterval(()=>this.sched(),80);this.ui()},
+  stop(){this.on=false;clearInterval(this.timer);this.timer=null;this.ui()},
+  toggle(){if(this.on){this.stop();this.setPref('off')}else{this.setPref('on');this.start()}},
+  kick(){if(this.pref()==='on'&&!this.on)this.start();else if(this.ctx&&this.ctx.state==='suspended')this.ctx.resume()},
+  autoDefault(role){if(this.pref()===null&&role!=='student')this.setPref('on');this.kick()},
+  ding(){if(!this.ensure())return;if(this.ctx.state==='suspended')this.ctx.resume();const t=this.ctx.currentTime+.02;this.tone(84,t,.25,'sine',.9);this.tone(88,t+.14,.35,'sine',.9)},
+  ui(){const b=document.getElementById('musicBtn');if(b){b.textContent=this.on?'♪ 音樂：開':'♪ 音樂：關';b.setAttribute('aria-pressed',this.on)}}
+};
+document.addEventListener('pointerdown',()=>Music.kick(),{passive:true});
+
+/* ---------- 新增插圖：海外實習、交換、社團 ---------- */
+function addArt(){Object.assign(ART,{
+  snow:()=>`<rect x="6" y="14" width="188" height="126" rx="14" fill="#cfe1ee" opacity=".7"/><path d="M6 118 L56 46 L86 84 L120 34 L194 118Z" fill="#7d8fa8"/><path d="M56 46 L68 63 L60 60 L50 66Z M120 34 L136 56 L126 52 L116 60 L108 52Z" fill="#fbf8f2"/><rect x="6" y="114" width="188" height="26" fill="#fbf8f2"/>`+
+    [[30,30],[160,26],[100,22],[176,70],[24,80]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="3" fill="#fff"/>`).join('')+`<path d="M138 112 l22 -22 M142 116 l22 -22" stroke="#d0573f" stroke-width="3" stroke-linecap="round"/>`,
+  bali:()=>`<rect x="6" y="14" width="188" height="126" rx="14" fill="#f6e2b8" opacity=".8"/><circle cx="150" cy="44" r="16" fill="#e6b354"/><rect x="6" y="104" width="188" height="36" fill="#7fbfd0"/>
+    <path d="M36 104 v-56 l10 -8 l10 8 v56Z M44 44 h4 v-14 h-4Z" fill="#a0784c"/><path d="M62 104 v-56 l10 -8 l10 8 v56Z" fill="#a0784c"/><path d="M118 104 q4 -40 -6 -66" stroke="#6b4430" stroke-width="5" fill="none"/>
+    <path d="M112 40 q-26 -6 -36 8 q20 -6 36 -8 q-20 -18 -40 -12 q22 0 40 12 q8 -24 30 -24 q-20 8 -30 24 q24 -8 40 4 q-22 -8 -40 -4Z" fill="#6e8f58"/>`,
+  phuket:()=>`<rect x="6" y="14" width="188" height="126" rx="14" fill="#cfe1ee" opacity=".7"/><circle cx="48" cy="44" r="16" fill="#e6b354"/><path d="M120 92 q20 -60 50 -62 q-10 30 -6 62Z" fill="#6e8f58"/><rect x="6" y="92" width="188" height="48" fill="#4fa6b8"/>
+    <path d="M40 104 q40 18 90 0 l-6 12 q-38 12 -78 0Z" fill="#c98a4b"/><path d="M128 104 l14 -18" stroke="#6b4430" stroke-width="3"/><path d="M30 128 h40 M100 132 h50" stroke="#fff" stroke-width="2.5" opacity=".7" stroke-linecap="round"/>`,
+  maldives:()=>`<rect x="6" y="14" width="188" height="126" rx="14" fill="#d7eef0" opacity=".9"/><rect x="6" y="88" width="188" height="52" fill="#5cc3c8"/><path d="M6 100 h188" stroke="#fff" stroke-width="2" opacity=".6"/>`+
+    [30,80,130].map(x=>`<rect x="${x}" y="70" width="36" height="20" fill="#e8d2b8"/><path d="M${x-4} 72 L${x+18} 56 L${x+40} 72Z" fill="#a0784c"/><path d="M${x+6} 90 v14 M${x+30} 90 v14" stroke="#6b4430" stroke-width="3"/>`).join('')+`<path d="M66 82 h14 M116 82 h14" stroke="#6b4430" stroke-width="3"/><circle cx="168" cy="36" r="12" fill="#e6b354"/>`,
+  kschool:()=>ART.wash('#7fa3cf')+`<rect x="34" y="52" width="132" height="82" fill="#f4e6cf" stroke="#a0784c" stroke-width="2"/><path d="M26 54 L100 22 L174 54Z" fill="#c5463b"/><rect x="88" y="98" width="24" height="36" fill="#8a5a3a"/>`+
+    [48,74,126,152].map(x=>`<rect x="${x-8}" y="66" width="16" height="16" fill="#a9c2e2"/><rect x="${x-8}" y="100" width="16" height="16" fill="#a9c2e2"/>`).join('')+`<circle cx="100" cy="72" r="10" fill="#fbf8f2" stroke="#4a4038"/><path d="M90 72 a10 10 0 0 1 20 0Z" fill="#d0302a"/><path d="M90 72 a10 10 0 0 0 20 0Z" fill="#2f4f9a"/>`,
+  plane:X=>ART.wash('#7fa3cf')+`<rect x="22" y="96" width="60" height="40" rx="4" fill="${X.flag[0]}" stroke="#4a4038" stroke-width="1.5"/><rect x="22" y="109" width="60" height="14" fill="${X.flag[1]}"/><rect x="22" y="123" width="60" height="13" fill="${X.flag[2]}"/>
+    <path d="M40 60 L150 36 Q168 32 166 44 L60 74Z" fill="#fbf8f2" stroke="#4a4038" stroke-width="2"/><path d="M96 50 L120 20 L130 22 L114 54Z M70 66 L74 84 L84 82 L84 64Z" fill="#7fa3cf" stroke="#4a4038" stroke-width="1.5"/>
+    <text x="140" y="120" text-anchor="middle" font-size="20" font-weight="700" fill="#4a4038" font-family="LXGW WenKai TC,serif">${esc(X.country)}</text>`,
+  volley:()=>ART.wash('#e6b354')+`<circle cx="100" cy="80" r="44" fill="#fbf8f2" stroke="#4a4038" stroke-width="3"/><path d="M100 36 q-30 40 0 88 M60 64 q40 4 80 -14 M66 108 q34 -30 78 -20" stroke="#2f4f9a" stroke-width="5" fill="none"/>`,
+  dumbbell:()=>ART.wash('#d0573f')+`<rect x="60" y="72" width="80" height="12" rx="4" fill="#6b6e75"/><rect x="40" y="52" width="18" height="52" rx="5" fill="#3e3a40"/><rect x="142" y="52" width="18" height="52" rx="5" fill="#3e3a40"/><rect x="26" y="60" width="14" height="36" rx="4" fill="#4a4038"/><rect x="160" y="60" width="14" height="36" rx="4" fill="#4a4038"/>`,
+  mic:()=>ART.wash('#e39a92')+`<rect x="86" y="30" width="28" height="56" rx="14" fill="#3e3a40"/><path d="M74 66 q26 36 52 0" stroke="#4a4038" stroke-width="4" fill="none"/><path d="M100 98 v24 M80 124 h40" stroke="#4a4038" stroke-width="5" stroke-linecap="round"/><path d="M136 46 q10 10 0 20 M146 40 q16 16 0 32" stroke="#d0573f" stroke-width="3" fill="none" stroke-linecap="round"/>`,
+})}
+
+/* ---------- 老師主控台：判定、移出、離線 ---------- */
+let tJudge={}, tJudgeRes={}, judgeSeen=new Set(), tTA={}, botGiftSeen=new Set();
+function renderJudge(){
+  const el=$('#tJudge'); if(!el) return;
+  const pend=Object.entries(tJudge||{}).filter(([u,j])=>j&&j.id&&!(tJudgeRes[u]&&tJudgeRes[u].id===j.id)&&(tRoom.players||{})[u]).sort((a,b)=>(a[1].at||0)-(b[1].at||0));
+  el.hidden=!pend.length;
+  pend.forEach(([u,j])=>{if(!judgeSeen.has(j.id)){judgeSeen.add(j.id);Music.ding()}});
+  el.innerHTML=`<div class="label">請老師判定（${pend.length}）</div>`+pend.map(([u,j])=>`<div class="jcard">${avatar(avOf(j.av))}<div class="jtx"><b>${esc(j.name||'同學')}</b><small>${esc(j.task||'')}</small><p>${esc(j.prompt||'')}</p></div>
+    <div class="jbtn"><button class="btn primary" data-jv="pass" data-ju="${esc(u)}" data-jid="${esc(j.id)}">✓ 通過</button><button class="btn" data-jv="fail" data-ju="${esc(u)}" data-jid="${esc(j.id)}">✗ 不通過</button></div></div>`).join('');
+}
+async function doKick(id){
+  const r=tRoom, p=(r.players||{})[id]; if(!p) return;
+  const ref=fb.ref('rooms/'+tCodeNow);
+  if(r.mode==='turn'&&r.status==='playing'&&r.turn===id){const nx=nextTurn(r.order,r.players,id); if(nx&&nx!==id) await ref.child('turn').set(nx)}
+  const upd={}; upd['players/'+id]=null; upd['stage/'+id]=null; upd['judge/'+id]=null; upd['judgeRes/'+id]=null; upd['taGift/'+id]=null;
+  if(!p.bot) upd['kicked/'+id]={name:p.name||'同學',at:TS()};
+  for(const [k,v] of Object.entries(r.avatars||{})) if(v===id) upd['avatars/'+k]=null;
+  if(Array.isArray(r.order)&&r.order.includes(id)) upd['order']=r.order.filter(x=>x!==id);
+  for(const [k,v] of Object.entries(r.ta||{})) if(v&&v.uid===id) upd['ta/'+k]=null;
+  await ref.update(upd);
+  toast(`已把「${p.name||'同學'}」移出教室`);
+}
+function kickedHTML(r){const k=Object.entries(r.kicked||{});return k.length?`已移出：${k.map(([u,v])=>`<span data-unkick="${esc(u)}" title="點一下允許重新加入" style="cursor:pointer;text-decoration:underline">${esc((v&&v.name)||'同學')}（允許重新加入）</span>`).join('、')}`:''}
+document.addEventListener('click',async e=>{
+  const k=e.target.closest('[data-kick]');
+  if(k&&tCodeNow){const id=k.dataset.kick,p=(tRoom.players||{})[id];if(!p)return;
+    const v=await sheet({human:1,tag:'老師主控台',title:`把「${esc(p.name||'同學')}」移出教室？`,body:`<p>${p.bot?'這位電腦玩家會被移除。':'這位同學的手機會回到開場畫面，進度從排行榜移除。需要的話，之後可以再允許他重新加入。'}</p>`,buttons:[{l:'移出',v:1,p:1},{l:'取消',v:0}]});
+    if(v) doKick(id).catch(err=>toast('移出失敗：'+errMsg(err)));return}
+  const u=e.target.closest('[data-unkick]');
+  if(u&&tCodeNow){fb.ref(`rooms/${tCodeNow}/kicked/${u.dataset.unkick}`).remove().then(()=>toast('已允許這位同學重新加入')).catch(err=>toast('失敗：'+errMsg(err)));return}
+  const j=e.target.closest('[data-jv]');
+  if(j&&tCodeNow){j.closest('.jcard').querySelectorAll('button').forEach(b=>b.disabled=true);
+    fb.ref(`rooms/${tCodeNow}/judgeRes/${j.dataset.ju}`).set({id:j.dataset.jid,v:j.dataset.jv,at:TS()}).catch(err=>toast('判定送出失敗：'+errMsg(err)));return}
+});
+const isOffline=p=>!p.bot&&p.seen&&Date.now()-p.seen>70000;
 
 /* 老師端 */
 async function createRoom(){
@@ -1498,7 +1917,8 @@ const ART={
   trophy:()=>ART.wash('#dca33a')+`<path d="M64 30 h72 v20 a36 36 0 0 1 -72 0Z" fill="#e6b354" stroke="#b8862a" stroke-width="3"/><path d="M64 38 h-16 a14 14 0 0 0 18 22 M136 38 h16 a14 14 0 0 1 -18 22" stroke="#b8862a" stroke-width="4" fill="none"/><rect x="92" y="84" width="16" height="24" fill="#b8862a"/><rect x="70" y="108" width="60" height="16" rx="3" fill="#6b4430"/><path d="M100 40 l5 10 11 2 -8 8 2 11 -10 -5 -10 5 2 -11 -8 -8 11 -2Z" fill="#fff6dd"/>`,
   cap:()=>ART.wash('#d0573f')+`<path d="M20 64 L100 30 L180 64 L100 98Z" fill="#2b2b2e"/><path d="M56 80 v28 q44 24 88 0 v-28 L100 98Z" fill="#3e3a40"/><path d="M160 72 v36" stroke="#e6b354" stroke-width="3"/><circle cx="160" cy="112" r="6" fill="#e6b354"/><rect x="118" y="112" width="60" height="22" rx="4" fill="#f4e6cf" stroke="#a0784c" stroke-width="2" transform="rotate(-10 148 123)"/>`,
 };
-const CLUB_ART={'吉他社':'guitar','熱音社':'notes','籃研社':'ball','羽球社':'shuttle','攝影社':'camera','宋江陣':'flag','熱舞社':'notes','學生會':'mega','康輔社':'mega','系學會':'mega'};
+addArt();
+const CLUB_ART={'籃球系隊':'ball','熱舞社':'notes','羽球社':'shuttle','吉他社':'guitar','排球社':'volley','健身社':'dumbbell','國企系學會':'mega'};
 const SPOT_ART={'旗山老街':'street','旗山車站':'station','內門紫竹寺':'temple','內門順賢宮':'temple','美濃湖':'lake','美濃油紙傘':'umbrella'};
 function stageArt(st,players){
   const t=TILES[Math.max(0,Math.min(N-1,+st.pos||0))], tag=(st.tag||'')+' '+(st.title||'');
@@ -1508,10 +1928,13 @@ function stageArt(st,players){
   if(/擲骰|擲出/.test(tag)) return svg(ART.dice(+st.roll||0));
   if(/機會/.test(tag)) return svg(ART.gift());
   if(/命運/.test(tag)) return svg(ART.storm());
+  if(/老師判定/.test(tag)) return svg(ART.mic());
+  if(/遣返/.test(tag)) return svg(ART.plane(EXCH[t.type==='exch'?t.idx:0]));
   if(/閉關|圖書館/.test(tag)) return svg(ART.books());
-  if(/技能|工作坊|跨系/.test(tag)) return svg(ART.medal(t.type==='dept'?t.s:'技能'));
+  if(/技能|工作坊|研習營|國企系辦/.test(tag)&&t.type!=='course') return svg(ART.medal('技能'));
+  if(t.type==='intern') return svg(ART[INTERNS[t.idx].art]());
+  if(t.type==='exch') return svg(ART.plane(EXCH[t.idx]));
   if(t.type==='course'){const c=COURSES[t.idx],T=T_BY(c.t)||{};return T.av&&T.av.img?svg(ART.board(c.n,null).replace('font-size="22"','font-size="18"')).replace('</svg>',`<image href="${T.av.img}" x="124" y="38" width="74" height="74"/>`+'</svg>'):svg(ART.board(c.n,T.av))}
-  if(t.type==='dept') return svg(ART.medal(t.s));
   if(t.type==='club') return svg(ART[CLUB_ART[t.n]||'mega']());
   if(t.type==='spot'){const p=players&&players[st.uid];return svg(ART[SPOT_ART[t.n]||'lake']())}
   if(t.code==='R') return svg(ART.dorm());
@@ -1541,25 +1964,42 @@ function pickBotAvatar(){
 }
 async function botAct(id){
   const r=tRoom, p=r.players&&r.players[id]; if(!p||p.done) return;
-  const ref=fb.ref('rooms/'+tCodeNow);
+  const ref=fb.ref('rooms/'+tCodeNow), nm=p.name||'電腦';
+  const stg=o=>ref.child('stage/'+id).set({tag:o.tag,title:o.title,text:o.text,pos:o.pos,roll:o.roll||0,at:TS()});
+  if((+p.skip||0)>0){
+    await ref.child('players/'+id).update({skip:(+p.skip)-1,skipWhy:'',turns:(p.turns||0)+1});
+    await stg({tag:p.skipWhy||'暫停一回合',title:`${nm} 暫停一回合`,text:'這回合休息，下回合再出發。',pos:+p.pos||0});
+    await ref.child('events').push({uid:id,t:`${nm} ${p.skipWhy||'暫停'}，暫停一回合`,at:TS()}); return;
+  }
   const a=1+rnd(6), b=1+rnd(6); let pos=(+p.pos||0)+a+b, year=p.year||1; if(pos>=N){pos-=N;year++}
-  const t=TILES[pos]; let cr=p.cr||0, skills=p.skills||0, club=p.club||'', love=p.love||'';
-  const nm=p.name||'電腦'; const ev=[`${nm} 擲出 ${a+b} 點，來到「${t.n}」`];
-  const stg=o=>ref.child('stage/'+id).set({tag:o.tag,title:o.title,text:o.text,pos,roll:o.roll||0,at:TS()});
+  const t=TILES[pos]; let cr=p.cr||0, skills=+p.skills||0, club=p.club||'', love=p.love||'', skip=0, skipWhy='';
+  const ev=[`${nm} 擲出 ${a+b} 點，來到「${t.n}」`];
   await ref.child('players/'+id).update({pos});
-  await stg({tag:'擲骰子',title:`擲出 ${a+b} 點！`,text:`來到「${t.n}」。`,roll:a+b});
+  await stg({tag:'擲骰子',title:`擲出 ${a+b} 點！`,text:`來到「${t.n}」。`,roll:a+b,pos});
   await new Promise(r=>setTimeout(r,1600));
-  if(t.type==='course'){if(Math.random()<.7){cr+=4;ev.push(`${nm} 在${t.n}課完成任務（+4 學分）`)}else{cr+=1;ev.push(`${nm} 在${t.n}課補救過關（+1 學分）`)}}
-  else if(t.type==='dept'){skills++;cr+=1;ev.push(`${nm} 在${t.s}學會「${t.sk[rnd(t.sk.length)]}」`)}
-  else if(t.type==='club'){const i=CLUB_ST.findIndex(x=>x.n===club);if(i<CLUB_ST.length-1&&Math.random()<.65){const st=CLUB_ST[i+1];club=st.n;cr+=sumCr(st.fx);ev.push(`${nm} 在${t.n}：${st.n}`)}else ev.push(`${nm} 在${t.n}練習中`)}
+  if(t.type==='course'){
+    const ta=(r.ta||{})[t.idx];
+    if(ta&&ta.uid!==id) await ref.child('taGift/'+ta.uid).push({c:t.idx,from:nm,at:TS()});
+    if(Math.random()<.7){cr+=CR_COURSE;ev.push(`${nm} 在${t.n}課完成任務（+${CR_COURSE} 學分）`);
+      if(!ta){await ref.child('ta/'+t.idx).set({uid:id,name:nm,av:p.av});ev.push(`${nm} 成為${t.n}的教學 TA`)}}
+    else ev.push(`${nm} 在${t.n}課沒完成任務`)}
+  else if(t.type==='club'){const i=CLUB_ST.findIndex(x=>x.n===club);
+    if(i<0&&Math.random()<.7){club=CLUB_ST[0].n;skills++;ev.push(`${nm} 通過入社考驗，加入${t.n}`)}
+    else if(i>=0&&i<CLUB_ST.length-1&&Math.random()<.65){const st=CLUB_ST[i+1];club=st.n;cr+=sumCr(st.fx);ev.push(`${nm} 在${t.n}：${st.n}`)}
+    else ev.push(`${nm} 在${t.n}練習中`)}
   else if(t.type==='spot'){const i=LOVE_ST.findIndex(x=>x.n===love);if(i<LOVE_ST.length-1&&Math.random()<.65){const st=LOVE_ST[i+1];love=st.n;cr+=sumCr(st.fx);ev.push(`${nm} 在${t.n}：${st.n}`)}else ev.push(`${nm} 在${t.n}散步`)}
-  else if(t.type==='chance'){const c=CHANCE[rnd(CHANCE.length)];cr+=sumCr(c.fx)+(c.skill?1:0);ev.push(`${nm} 抽到機會：${c.t}`)}
-  else if(t.type==='fate'){const c=FATE[rnd(FATE.length)];cr+=sumCr(c.fx);ev.push(`${nm} 抽到命運：${c.t}`)}
-  else if(t.code==='F'||t.code==='R'){cr+=1;ev.push(`${nm} 在${t.n}挑燈夜讀（+1 學分）`)}
+  else if(t.type==='intern'){const ok=Math.random()<.75,g=ok?2:1;cr+=g;ev.push(`${nm} 在${t.n}知識問答${ok?'答對':'答錯'}（+${g} 學分）`)}
+  else if(t.type==='exch'){cr+=1;const ok=Math.random()<.7;
+    if(ok) ev.push(`${nm} 到${t.n}交換，答對題目（學分 +1）`); else {skip=1;skipWhy='遣返回國';ev.push(`${nm} 到${t.n}交換，答錯被遣返回國，暫停一回合`)}}
+  else if(t.type==='chance'){const c=CHANCE[rnd(CHANCE.length)];cr+=sumCr(c.fx);if(c.skill)skills++;ev.push(`${nm} 抽到機會：${c.t}`)}
+  else if(t.type==='fate'){const c=FATE[rnd(FATE.length)];cr+=sumCr(c.fx);if(c.skip||c.jail){skip=1;skipWhy='暫停'}ev.push(`${nm} 抽到命運：${c.t}`)}
+  else if(t.code==='F'){cr+=1;skip=1;skipWhy='期末週閉關';ev.push(`${nm} 在期末考週熬夜 K 書（+1 學分），下回合閉關`)}
+  else if(t.code==='R'){cr+=1;ev.push(`${nm} 在宿舍挑燈夜讀（+1 學分）`)}
   cr=Math.max(0,cr);
-  const tagOf={course:'課堂任務',dept:'跨系學習',club:'社團',spot:'約會景點',chance:'機會卡',fate:'命運卡',corner:'特殊格'}[t.type]||'';
-  await stg({tag:tagOf+'（電腦代玩）',title:t.n,text:ev.slice(1).join('。')||'在這裡休息一下。'});
+  const tagOf={course:'課堂任務',club:'社團',spot:'約會景點',intern:'海外實習',exch:'姊妹校交換',chance:'機會卡',fate:'命運卡',corner:'特殊格'}[t.type]||'';
+  await stg({tag:tagOf+'（電腦代玩）',title:t.n,text:ev.slice(1).join('。')||'在這裡休息一下。',pos});
   const upd={pos,year,cr,skills,club,love,clubSt:CLUB_ST.findIndex(x=>x.n===club)+1,loveSt:LOVE_ST.findIndex(x=>x.n===love)+1,turns:(p.turns||0)+1};
+  if(skip){upd.skip=skip;upd.skipWhy=skipWhy}
   if(cr>=(r.target||28)){upd.done=true;const res=await ref.child('finishCount').transaction(v=>(v||0)+1);upd.place=res.snapshot.val();
     await ref.child('finish/'+id).set({place:upd.place,name:nm,av:p.av,turns:upd.turns,at:TS()});ev.push(`${nm} 修滿學分畢業了！（第 ${upd.turns} 回合）`)}
   await ref.child('players/'+id).update(upd);
@@ -1586,8 +2026,19 @@ function openTeacher(code){
   const t0=Date.now();
   listen(ref.child('finish'),'child_added',sn=>{const f=sn.val()||{}; if((f.at||0)>t0-3000) toast(`${f.name} 修滿學分畢業了！（第 ${f.turns||'?'} 回合）`)});
   listen(ref.child('stage'),'value',sn=>{tStage=sn.val()||{};renderSpot()});
+  tJudge={};tJudgeRes={};judgeSeen=new Set();tTA={};
+  listen(ref.child('judge'),'value',sn=>{tJudge=sn.val()||{};renderJudge()});
+  listen(ref.child('judgeRes'),'value',sn=>{tJudgeRes=sn.val()||{};renderJudge()});
+  listen(ref.child('ta'),'value',sn=>{tTA=sn.val()||{};renderProjTA()});
+  listen(ref.child('taGift'),'value',sn=>{const all=sn.val()||{};
+    for(const [u,gs] of Object.entries(all)){const pl=(tRoom.players||{})[u];if(!pl||!pl.bot)continue;
+      for(const [gid,g] of Object.entries(gs||{})){if(botGiftSeen.has(gid))continue;botGiftSeen.add(gid);
+        ref.child('players/'+u).update({skills:(+pl.skills||0)+1,cr:(+pl.cr||0)+1}).catch(()=>{});ref.child('taGift/'+u+'/'+gid).remove().catch(()=>{});
+        ref.child('events').push({uid:u,t:`${g.from||'同學'} 來上${COURSES[+g.c]?COURSES[+g.c].n:'課'}，TA ${pl.name} 獲得教學技能（學分 +1）`,at:TS()}).catch(()=>{})}}});
+  const reTick=setInterval(()=>{if(tCodeNow===code)renderTeacher(tRoom)},15000); liveOff.push(()=>clearInterval(reTick));
   listen(ref.child('events').limitToLast(30),'child_added',sn=>{const e=sn.val()||{};tEvents.push(e);tEvents=tEvents.slice(-30);renderProjFeed()});
   $('#btnTStart').onclick=async()=>{
+    Music.autoDefault('teacher');
     try{let ps=(await ref.child('players').get()).val()||{};
       const av0=(await ref.child('avatars').get()).val()||{};const used=new Set([...Object.values(ps).map(p=>+p.av),...Object.keys(av0).map(Number)]);const pool=AV.map((x,j)=>j).filter(j=>!used.has(j)).sort(()=>Math.random()-.5);
       let k=Object.keys(ps).length; while(k<4){await addBot(pool.length?pool.shift():rnd(AV.length));k++}
@@ -1623,7 +2074,9 @@ function renderTeacher(r){
   $('#pStatus').textContent=`${st}・${modeTxt}・${r.target||28} 學分・已畢業 ${fin} 人`;
   $('#btnTStart').disabled=r.status!=='open'||!n; $('#btnTEnd').disabled=r.status==='ended';
   $('#tInfo').textContent=n?`已有 ${n-list.filter(p=>p.bot).length} 位同學、${list.filter(p=>p.bot).length} 位電腦玩家，人到齊就按「開始比賽」，投影畫面會切換成全班大棋盤。`:'同學掃碼加入後會出現在下方。';
-  $('#tList').innerHTML=list.length?liveItems(list,r.target||28,''):'<li style="display:block;color:var(--ink-soft)">還沒有同學加入。</li>';
+  $('#tList').innerHTML=list.length?liveItems(list,r.target||28,'',1):'<li style="display:block;color:var(--ink-soft)">還沒有同學加入。</li>';
+  $('#tKicked').innerHTML=kickedHTML(r); $('#pKicked').innerHTML=kickedHTML(r);
+  if(r.kicked) for(const k of Object.keys(r.kicked)) if((r.players||{})[k]) fb.ref(`rooms/${tCodeNow}/players/${k}`).remove().catch(()=>{});
   const bots=list.filter(p=>p.bot);
   $('#tBots').innerHTML=bots.length?bots.map(p=>`<span data-rmbot="${esc(p.id)}" style="cursor:pointer">${esc(p.name)} ✕</span>`).join(''):'<span>目前沒有</span>';
   const humans=n-bots.length;
@@ -1644,19 +2097,21 @@ function renderTeacher(r){
 }
 function buildProjBoard(){
   let h='';
-  TILES.forEach((t,i)=>{const [rr,c]=gridPos(i);const cls='tile '+(t.type==='dept'?'dept-'+t.c:t.type);
-    const ic=t.type==='course'?'課堂':t.type==='chance'?'?':t.type==='fate'?'!':'';
-    h+=`<div class="${cls}" style="grid-area:${rr}/${c}">${ic?`<span class="ic">${ic}</span>`:''}<span class="nm">${t.s}</span><span class="tokens" id="pt${i}"></span></div>`});
-  h+=`<div class="center pcen"><div class="sub">我是大學生・國企系全班大富翁</div><div class="pturn" id="pTurn"></div><div id="pSpot" style="width:100%"></div><ul class="log pfeed" id="pFeed"></ul>${sprig('sprig l')}${sprig('sprig r','#e8b84a','#e0913a')}</div>`;
-  $('#pBoard').innerHTML=h; tBuilt=true;
+  TILES.forEach((t,i)=>{const [rr,c]=gridPos(i);const cls='tile '+t.type;
+    const ic=TILE_IC[t.type]||'';
+    h+=`<div class="${cls}" style="grid-area:${rr}/${c}">${ic?`<span class="ic">${ic}</span>`:''}<span class="nm">${t.s}</span><span class="got" id="pg${i}"></span><span class="tokens" id="pt${i}"></span></div>`});
+  h+=`<div class="center pcen"><div class="sub">青春不被當・國企校園大富翁</div><div class="pturn" id="pTurn"></div><div id="pSpot" style="width:100%"></div><ul class="log pfeed" id="pFeed"></ul>${sprig('sprig l')}${sprig('sprig r','#e8b84a','#e0913a')}</div>`;
+  $('#pBoard').innerHTML=h; tBuilt=true; renderProjTA();
 }
+function renderProjTA(){if(!tBuilt)return;TILES.forEach((t,i)=>{if(t.type!=='course')return;const el=$('#pg'+i);if(el){const ta=tTA[t.idx];el.textContent=ta?'TA':'';el.title=ta?`教學 TA：${ta.name}`:''}})}
 function renderProj(r,list,fin){
   if(!tBuilt) buildProjBoard();
   tTokList=list; tTokTurn=r.turn; stepTokens(); renderTokens();
   const tp=r.mode==='turn'&&r.turn&&r.players?r.players[r.turn]:null;
-  $('#pTurn').innerHTML=r.status==='ended'?'<span>比賽結束！</span>':tp?`${avatar({...avOf(tp.av),v:'r'})}<span>輪到 ${esc(tp.name||'同學')}<small>${tp.bot?'電腦代玩中':'請在手機上擲骰子'}・${tp.cr||0}/${r.target||28} 學分</small></span>`
+  $('#pTurn').innerHTML=r.status==='ended'?'<span>比賽結束！</span>':tp?`${avatar({...avOf(tp.av),v:'r'})}<span>輪到 ${esc(tp.name||'同學')}<small>${tp.bot?'電腦代玩中':isOffline(tp)?'<span class="off">這位同學好像離線了，可以按「跳過這位」或在排名點「移出」</span>':'請在手機上擲骰子'}・${tp.cr||0}/${r.target||28} 學分</small></span>`
     :r.mode==='turn'?'<span>等待下一位</span>':`<span>全班同時進行中<small>${list.length} 位同學・已畢業 ${fin} 人</small></span>`;
-  $('#pList').innerHTML=list.length?liveItems(list,r.target||28,r.turn||''):'';
+  $('#pList').innerHTML=list.length?liveItems(list,r.target||28,r.turn||'',1):'';
+  renderJudge();
   const showPod=r.status==='ended'||(list.length>0&&decided(list,Math.min(3,list.length)));
   const pod=$('#tPodium'); pod.hidden=!showPod;
   if(showPod) pod.innerHTML=`<div class="label">頒獎台・畢業前三名</div>${podiumHTML(list)}`;
@@ -1669,7 +2124,7 @@ function renderTokens(){
   tTokList.forEach(p=>{const pos=dispPos[p.id]!=null?dispPos[p.id]:Math.max(0,Math.min(N-1,+p.pos||0));(by[pos]=by[pos]||[]).push(p)});
   for(let i=0;i<N;i++){const el=$('#pt'+i);if(!el)continue;let ps=by[i]||[];
     ps=ps.slice().sort((a,b)=>(b.id===movingId)-(a.id===movingId)||(b.id===tTokTurn)-(a.id===tTokTurn));
-    el.innerHTML=ps.slice(0,ps.length>5?4:5).map(p=>`<span class="tok${p.id===movingId?' mov':''}" style="--tk:${p.id===tTokTurn||p.id===movingId?'var(--red)':'var(--ink-soft)'}" title="${esc(p.name||'')}">${avatar(avOf(p.av))}</span>`).join('')+(ps.length>5?`<span class="more">+${ps.length-4}</span>`:'')}
+    el.innerHTML=ps.slice(0,ps.length>5?4:5).map(p=>`<span class="tok${p.id===movingId?' mov':p.id===tTokTurn?' cur':''}" style="--tk:${p.id===tTokTurn||p.id===movingId?'var(--red)':'var(--ink-soft)'}" title="${esc(p.name||'')}">${avatar(avOf(p.av))}</span>`).join('')+(ps.length>5?`<span class="more">+${ps.length-4}</span>`:'')}
 }
 function stepTokens(){
   if(tokTimer) return;
@@ -1717,14 +2172,15 @@ function renderSpot(){
 }
 
 /* 學生端 */
-let join={av:0,name:''}, takenAv={}, takenOff=null, takenCode='';
+let join={av:0,name:'',edited:false}, takenAv={}, takenOff=null, takenCode='';
 function renderJoin(){
   const mine=uid;
-  if(takenAv[join.av]&&takenAv[join.av]!==mine){const f=AV.findIndex((a,j)=>!takenAv[j]||takenAv[j]===mine);if(f>=0){const old=AV[join.av].name;join.av=f;if($('#jName').value===old)$('#jName').value=AV[f].name}}
+  if(takenAv[join.av]&&takenAv[join.av]!==mine){const f=AV.findIndex((a,j)=>!takenAv[j]||takenAv[j]===mine);if(f>=0){join.av=f;if(!join.edited)$('#jName').value=AV[f].name}}
   $('#jPick').innerHTML=AV.map((a,j)=>{const tk=takenAv[j]&&takenAv[j]!==mine;
     return `<button aria-pressed="${join.av===j}" data-jav="${j}" ${tk?'disabled style="opacity:.35;cursor:not-allowed"':''} aria-label="${a.full}（${a.name}）${tk?'已被選走':''}">${avatar(a)}<span>${a.name}</span><small>${tk?'已被選走':(a.tag?a.g+'・'+a.tag:a.g)}</small></button>`}).join('');
-  if(!join.name) $('#jName').value=AV[join.av].name;
+  if(!join.edited) $('#jName').value=AV[join.av].name;
 }
+document.addEventListener('input',e=>{if(e.target&&e.target.id==='jName'){join.edited=e.target.value.trim()!==''&&e.target.value.trim()!==AV[join.av].name}});
 async function watchTaken(code){
   if(!FB_OK||!/^\d{4}$/.test(code)||code===takenCode) return;
   try{await fbInit()}catch(e){return}
@@ -1749,6 +2205,10 @@ async function joinRoom(){
     const sn=await fb.ref('rooms/'+code).get();
     if(!sn.exists()) throw new Error('找不到這間教室，請確認代碼。');
     const r=sn.val();
+    if(r.kicked&&r.kicked[uid]) throw new Error('你已被老師移出這間教室，如果是誤會請找老師幫你恢復。');
+    const norm=x=>String(x||'').trim().toLowerCase();
+    const clash=Object.entries(r.players||{}).find(([k,q])=>k!==uid&&norm(q.name)===norm(name));
+    if(clash) throw new Error(`「${name}」這個名字已經有同學用了，請換一個名字。`);
     const old=load();
     const oldAv=(old&&old.online&&old.online.code===code&&old.online.uid===uid)?old.players[0].av:null;
     if(!(await claimAvatar(code,join.av,oldAv))){await watchTaken(code);throw new Error(`「${AV[join.av].name}」已經被其他同學先選走了，請換一位角色。`)}
@@ -1758,7 +2218,7 @@ async function joinRoom(){
       newGame(); S.online={code,uid};
     }
     S.players[0].name=name; S.players[0].av=join.av; save();
-    await fb.ref(`rooms/${code}/players/${uid}`).update({name,av:join.av,cr:S.players[0].cr,year:S.players[0].year,turns:S.players[0].turns,skills:S.players[0].skills.length,done:!!S.players[0].done,joinedAt:TS()});
+    await fb.ref(`rooms/${code}/players/${uid}`).update({name,av:join.av,cr:S.players[0].cr,year:S.players[0].year,turns:S.players[0].turns,skills:S.players[0].skills.length,done:!!S.players[0].done,joinedAt:TS(),seen:TS()});
     sess.set({role:'student',code}); enterStudent(code);
   }catch(e){err.textContent='加入失敗：'+errMsg(e);err.hidden=false}
   $('#btnJoin').disabled=false;
@@ -1789,6 +2249,24 @@ function enterStudent(code){
   listen(ref.child('finish'),'child_added',sn=>{
     const f=sn.val()||{}; if(sn.key!==uid&&(f.at||0)>enterAt-3000) toast(`${f.name} 修滿學分畢業了！（第 ${f.turns||'?'} 回合）`);
   });
+  taMap={};
+  listen(ref.child('ta'),'value',sn=>{taMap=sn.val()||{}; if(S&&!$('#game').hidden) renderDynamic()});
+  listen(ref.child('taGift/'+uid),'child_added',sn=>{const g=sn.val()||{};
+    if(S&&S.players&&S.players[0]&&COURSES[+g.c]){addTeach(S.players[0],+g.c,g.from||'同學');save();syncMe();toast(`${g.from||'同學'} 來上${COURSES[+g.c].n}，你當 TA 得到 1 個教學技能！`);if(!$('#game').hidden)renderDynamic()}
+    sn.ref.remove().catch(()=>{})});
+  listen(ref.child('kicked/'+uid),'value',sn=>{if(sn.exists()) onKicked()});
+  const hb=setInterval(()=>{if(S&&S.online&&fb&&uid)fb.ref(`rooms/${code}/players/${uid}/seen`).set(TS()).catch(()=>{})},20000); liveOff.push(()=>clearInterval(hb));
+}
+function onKicked(){
+  stopLive(); clear(); sess.clear(); S=null; busy=false; $('#scrim').hidden=true; show('#setup'); renderSetup(); scrollTo(0,0);
+  sheet({human:1,tag:'教室通知',title:'你已被老師移出教室',body:'<p>如果是誤會，請跟老師說，老師可以讓你重新加入。</p>',buttons:[{l:'知道了',v:1,p:1}]});
+}
+async function leaveRoom(){
+  try{if(S&&S.online&&fb&&uid){const code=S.online.code,av=S.players[0].av;
+    await fb.ref(`rooms/${code}/players/${uid}`).remove();
+    await fb.ref(`rooms/${code}/avatars/${av}`).transaction(v=>v===uid?null:undefined);
+    await fb.ref(`rooms/${code}/stage/${uid}`).remove()}}catch(e){}
+  backToSetup();
 }
 function rankLabel(p){
   if(!S.online) return S.over?`第 ${standings().indexOf(p)+1} 名畢業`:`第 ${p.turns} 回合畢業`;
@@ -1820,7 +2298,7 @@ async function passTurn(){
 }
 function publishStage(o){
   if(!fb||!uid||!S||!S.online) return;
-  const cl=x=>String(new DOMParser().parseFromString(String(x||''),'text/html').body.textContent||'').replace(/\s+/g,' ').trim();
+  const cl=x=>{const d=new DOMParser().parseFromString(String(x||''),'text/html');d.querySelectorAll('form,button,textarea,input,script,style,#jwait').forEach(n=>n.remove());return String(d.body.textContent||'').replace(/\s+/g,' ').trim()};
   fb.ref(`rooms/${S.online.code}/stage/${uid}`).set({tag:cl(o.tag).slice(0,60),title:cl(o.title).slice(0,80),text:cl(o.text).slice(0,300),pos:S.players[0].pos,roll:o.roll||0,at:TS()}).catch(()=>{});
 }
 function pushEvent(t){
@@ -1831,7 +2309,7 @@ function syncMe(){
   if(!S||!S.online||!fb) return;
   const p=S.players[0], cs=stage(p.clubPt), ls=stage(p.lovePt);
   fb.ref(`rooms/${S.online.code}/players/${uid}`).update({name:p.name,av:p.av,cr:p.cr,year:p.year,turns:p.turns,skills:p.skills.length,pos:p.pos,
-    club:cs?CLUB_ST[cs-1].n:'',love:ls?LOVE_ST[ls-1].n:'',clubSt:cs,loveSt:ls,done:!!p.done,place:p.place||null}).catch(()=>{});
+    club:cs?CLUB_ST[cs-1].n:'',love:ls?LOVE_ST[ls-1].n:'',clubSt:cs,loveSt:ls,done:!!p.done,place:p.place||null,intl:p.intl||0,seen:TS()}).catch(()=>{});
 }
 async function claimPlace(p){
   const code=S.online.code;
@@ -1872,7 +2350,7 @@ document.addEventListener('click',e=>{
   if(b.dataset.mode) setMode(b.dataset.mode);
   if(b.dataset.tt){teacherT=+b.dataset.tt;renderTT()}
   if(b.dataset.tmode){teacherMode=b.dataset.tmode;renderMode()}
-  if(b.dataset.jav!==undefined){const old=AV[join.av].name;join.av=+b.dataset.jav;if(!$('#jName').value||$('#jName').value===old)$('#jName').value=AV[join.av].name;renderJoin()}
+  if(b.dataset.jav!==undefined){join.av=+b.dataset.jav;if(!join.edited)$('#jName').value=AV[join.av].name;renderJoin()}
 });
 $('#btnDemo').onclick=()=>{setMode('local');$('#mLocal').scrollIntoView({behavior:'smooth'})};
 $('#btnDemoQR').onclick=()=>{const u=location.origin+location.pathname+'?demo=1';
@@ -1883,7 +2361,7 @@ $('#jCode').addEventListener('input',e=>{const v=e.target.value.trim();if(/^\d{4
 $('#tPw').addEventListener('keydown',e=>{if(e.key==='Enter')createRoom()});
 $('#btnTOut').onclick=async()=>{try{await firebase.auth().signOut()}catch(e){} uid=null; authReady=null; sess.clear(); renderTeacherAuth()};
 $('#btnTLeave').onclick=async()=>{const v=await sheet({tag:'確認',title:'關閉教室畫面？',body:'<p>同學的遊戲不受影響。之後用同一支手機或電腦重新打開網址，就會回到這間教室。</p>',buttons:[{l:'關閉',v:1,p:1},{l:'取消',v:0}]});if(v){stopLive();sess.clear();show('#setup')}};
-$('#btnWLeave').onclick=()=>backToSetup();
+$('#btnWLeave').onclick=()=>leaveRoom();
 async function boot(){
   renderJoin(); renderTT(); renderMode();
   const q=new URLSearchParams(location.search).get('room');
