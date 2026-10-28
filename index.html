@@ -277,6 +277,10 @@ input[type=text]{font-family:var(--body);font-size:15px;color:var(--ink);backgro
 .jtx small{color:var(--ink-soft)} .jtx p{margin:2px 0 0;font-size:14px}
 .jbtn{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .jbtn .btn{font-size:17px;padding:10px}
+.autop{padding:10px 14px}
+.autosw{display:flex;gap:10px;align-items:flex-start;cursor:pointer}
+.autosw input{width:22px;height:22px;margin-top:2px;accent-color:var(--red);flex:none}
+.autosw b{display:block;font-size:15px} .autosw small{color:var(--ink-soft);font-size:12px;line-height:1.5}
 .live li.k{grid-template-columns:28px 40px 1fr auto auto}
 .kick{border:1px solid var(--line);background:transparent;border-radius:99px;font-size:11px;padding:2px 8px;color:var(--ink-soft)}
 .kick:hover{border-color:var(--red);color:var(--red)}
@@ -350,7 +354,7 @@ body:has(#scrim:not([hidden])) .musicbtn{display:none}
     <button class="btn primary" id="btnStart" style="align-self:center;padding:12px 34px;font-size:17px">入學報到 →</button>
     </div>
     <div class="panel"><div class="label">國企系老師與執秘</div><div class="teach" id="teach"></div></div>
-    <p class="note" style="text-align:center;font-size:11px;opacity:.7">版本 2026-10-28 v40（青春不被當大改版）</p>
+    <p class="note" style="text-align:center;font-size:11px;opacity:.7">版本 2026-10-28 v41（判定可由電腦自動通過）</p>
     <p class="note" style="text-align:center">紅色格是 13 門國企系課程，要完成老師的課堂任務才拿得到學分，第一位完成的同學會成為教學 TA；綠色格是 7 個社團，要先通過入社考驗；還有海外實習、姊妹校交換和旗山美濃內門約會景點。累積 3 項技能可以向玟玟執秘簡報換學分。</p>
   </section>
 
@@ -398,6 +402,7 @@ body:has(#scrim:not([hidden])) .musicbtn{display:none}
         <div class="board" id="pBoard"></div>
         <aside class="paside">
           <div class="panel judgep" id="tJudge" hidden></div>
+          <div class="panel autop"><label class="autosw"><input type="checkbox" id="autoPass"><span><b>電腦接管判定</b><small>開啟後，同學的口說、自我介紹、伏地挺身等任務一律自動「通過」，老師不用按。</small></span></label></div>
           <div class="panel" id="tPodium" hidden></div>
           <div class="panel"><div class="label">全班即時排名（<span id="pCount">0</span> 人）・點「移出」可把角色踢出遊戲</div><ol class="live" id="pList"></ol><p class="note" id="pKicked"></p></div>
         </aside>
@@ -1821,9 +1826,19 @@ function addArt(){Object.assign(ART,{
 
 /* ---------- 老師主控台：判定、移出、離線 ---------- */
 let tJudge={}, tJudgeRes={}, judgeSeen=new Set(), tTA={}, botGiftSeen=new Set();
+let autoPass=false; try{autoPass=localStorage.getItem('usc-autopass')==='1'}catch(e){}
+const autoSent=new Set();
+document.addEventListener('change',e=>{if(e.target&&e.target.id==='autoPass'){autoPass=e.target.checked;try{localStorage.setItem('usc-autopass',autoPass?'1':'0')}catch(err){}
+  toast(autoPass?'已開啟：電腦會自動讓同學通過判定':'已關閉：同學的判定由老師按');renderJudge()}});
 function renderJudge(){
   const el=$('#tJudge'); if(!el) return;
+  const cb=$('#autoPass'); if(cb&&cb.checked!==autoPass) cb.checked=autoPass;
   const pend=Object.entries(tJudge||{}).filter(([u,j])=>j&&j.id&&!(tJudgeRes[u]&&tJudgeRes[u].id===j.id)&&(tRoom.players||{})[u]).sort((a,b)=>(a[1].at||0)-(b[1].at||0));
+  if(autoPass&&tCodeNow){
+    pend.forEach(([u,j])=>{if(autoSent.has(j.id))return;autoSent.add(j.id);
+      setTimeout(()=>fb.ref(`rooms/${tCodeNow}/judgeRes/${u}`).set({id:j.id,v:'pass',auto:true,at:TS()}).then(()=>toast(`電腦已自動判定「${j.name||'同學'}」通過`)).catch(err=>{autoSent.delete(j.id);toast('自動判定失敗：'+errMsg(err))}),3000)});
+    el.hidden=true; el.innerHTML=''; return;
+  }
   el.hidden=!pend.length;
   pend.forEach(([u,j])=>{if(!judgeSeen.has(j.id)){judgeSeen.add(j.id);Music.ding()}});
   el.innerHTML=`<div class="label">請老師判定（${pend.length}）</div>`+pend.map(([u,j])=>`<div class="jcard">${avatar(avOf(j.av))}<div class="jtx"><b>${esc(j.name||'同學')}</b><small>${esc(j.task||'')}</small><p>${esc(j.prompt||'')}</p></div>
