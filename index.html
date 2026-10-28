@@ -354,7 +354,7 @@ body:has(#scrim:not([hidden])) .musicbtn{display:none}
     <button class="btn primary" id="btnStart" style="align-self:center;padding:12px 34px;font-size:17px">入學報到 →</button>
     </div>
     <div class="panel"><div class="label">國企系老師與執秘</div><div class="teach" id="teach"></div></div>
-    <p class="note" style="text-align:center;font-size:11px;opacity:.7">版本 2026-10-28 v42（心儀對象 20 位、題目不重複）</p>
+    <p class="note" style="text-align:center;font-size:11px;opacity:.7">版本 2026-10-29 v43（說明停留 8 秒、擲骰卡住防護）</p>
     <p class="note" style="text-align:center">紅色格是 13 門國企系課程，要完成老師的課堂任務才拿得到學分，第一位完成的同學會成為教學 TA；綠色格是 7 個社團，要先通過入社考驗；還有海外實習、姊妹校交換和旗山美濃內門約會景點。累積 3 項技能可以向玟玟執秘簡報換學分。</p>
   </section>
 
@@ -1121,6 +1121,8 @@ $('#board').addEventListener('click',e=>{
 
 /* ---------- 事件卡 ---------- */
 let sheetAt=0;
+/* 說明畫面停留時間：真人玩家 8 秒（或自己按「繼續」），電腦代玩 2 秒 */
+function autoMs(){try{const p=S&&S.players&&S.players[S.cur];return (!S.online&&p&&p.bot)?2000:8000}catch(e){return 8000}}
 function sheet({tag='',title='',art='',body='',buttons=[],onOpen,human,stay}){
   return new Promise(res=>{
     const el=$('#sheet'); el._res=res; sheetAt=Date.now(); el.dataset.human=human?'1':''; clearTimeout(el._auto); const tok=el._tok=Symbol();
@@ -1131,7 +1133,7 @@ function sheet({tag='',title='',art='',body='',buttons=[],onOpen,human,stay}){
     $('#scrim').hidden=false;
     el.querySelectorAll('[data-i]').forEach(b=>b.onclick=()=>{if(el._tok!==tok)return;el._tok=null;clearTimeout(el._auto);$('#scrim').hidden=true;res(buttons[+b.dataset.i].v)});
     const first=el.querySelector("[data-i]"); first&&first.focus({preventScroll:true}); el.scrollTop=0;
-    if(!human&&!stay&&buttons.length===1&&first){first.insertAdjacentHTML('beforeend','<i class="autobar"></i>');el._auto=setTimeout(()=>{if(el._tok===tok&&!$('#scrim').hidden)first.click()},2000)}
+    if(!human&&!stay&&buttons.length===1&&first){const ms=autoMs();first.insertAdjacentHTML('beforeend',`<i class="autobar" style="animation-duration:${ms}ms"></i>`);el._auto=setTimeout(()=>{if(el._tok===tok&&!$('#scrim').hidden)first.click()},ms)}
     onOpen&&onOpen(el);
   });
 }
@@ -1144,8 +1146,8 @@ async function diceCheck({tag,title,art,text,need}){
     for(let k=0;k<8;k++){d.textContent=1+rnd(6);await sleep(70)}
     d.classList.remove('roll'); d.textContent=n;
     el.querySelector('#cdt').innerHTML=n>=need?`<span class="good">${n} 點，成功！</span>`:`<span class="bad">${n} 點，失敗了…</span>`;
-    el.querySelector('.opts').innerHTML='<button class="btn primary" id="cdok">繼續<i class="autobar"></i></button>';
-    const tok=el._tok; let fired=false; const ok=el.querySelector('#cdok'); ok.focus(); ok.onclick=()=>{if(fired||el._tok!==tok)return;fired=true;$('#scrim').hidden=true;el._res(1)}; setTimeout(()=>ok.click(),2000);
+    el.querySelector('.opts').innerHTML=`<button class="btn primary" id="cdok">繼續<i class="autobar" style="animation-duration:${autoMs()}ms"></i></button>`;
+    const tok=el._tok; let fired=false; const ok=el.querySelector('#cdok'); ok.focus(); ok.onclick=()=>{if(fired||el._tok!==tok)return;fired=true;$('#scrim').hidden=true;el._res(1)}; setTimeout(()=>ok.click(),autoMs());
   }});
   return n>=need;
 }
@@ -1200,6 +1202,16 @@ setInterval(()=>{
 /* ---------- 回合 ---------- */
 let busy=false;
 async function takeTurn(){
+  try{await takeTurn0()}
+  catch(e){console.error(e);busy=false;try{$('#scrim').hidden=true}catch(_){}
+    showErr(e);try{await endTurn()}catch(e2){console.error(e2);busy=false;const r=$('#btnRoll');if(r)r.disabled=false}}
+}
+let errShown=0;
+function showErr(e){const m=String((e&&(e.message||e))||'未知錯誤').slice(0,120);if(Date.now()-errShown<3000)return;errShown=Date.now();
+  try{toast('剛剛出了點小狀況，遊戲已自動跳過這一步（'+m+'）')}catch(_){}}
+window.addEventListener('error',ev=>{console.error(ev.error||ev.message)});
+window.addEventListener('unhandledrejection',ev=>{try{ev.preventDefault()}catch(_){}console.warn('unhandled',ev.reason)});
+async function takeTurn0(){
   if(busy||S.over) return;
   if(S.online&&S.roomMode==='turn'&&S.turnUid!==uid){toast('還沒輪到你喔，等一下！');return}
   busy=true; $('#btnRoll').disabled=true; Music.kick();
@@ -1623,7 +1635,7 @@ async function doIntern(p,t){
   const pick=await mcqSheet({tag:I.n,title:'實習知識問答',q:I.q,o:I.o});
   const ok=pick===I.a, g=ok?2:1; addCr(p,g);
   log(`${esc(p.name)} 在${I.n}${ok?'答對':'答錯'}（+${g} 學分）`);
-  await sheet({stay:1,tag:I.n,title:ok?'答對了！':'答錯了',art:avatar(AV[p.av]),
+  await sheet({tag:I.n,title:ok?'答對了！':'答錯了',art:avatar(AV[p.av]),
     body:`<p>你的答案：${LET[pick]}. ${esc(I.o[pick])}</p><p>正確答案：<b class="good">${LET[I.a]}. ${esc(I.o[I.a])}</b></p><p><b>解析：</b>${esc(I.ex)}</p>
       <p class="fx num" style="font-size:15px">本題獲得 ${g} 學分・目前累積 ${p.cr} / ${S.target} 學分</p>`,
     buttons:[{l:'繼續遊戲',v:1,p:1}]});
@@ -1847,13 +1859,14 @@ const Music={ctx:null,out:null,timer:null,on:false,step:0,nextT:0,
       if(s%8===4) this.tone(this.BASS[bar]+7,t,e*3.2,'sine',.45);
       if(s%2===1) this.hat(t);
       this.nextT+=e;this.step++}},
-  start(){if(!this.ensure())return;if(this.ctx.state==='suspended')this.ctx.resume();if(this.on)return;
-    this.on=true;this.step=0;this.nextT=this.ctx.currentTime+.08;this.timer=setInterval(()=>this.sched(),80);this.ui()},
+  start(){try{this._start()}catch(e){console.warn('music',e)}},
+  _start(){if(!this.ensure())return;if(this.ctx.state==='suspended')this.ctx.resume().catch(()=>{});if(this.on)return;
+    this.on=true;this.step=0;this.nextT=this.ctx.currentTime+.08;this.timer=setInterval(()=>{try{this.sched()}catch(e){console.warn('music',e);this.stop()}},80);this.ui()},
   stop(){this.on=false;clearInterval(this.timer);this.timer=null;this.ui()},
   toggle(){if(this.on){this.stop();this.setPref('off')}else{this.setPref('on');this.start()}},
-  kick(){if(this.pref()==='on'&&!this.on)this.start();else if(this.ctx&&this.ctx.state==='suspended')this.ctx.resume()},
+  kick(){try{if(this.pref()==='on'&&!this.on)this.start();else if(this.ctx&&this.ctx.state==='suspended')this.ctx.resume().catch(()=>{})}catch(e){console.warn('music',e)}},
   autoDefault(role){if(this.pref()===null&&role!=='student')this.setPref('on');this.kick()},
-  ding(){if(!this.ensure())return;if(this.ctx.state==='suspended')this.ctx.resume();const t=this.ctx.currentTime+.02;this.tone(84,t,.25,'sine',.9);this.tone(88,t+.14,.35,'sine',.9)},
+  ding(){try{if(!this.ensure())return;if(this.ctx.state==='suspended')this.ctx.resume().catch(()=>{});const t=this.ctx.currentTime+.02;this.tone(84,t,.25,'sine',.9);this.tone(88,t+.14,.35,'sine',.9)}catch(e){}},
   ui(){const b=document.getElementById('musicBtn');if(b){b.textContent=this.on?'♪ 音樂：開':'♪ 音樂：關';b.setAttribute('aria-pressed',this.on)}}
 };
 document.addEventListener('pointerdown',()=>Music.kick(),{passive:true});
