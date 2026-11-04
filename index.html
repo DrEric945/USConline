@@ -278,6 +278,17 @@ input[type=text]{font-family:var(--body);font-size:15px;color:var(--ink);backgro
 .jbtn{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .jbtn .btn{font-size:17px;padding:10px}
 .autop{padding:10px 14px}
+.memgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:8px;margin:8px 0}
+.memgrid>div{background:var(--paper);border:1.5px solid var(--line);border-radius:12px;padding:10px 6px;text-align:center;display:flex;flex-direction:column;gap:2px}
+.memgrid .emo{font-size:30px;line-height:1.1}.memgrid b{font-size:18px}.memgrid small{color:var(--ink-soft);font-size:12px}
+.prows{display:flex;flex-direction:column;gap:10px;margin-top:6px}.prow b{display:block;margin-bottom:4px}
+.pch{display:flex;flex-wrap:wrap;gap:6px}.pch .btn{padding:6px 12px;font-size:14px}.pch .btn[aria-pressed=true],.prefgrid .btn:focus{background:var(--ink);color:var(--card)}
+.prefgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}.prefgrid .btn{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px}.prefgrid svg{width:70px;height:120px}
+.ansbox{margin-top:8px;font-size:14px;color:var(--ink-soft)}.ansbox summary{cursor:pointer}
+.jans{margin:4px 0 0;font-size:14px;color:var(--teal,#2f6b6a)}
+#presPanel{position:fixed;left:50%;top:10px;transform:translateX(-50%);z-index:60;width:min(460px,94vw);display:flex;flex-direction:column;gap:8px}
+#presPanel .pcard{display:grid;grid-template-columns:48px 1fr;gap:8px;background:var(--card);border:2.5px solid var(--red);border-radius:14px;padding:10px 12px;box-shadow:0 8px 24px rgba(0,0,0,.18)}
+#presPanel .pcard svg{width:48px;height:53px}#presPanel small{color:var(--ink-soft)}#presPanel b{display:block;font-size:17px}#presPanel p{margin:2px 0 6px;font-size:14px}
 .autosw{display:flex;gap:10px;align-items:flex-start;cursor:pointer}
 .autosw input{width:22px;height:22px;margin-top:2px;accent-color:var(--red);flex:none}
 .autosw b{display:block;font-size:15px} .autosw small{color:var(--ink-soft);font-size:12px;line-height:1.5}
@@ -354,7 +365,7 @@ body:has(#scrim:not([hidden])) .musicbtn{display:none}
     <button class="btn primary" id="btnStart" style="align-self:center;padding:12px 34px;font-size:17px">入學報到 →</button>
     </div>
     <div class="panel"><div class="label">國企系老師與執秘</div><div class="teach" id="teach"></div></div>
-    <p class="note" style="text-align:center;font-size:11px;opacity:.7">版本 2026-10-29 v45（新背景音樂：青春流行）</p>
+    <p class="note" style="text-align:center;font-size:11px;opacity:.7">版本 2026-11-04 v47（國際貿易實務改由英子老師授課）</p>
     <p class="note" style="text-align:center">紅色格是 13 門國企系課程，要完成老師的課堂任務才拿得到學分，第一位完成的同學會成為教學 TA；綠色格是 7 個社團，要先通過入社考驗；還有海外實習、姊妹校交換和旗山美濃內門約會景點。累積 3 項技能可以向玟玟執秘簡報換學分。</p>
   </section>
 
@@ -459,8 +470,8 @@ const TEACH = [
   {name:'阿金',style:'經濟學、供應鏈管理',av:{skin:'#efc3a0',hair:'#3d3430',style:'buzz',top:'url(#navystripe)',inner:'#2f3a57',glasses:true,glassColor:'#c9a24a',v:'r'}},
   {name:'武哥',style:'統計學、金融市場・全英授課',av:{skin:'#e6b996',hair:'#1c1a19',style:'sidepart',top:'#d6d2c8',inner:'#6d2433',glasses:true,turtle:true,mic:true}},
   {name:'仲哥',style:'系主任・企業倫理、消費者行為',av:{skin:'#e6b996',hair:'#35312e',style:'crew',top:'#4a4b4f',inner:'#3c3d41',glasses:true,mood:'calm'}},
-  {name:'雙慧',style:'日文、國際貿易實務',av:{skin:'#f4cfb8',hair:'#4e3428',style:'jpbob',top:'#dca33a',inner:'#fff8ea',glasses:true,mood:'calm'}},
-  {name:'英子',style:'韓文',av:{skin:'#f6d3bf',hair:'#3a2a22',style:'frenchbob',top:'#e39a92',inner:'#fff3ef'}},
+  {name:'雙慧',style:'日文、管理學',av:{skin:'#f4cfb8',hair:'#4e3428',style:'jpbob',top:'#dca33a',inner:'#fff8ea',glasses:true,mood:'calm'}},
+  {name:'英子',style:'韓文、國際貿易實務',av:{skin:'#f6d3bf',hair:'#3a2a22',style:'frenchbob',top:'#e39a92',inner:'#fff3ef'}},
   {name:'阿明',style:'會計學、商業資料分析',av:{skin:'#efc6a6',hair:'#1f1c1b',style:'fringe',top:'#c9dcea',inner:'#8fb0d6',glasses:true,v:'r'}},
   {name:'玟玟',style:'系上執秘・行政支援',av:{skin:'#f7d8c6',hair:'#5a3a2c',style:'bangbob',top:'#b39bc1',inner:'#f8f3fa'}},
 ];
@@ -716,7 +727,7 @@ function coverSVG(){
   </svg>`;
 }
 
-/* ---------- 課程（國企系 13 門，依老師專長） ---------- */
+/* ---------- 課程（國企系 14 門，依老師專長） ---------- */
 const COURSES = [
  {n:'企業倫理',s:'倫理',t:'仲哥',task:'ethics'},
  {n:'消費者行為',s:'消費者',t:'仲哥',task:'consumer'},
@@ -727,15 +738,16 @@ const COURSES = [
  {n:'會計學',s:'會計',t:'阿明',task:'math'},
  {n:'商業資料分析',s:'數據',t:'阿明',task:'data'},
  {n:'日文',s:'日文',t:'雙慧',task:'jp'},
- {n:'國際貿易實務',s:'國貿',t:'雙慧',task:'trade'},
+ {n:'國際貿易實務',s:'國貿',t:'英子',task:'trade'},
  {n:'韓文',s:'韓文',t:'英子',task:'kr'},
  {n:'品牌行銷學',s:'品牌',t:'艾瑞克',task:'tactics'},
  {n:'簡報與公關',s:'簡報',t:'艾瑞克',task:'speech'},
+ {n:'管理學',s:'管理',t:'雙慧',task:'mgmt'},
 ];
 const CR_COURSE=2;
-const TASK_HINT={ethics:'企業倫理情境題，寫出你的看法。',consumer:'消費者心理選擇題。',stats:'全英文出題的統計算數題。',banks:'寫出三家常見的銀行。',
-  econ:'舉一個生活中的經濟學例子。',scm:'物流與供應鏈選擇題。',math:'一題高三程度的簡單數學題。',data:'看銷售數據表回答問題。',
-  jp:'用說的或打字說一句日文。',trade:'國際貿易選擇題。',kr:'用說的或打字說一句韓文。',tactics:'說出三個行銷手段。',speech:'上台說話，由老師判定通過。'};
+const TASK_HINT={ethics:'企業倫理情境題，寫出你的看法。',consumer:'消費者心理選擇題。',stats:'全英文出題的統計算數題。',banks:'寫出三家銀行，或回答生活理財小題目。',
+  econ:'舉一個生活中的經濟學例子。',scm:'物流與供應鏈選擇題。',math:'一題簡單的數學或生活記帳題。',data:'看銷售數據表回答問題。',
+  jp:'說一句日文，或回答日文單字、文化小題目。',trade:'國際貿易選擇題。',kr:'說一句韓文，或回答韓文單字、文化小題目。',tactics:'說出三個行銷手段，或回答品牌小題目。',mgmt:'團隊合作與管理情境題。',speech:'上台說話，由老師判定通過。'};
 const SKILL_POOL=['Excel 函數技能','跨文化溝通技能','英文簡報技能','社群小編技能','商業攝影技能','短影音剪輯技能','時間管理技能'];
 
 /* ---------- 題庫（每位同學看過的題目會先避開，盡量每次不同） ---------- */
@@ -840,20 +852,20 @@ function pickIdx(p,key,n){p.qs=p.qs||{};const seen=p.qs[key]=p.qs[key]||[];let p
   if(!pool.length){const last=seen[seen.length-1];seen.length=0;pool=[...Array(n).keys()].filter(i=>i!==last||n<2)} const i=pool[rnd(pool.length)]; seen.push(i); return i}
 function pickBank(p,key){const b=BANK[key];return shuffleQ(b[pickIdx(p,'b_'+key,b.length)])}
 
-/* ---------- 社團（7 個，入社要先通過考驗） ---------- */
+/* ---------- 社團（7 個：第一位加入者當社長，之後由社長考核入社） ---------- */
 const CLUBS = [
- {n:'籃球系隊',s:'籃球',d:'國企系隊，系際盃就靠你了！',test:{kind:'judge',prompt:'入社考驗：說出一個籃球規則（例如走步、三秒區、24 秒進攻）。'},skill:'團隊合作技能',fx:[['cr',1]]},
- {n:'熱舞社',s:'熱舞',d:'鏡子前的八拍，跳到地板發燙。',test:{kind:'judge',prompt:'入社考驗：說出一種舞蹈的名稱（例如 Hip-hop、Locking、K-pop 舞）。'},skill:'跳舞技能',fx:[['love',1]]},
- {n:'羽球社',s:'羽球',d:'體育館裡此起彼落的殺球聲。',test:{kind:'mcq',bank:'badminton'},skill:'反應力技能',fx:[['cr',1]]},
- {n:'吉他社',s:'吉他',d:'草地上的木吉他和自彈自唱的夜晚。',test:{kind:'chords'},skill:'把妹技能',fx:[['love',1]]},
- {n:'排球社',s:'排球',d:'一傳、舉球、扣殺，默契就是一切。',test:{kind:'mcq',bank:'volley'},skill:'運動技能',fx:[['love',1]]},
- {n:'健身社',s:'健身',d:'深蹲、伏地挺身、高蛋白，練出好體態。',test:{kind:'judge',prompt:'入社考驗：現場做 5 下伏地挺身！'},skill:'運動技能',fx:[['love',1]]},
- {n:'國企系學會',s:'系學會',d:'國企系迎新、系烤、送舊，大小事都歸你管。',test:{kind:'mcq',bank:'ibm'},skill:'活動企劃技能',fx:[['cr',1]]},
+ {n:'籃球系隊',s:'籃球',d:'國企系隊，系際盃就靠你了！',test:{kind:'judge',prompt:'社團考驗：講出一個籃球規則（例如走步、三秒區、24 秒進攻）。'},skill:'團隊合作技能',fx:[['cr',1]]},
+ {n:'熱舞社',s:'熱舞',d:'鏡子前的八拍，跳到地板發燙。',test:{kind:'judge',prompt:'社團考驗：說出一種舞蹈名稱（例如 Hip-hop、Locking、K-pop 舞）。'},skill:'跳舞技能',fx:[['love',1]]},
+ {n:'韓文社',s:'韓文社',d:'韓劇、K-pop、韓式料理一起學，用韓文交朋友。',test:{kind:'judge',prompt:'社團考驗：講出一句韓語。'},skill:'韓流文化技能',fx:[['love',1]]},
+ {n:'吉他社',s:'吉他',d:'草地上的木吉他和自彈自唱的夜晚。',test:{kind:'judge',prompt:'社團考驗：講出五個和弦（例如 C、G、Am、F、Em）。'},skill:'把妹技能',fx:[['love',1]]},
+ {n:'排球社',s:'排球',d:'一傳、舉球、扣殺，默契就是一切。',test:{kind:'judge',prompt:'社團考驗：講出一個排球規則（例如每邊最多碰球三次、不能連擊）。'},skill:'運動技能',fx:[['love',1]]},
+ {n:'健身社',s:'健身',d:'深蹲、伏地挺身、高蛋白，練出好體態。',test:{kind:'judge',prompt:'社團考驗：現場做五下伏地挺身！'},skill:'運動技能',fx:[['love',1]]},
+ {n:'國企系學會',s:'系學會',d:'國企系迎新、系烤、送舊，大小事都歸你管。',test:{kind:'judge',prompt:'社團考驗：說出一門國企系的課程名稱（例如國際貿易實務、行銷學）。'},skill:'活動企劃技能',fx:[['cr',1]]},
 ];
 const CLUB_INTRO={
   '籃球系隊':'國企系自己的籃球隊，平常一起練球，系際盃和新生盃一起拚冠軍。球場上一起流汗的隊友，常常就是大學四年最好的朋友。',
   '熱舞社':'Hip-hop、Locking、Jazz、K-pop 都有人跳，社課從基本律動教起。期末成果發表和校外比賽，是舞者們最熱血的時刻。',
-  '羽球社':'新手老手都歡迎，社課依程度分組練球，還有校內盃和大專盃比賽。下課後到體育館殺幾球，是最好的紓壓方式。',
+  '韓文社':'從韓文字母、打招呼學起，一起看韓劇學口語、跳 K-pop、煮韓式料理。想去韓國交換或實習的人，在這裡先打好基礎。',
   '吉他社':'零基礎或自彈自唱高手都歡迎。社課從和弦教起，期末有成果發表，草地上的夜間彈唱更是內門山上最浪漫的風景。',
   '排球社':'從低手、高手傳球練到扣殺，強調團隊默契。每學期都有校內聯賽，場邊加油聲最熱鬧。',
   '健身社':'教你正確的重訓動作和飲食觀念，從伏地挺身練到深蹲硬舉。一起練習、互相督促，體態和自信一起變好。',
@@ -872,36 +884,38 @@ const SPOTS = [
 const INTERNS = [
  {country:'日本',s:'日本實習',art:'snow',
   intro:'日本的實習目的地包括北海道 Tomamu、Kiroro、Sahoro，以及沖繩石垣島。北海道以雪景、滑雪及山岳度假體驗聞名；石垣島則以碧藍海水、海洋活動及熱帶島嶼風光為特色。',
-  q:'Club Med Tomamu 位於日本哪個地區？',o:['東京','北海道','大阪','沖繩石垣島'],a:1,ex:'Tomamu 位於日本北海道，以山岳度假、雪季活動及雲海平台等特色聞名。'},
+  qs:[{"q": "Club Med Tomamu 位於日本哪個地區？", "o": ["東京", "北海道", "大阪", "沖繩石垣島"], "a": 1, "ex": "Tomamu 位於日本北海道，以山岳度假、雪季活動及雲海平台等特色聞名。"}, {"q": "Tomamu 最著名的自然景觀之一是什麼？", "o": ["沙漠綠洲", "雲海平台", "熱帶珊瑚礁", "火山湖"], "a": 1, "ex": "Tomamu 的雲海平台是北海道知名的觀光景點之一，能欣賞壯觀的雲海景色。"}, {"q": "以下哪個地點以滑雪及冬季度假聞名？", "o": ["北海道 Kiroro", "印尼峇里島", "泰國普吉島", "馬爾地夫卡尼島"], "a": 0, "ex": "Kiroro 位於北海道，以雪季活動及滑雪度假體驗聞名。"}, {"q": "沖繩石垣島最具代表性的自然環境是什麼？", "o": ["雪山冰川", "沙漠草原", "藍色海洋與珊瑚礁", "熱帶雨林與沙漠"], "a": 2, "ex": "石垣島位於日本沖繩，以清澈海水、珊瑚礁及海洋活動聞名。"}, {"q": "以下哪個地點屬於北海道的 Club Med 實習目的地？", "o": ["普吉島", "民丹島", "卡尼島", "Sahoro"], "a": 3, "ex": "Sahoro 位於日本北海道，是 Club Med 的度假村目的地之一。"}]},
  {country:'印尼',s:'印尼實習',art:'bali',
   intro:'印尼的實習目的地包括峇里島與民丹島。峇里島以熱帶景觀、當地文化與度假氛圍聞名；民丹島則以海灘、自然環境及海島休閒體驗為特色。',
-  q:'以下哪兩個地點都是印尼的實習目的地？',o:['峇里島、民丹島','普吉島、石垣島','Tomamu、Kiroro','卡尼島、普吉島'],a:0,ex:'峇里島與民丹島都是印尼的島嶼；普吉島位於泰國，石垣島位於日本。'},
+  qs:[{"q": "以下哪兩個地點都是印尼的實習目的地？", "o": ["峇里島、民丹島", "普吉島、石垣島", "Tomamu、Kiroro", "卡尼島、普吉島"], "a": 0, "ex": "峇里島與民丹島都是印尼的島嶼；普吉島位於泰國，石垣島位於日本。"}, {"q": "峇里島最具代表性的旅遊特色是什麼？", "o": ["熱帶風景與特色文化", "高山滑雪", "冰川探險", "極地冰雪"], "a": 0, "ex": "峇里島以熱帶自然景觀、特色文化及度假氛圍聞名。"}, {"q": "印尼位於哪個地理區域？", "o": ["歐洲", "東南亞", "北美洲", "南美洲"], "a": 1, "ex": "印尼位於東南亞，是由許多島嶼組成的國家。"}, {"q": "民丹島最具代表性的旅遊特色是什麼？", "o": ["極地探險", "高山滑雪", "海灘與熱帶自然景觀", "沙漠駱駝之旅"], "a": 2, "ex": "民丹島以海灘、自然環境及海島休閒體驗聞名。"}, {"q": "峇里島與民丹島都屬於哪個國家？", "o": ["泰國", "日本", "馬爾地夫", "印尼"], "a": 3, "ex": "峇里島與民丹島都是印尼的島嶼。"}]},
  {country:'泰國',s:'泰國實習',art:'phuket',
   intro:'泰國的實習目的地為普吉島。普吉島以熱帶海島、海灘及多元休閒度假體驗聞名，是認識國際觀光與度假村服務的好機會。',
-  q:'Club Med 普吉島最具代表性的度假環境是什麼？',o:['高山滑雪與雪地活動','沙漠探險','熱帶海島與海灘度假','冰川與極地探險'],a:2,ex:'普吉島位於泰國，以熱帶海島、海灘及休閒度假體驗聞名。'},
+  qs:[{"q": "Club Med 泰國的實習目的地是哪裡？", "o": ["清邁", "普吉島", "曼谷", "芭達雅"], "a": 1, "ex": "泰國的實習目的地為普吉島，以海島度假及觀光活動聞名。"}, {"q": "Club Med 普吉島最具代表性的度假環境是什麼？", "o": ["高山滑雪與雪地活動", "沙漠探險", "熱帶海島與海灘度假", "冰川與極地探險"], "a": 2, "ex": "普吉島位於泰國，以熱帶海島、海灘及休閒度假體驗聞名。"}, {"q": "普吉島位於哪個國家？", "o": ["印尼", "日本", "泰國", "韓國"], "a": 2, "ex": "普吉島是泰國知名的觀光島嶼。"}, {"q": "在普吉島最適合體驗哪一類活動？", "o": ["海上活動與沙灘休閒", "雪地滑雪", "極地探險", "冰川攀登"], "a": 0, "ex": "普吉島擁有海灘及海洋資源，適合各種海上活動與休閒體驗。"}, {"q": "普吉島與峇里島有什麼共同特色？", "o": ["都位於歐洲", "都以滑雪聞名", "都有極地冰川", "都是熱門的熱帶海島旅遊地點"], "a": 3, "ex": "普吉島位於泰國，峇里島位於印尼，兩者都是熱門的熱帶海島旅遊地點。"}]},
  {country:'馬爾地夫',s:'馬爾地夫',art:'maldives',
   intro:'馬爾地夫的實習目的地為卡尼島，以碧藍潟湖、白色沙灘及海島度假體驗聞名。學生可以藉此認識國際觀光及高端度假產業。',
-  q:'以下哪一項最符合馬爾地夫的代表性旅遊特色？',o:['雪地滑雪','水上別墅與碧藍潟湖','大型沙漠','高山雲海平台'],a:1,ex:'馬爾地夫以清澈海水、白色沙灘、珊瑚礁及水上別墅等海島景觀聞名。'},
+  qs:[{"q": "以下哪一項最符合馬爾地夫的代表性旅遊特色？", "o": ["雪地滑雪", "水上別墅與碧藍潟湖", "大型沙漠", "高山雲海平台"], "a": 1, "ex": "馬爾地夫以清澈海水、白色沙灘、珊瑚礁及水上別墅等海島景觀聞名。"}, {"q": "Club Med 馬爾地夫的實習目的地是哪座島？", "o": ["石垣島", "卡尼島", "峇里島", "民丹島"], "a": 1, "ex": "卡尼島是馬爾地夫的 Club Med 實習目的地。"}, {"q": "馬爾地夫最具代表性的住宿特色之一是什麼？", "o": ["雪地木屋", "沙漠帳篷", "水上別墅", "山頂玻璃屋"], "a": 2, "ex": "馬爾地夫以海上度假環境及水上別墅聞名。"}, {"q": "馬爾地夫位於哪個地理區域？", "o": ["南亞", "東歐", "北美洲", "南美洲"], "a": 0, "ex": "馬爾地夫位於印度洋，地理上屬於南亞地區。"}, {"q": "以下哪個描述最符合卡尼島的度假環境？", "o": ["寒冷雪地滑雪場", "高山森林雲海", "沙漠駱駝", "藍色潟湖與白色沙灘"], "a": 3, "ex": "卡尼島擁有美麗的海洋景觀、碧藍潟湖及白色沙灘。"}]},
  {country:'韓國',s:'韓國實習',art:'kschool',
   intro:'韓國的實習計畫為華僑學校實習計畫，與 Club Med 海外度假村實習不同。實際工作內容、申請資格及實習期間，應以合作學校及當年度計畫公告為準。學生可藉此認識韓國的生活環境、校園文化與跨文化交流。',
-  q:'韓國華僑學校實習計畫的實際工作內容，應以什麼為準？',o:['網路上的所有傳言','自己想像的工作內容','合作學校與當年度計畫公告','其他國家的實習規定'],a:2,ex:'實習工作內容及申請條件應依實際合作學校與當年度計畫規定確認。'},
+  qs:[{"q": "韓國華僑學校實習計畫的實際工作內容，應以什麼為準？", "o": ["網路上的所有傳言", "自己想像的工作內容", "合作學校與當年度計畫公告", "其他國家的實習規定"], "a": 2, "ex": "實習工作內容及申請條件應依實際合作學校與當年度計畫規定確認。"}, {"q": "韓國華僑學校實習主要屬於哪一種類型？", "o": ["海島度假村實習", "學校教育環境實習", "滑雪場實習", "飯店度假村實習"], "a": 1, "ex": "韓國的計畫以華僑學校為實習場域，與 Club Med 度假村實習不同。"}, {"q": "參加韓國華僑學校實習前，最應該先了解什麼？", "o": ["明星演唱會資訊", "購物中心位置", "實習工作內容及申請條件", "當地熱門餐廳"], "a": 2, "ex": "事先了解實習內容、申請資格及計畫規定，才能做好實習準備。"}, {"q": "到韓國參加實習，哪一種能力有助於適應不同環境？", "o": ["跨文化溝通與環境適應能力", "不與他人交流", "只依賴翻譯工具", "避免接觸不同文化"], "a": 0, "ex": "跨文化溝通及環境適應能力有助於認識不同文化並融入實習環境。"}, {"q": "韓國華僑學校實習與 Club Med 海外實習最大的差異是什麼？", "o": ["都是在滑雪場實習", "都只在寒假進行", "工作內容完全相同", "一個以學校環境為主，一個以國際度假村環境為主"], "a": 3, "ex": "韓國計畫以學校為主要實習場域，Club Med 計畫則以國際度假村環境為主。"}]},
 ];
 INTERNS.forEach(x=>x.n='海外實習—'+x.country);
 
-/* ---------- 國外姊妹校交換（3 校，每次停留問一輪） ---------- */
+/* ---------- 國外姊妹校交換（4 校；每位同學在每個國家各有自己的答題進度） ---------- */
 const EXCH = [
  {n:'德國福茲堡應用科技大學',s:'德國交換',country:'德國',lang:'德語技能',cur:'歐元',unit:1,twd:35,flag:['#1f1f1f','#d0302a','#e6b354']},
  {n:'韓國誠信女子大學',s:'韓國交換',country:'韓國',lang:'韓語技能',cur:'韓元',unit:100,twd:2.4,flag:['#fbf8f2','#d0302a','#2f4f9a']},
  {n:'日本東洋大學',s:'日本交換',country:'日本',lang:'日語技能',cur:'日圓',unit:100,twd:21,flag:['#fbf8f2','#d0302a','#fbf8f2']},
+ {n:'美國舊金山州立大學',s:'美國交換',country:'美國',lang:'英語技能',cur:'美元',unit:1,twd:32,flag:['#fbf8f2','#c23a30','#2f4f9a']},
 ];
 const EX_ROUND=['第一輪・出國條件','第二輪・多益英文','第三輪・匯率換算'];
+const EX_REWARD=['學分 +1','語言能力 +1','學分 +1'];
 
 /* ---------- 地圖（44 格） ---------- */
 // 0 報到、11 圖書館、22 宿舍、33 期末考週
 const LAYOUT = ['S','k0','c0','i0','k1','s0','k2','fa','c1','k3','x0',
-                'L','k4','i1','c2','s1','ch','k5','c3','k6','i2','s2',
+                'L','k4','i1','c2','k13','ch','k5','c3','k6','i2','s2',
                 'R','k7','fa','x1','c4','k8','s3','i3','k9','ch','c5',
-                'F','k10','s4','x2','fa','k11','c6','i4','ch','k12','s5'];
+                'F','k10','s4','x2','fa','k11','c6','i4','ch','k12','x3'];
 const CORNERS = {S:{n:'入學報到・國企系辦',s:'報到',d:'每經過一次就升上一個年級。累積 3 項技能，就能向玟玟執秘簡報換學分。'},L:{n:'圖書館閉關',s:'圖書館',d:'被送來閉關要暫停一回合；路過只是來借書。'},
   R:{n:'學生宿舍',s:'宿舍',d:'宿舍夜談：自己選要讀書、顧社團，還是聊心事。'},F:{n:'期末考週',s:'期末週',d:'熬夜 K 書！拿 1 學分，然後去圖書館閉關一回合。'}};
 function tileInfo(code){
@@ -912,7 +926,7 @@ function tileInfo(code){
   if(k==='k') return {type:'course',idx:i,...COURSES[i],code,d:`${COURSES[i].t}老師的「${COURSES[i].n}」。課堂任務：${TASK_HINT[COURSES[i].task]}完成任務才拿得到 ${CR_COURSE} 學分。第一位完成任務的同學會成為這門課的教學 TA。`};
   if(k==='c') return {type:'club',idx:i,...CLUBS[i],code};
   if(k==='i') return {type:'intern',idx:i,...INTERNS[i],code,d:INTERNS[i].intro};
-  if(k==='x') return {type:'exch',idx:i,...EXCH[i],code,d:`到${EXCH[i].country}的姊妹校「${EXCH[i].n}」交換：語言技能 +1、學分 +1、雙聯學位 +1，並回答一輪題目（答錯會被遣返回國，暫停一回合）。`};
+  if(k==='x') return {type:'exch',idx:i,...EXCH[i],code,d:`到${EXCH[i].country}的姊妹校「${EXCH[i].n}」交換。第一次來：語言技能 +1、學分 +1。每次停留口頭回答一輪題目，由老師判定：第一輪出國條件（學分 +1）、第二輪多益（語言能力 +1）、第三輪匯率（學分 +1）。三輪都通過得到雙聯學位；任一輪不通過就從第一輪重來。`};
   return {type:'spot',idx:i,...SPOTS[i],code};
 }
 const N=LAYOUT.length;
@@ -961,6 +975,7 @@ const CHANCE = [
  {t:'週末去美濃湖騎單車',move:'s4'},
  {t:'參加海外實習說明會，直接去日本看看',move:'i0'},
  {t:'參加國際研習營，免費多學一項技能',skill:true},
+ {t:'獲選到瑞典布羅斯大學（University of Borås）短期交換！',fx:[['cr',1]],intl:1},
 ];
 const FATE = [
  {t:'睡過頭錯過校車（內門山上真的遠）',skip:1},
@@ -979,7 +994,7 @@ const TK = ['var(--red)','var(--blue)','var(--leaf)','var(--mustard)'];
 
 /* ---------- 狀態 ---------- */
 let S=null;
-const KEY='usc-ibm-v9';
+const KEY='usc-ibm-v10';
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
 const load=()=>{try{return JSON.parse(localStorage.getItem(KEY))}catch(e){return null}};
 const clear=()=>{try{localStorage.removeItem(KEY)}catch(e){}};
@@ -1113,8 +1128,8 @@ $('#board').addEventListener('click',e=>{
   const kind={course:'國企系課程',club:'社團',spot:'景點・約會地點',intern:'海外企業實習',exch:'國外姊妹校交換',chance:'機會',fate:'命運',corner:'特殊格'}[t.type];
   let extra='';
   if(t.type==='course'){const ta=taOf(t.idx);extra=`<p class="note">教學 TA：${ta?esc(ta.name):'還沒有，第一位完成任務的同學就是 TA'}</p>`}
-  if(t.type==='club') extra=`<p>${CLUB_INTRO[t.n]||''}</p><p class="note">入社考驗：${t.test.kind==='judge'?t.test.prompt.replace('入社考驗：',''):t.test.kind==='chords'?'說出五個和弦的名稱':'回答一題選擇題'}。通過可獲得「${t.skill}」（${fxText(t.fx)}）。</p>`;
-  if(t.type==='exch'){const r=(P.ex&&P.ex.r)||0;extra=`<p class="note">${esc(P.name)} 下次的題目：${EX_ROUND[Math.min(2,r)]}</p>`}
+  if(t.type==='club') extra=(()=>{const c=clubOf(t.idx);return `<p>${CLUB_INTRO[t.n]||''}</p><p class="note">社團考驗：${t.test.prompt.replace('社團考驗：','')}<br>${c.pres?`社長：${esc(c.pres.name)}・社員 ${c.mem.length} 人`:'還沒有社長：第一位加入的同學直接當社長'}。入社可獲得「${t.skill}」（${fxText(t.fx)}）。</p>`})();
+  if(t.type==='exch'){const e=P.ex||{},done=(e.deg||[]).includes(t.idx),r=(e.rc||{})[t.idx]||0;extra=`<p class="note">${esc(P.name)} 在${t.country}的進度：${done?'已拿到雙聯學位':EX_ROUND[r]}</p>`}
   if(t.type==='spot') extra='<p class="note">停在景點，和你的心儀對象約會，戀愛才會往下一階段推進。</p>';
   sheet({stay:1,tag:kind,title:t.n,body:`<p>${t.d||''}</p>${extra}`,buttons:[{l:'知道了',v:1,p:1}]});
 });
@@ -1168,7 +1183,7 @@ function addBr(p,br,d){
   const s=stage(p[key]);
   while(p[maxKey]<s){
     const st=list[p[maxKey]]; p[maxKey]++;
-    if(br==='club'&&p.club===null){p.club=CLUBS.findIndex(c=>c.n==='國企系學會');pending.push({br:'社團',n:'系學會找上門',d:'國企系學會學長姐邀你入會，你就這樣成了系學會的一員。',fx:[]})}
+    /* v46：社團改成自由選擇加入，不再自動加入系學會 */
     pending.push({br:br==='club'?'社團成就':'戀愛成就',n:st.n,d:st.d,fx:st.fx}); applyFx(p,st.fx);
   }
 }
@@ -1247,6 +1262,7 @@ async function endTurn(){
   const p=S.players[S.cur];
   p.turns=(p.turns||0)+1;
   if(!p.done) await doOffice(p);
+  if(p._pend&&p._pend.length){pending.push(...p._pend);p._pend=[]}
   await flushPending(p);
   renderDynamic();
   if(p.cr>=S.target&&!p.done&&S.online){
@@ -1294,11 +1310,11 @@ function mcqSheet({tag,title,art,intro,q,o,giveUp}){
     }});
 }
 /* 口說類任務：線上教室由老師在大螢幕按「通過／不通過」；展示試玩由在場的人判定 */
-async function judgeSheet(p,{tag,title,art,prompt,label}){
+async function judgeSheet(p,{tag,title,art,prompt,label,ans,judge}){
   if(p.bot) return Math.random()<.8;
   if(S.online&&fb&&uid){
     const ref=fb.ref(`rooms/${S.online.code}`), jid=Date.now().toString(36)+rnd(1000);
-    try{await ref.child('judge/'+uid).set({id:jid,name:p.name,av:p.av,task:String(label||tag).slice(0,40),prompt:plain(prompt).slice(0,280),at:TS()})}
+    try{await ref.child('judge/'+uid).set({id:jid,name:p.name,av:p.av,task:String(label||tag).slice(0,40),prompt:plain(prompt).slice(0,280),...(ans?{ans:plain(ans).slice(0,200)}:{}),at:TS()})}
     catch(e){toast('送出判定失敗：'+errMsg(e));return null}
     return new Promise(res=>{
       let done=false; const rref=ref.child('judgeRes/'+uid);
@@ -1309,7 +1325,7 @@ async function judgeSheet(p,{tag,title,art,prompt,label}){
         onOpen:el=>{setTimeout(()=>{if(done||!el.isConnected)return;const o=el.querySelector('.opts');if(!o)return;o.innerHTML='<button class="btn" id="jgive">老師沒空？這次先放棄</button>';o.querySelector('#jgive').onclick=()=>fin(null)},45000)}});
     });
   }
-  return sheet({stay:1,tag,title,art,body:`<p>${prompt}</p><div class="chk" style="flex-direction:column;align-items:flex-start"><b>請說出來（或做出來）！</b><span class="note">由在場的老師或同學判定。</span></div>`,
+  return sheet({stay:1,tag,title,art,body:`<p>${prompt}</p><div class="chk" style="flex-direction:column;align-items:flex-start"><b>請說出來（或做出來）！</b><span class="note">${judge||'由在場的老師或同學判定。'}</span></div>${ans?`<details class="ansbox"><summary>參考答案（給判定的人看）</summary><p>${ans}</p></details>`:''}`,
     buttons:[{l:'✓ 通過',v:true,p:1},{l:'✗ 不通過',v:false}]});
 }
 function taskSheet({tag,title,art,intro,fields}){
@@ -1428,7 +1444,7 @@ const TASKS={
   ethics:p=>{const s=ETHICS_V[pickIdx(p,'ethics',ETHICS_V.length)];return {kind:'form',...s,win:()=>'系主任仲哥老師點點頭：「想得很清楚，這就是企業倫理。」'}},
   consumer:p=>({kind:'mcq',intro:'仲哥老師：「消費者心裡在想什麼？懂了就會做行銷。」',...pickBank(p,'consumer')}),
   scm:p=>({kind:'mcq',intro:'阿金老師：「東西怎麼從工廠到你手上？這就是供應鏈。」',...pickBank(p,'scm')}),
-  trade:p=>({kind:'mcq',intro:'雙慧老師：「做國際生意，這些都要懂！」',...pickBank(p,'trade')}),
+  trade:p=>({kind:'mcq',intro:'英子老師：「做國際生意，這些都要懂！」',...pickBank(p,'trade')}),
   banks:p=>({kind:'form',intro:`武哥老師：「金融市場第一課，先認識銀行！請寫出三家常見的銀行${(p.banksUsed||[]).length?'，<b>不能和你之前寫過的重複</b>':''}。」${(p.banksUsed||[]).length?`<br><small class="note">你寫過：${p.banksUsed.join('、')}</small>`:''}`,
     fields:[{id:'a',label:'銀行 1',type:'text',ph:'例如：台灣銀行'},{id:'b',label:'銀行 2',type:'text',ph:''},{id:'c',label:'銀行 3',type:'text',ph:''}],
     check:v=>{const ks=[v.a,v.b,v.c].map(bankKey);if(ks.some(k=>!k))return {retry:'有一家看起來不是銀行，請寫出完整的銀行名稱（例如：第一銀行、玉山銀行）。'};
@@ -1511,7 +1527,7 @@ async function doCourse(p,t){
   if(!res){msg='這次先放棄，下次停在這裡再挑戰。'}
   else if(res.ok){
     got=CR_COURSE; p.passed[t.idx]=(p.passed[t.idx]||0)+1;
-    const spec=res.spec||{}; msg=p.bot?`${who}點點頭，${esc(p.name)} 順利完成課堂任務。`:(spec.win?spec.win():'任務完成！')+(res.win&&spec.kind==='mcq'?`<br><small class="note">${esc(res.win)}</small>`:'');
+    const spec=res.spec||{}; msg=p.bot?`${who}點點頭，${esc(p.name)} 順利完成課堂任務。`:(spec.win?spec.win():'任務完成！')+(res.win&&['mcq','mem','match','classify','pref'].includes(spec.kind)?`<br><small class="note">${esc(res.win)}</small>`:'');
     if(spec.fx) applyFx(p,spec.fx);
     if(spec.skill&&!p.skills.includes(spec.skill)){learnSkill(p,spec.skill);msg+=`<br>你獲得了「${spec.skill}」！`}
     if(await taClaim(p,t.idx)){msg+=`<br><b>🎓 你是第一位完成「${c.n}」任務的同學，成為這門課的教學 TA！</b>之後別人停在這門課，你就會獲得教學技能。`;log(`${esc(p.name)} 成為${c.n}的教學 TA`)}
@@ -1541,64 +1557,6 @@ function giveRandomSkill(p){const left=SKILL_POOL.filter(s=>!p.skills.includes(s
 function addIntl(p,why){p.intl=(p.intl||0)+1;(p.intlLog=p.intlLog||[]).push(why);
   if(p.intl%3===0){addCr(p,1);pending.push({br:'國際成就',n:`累積 ${p.intl} 項國際成就`,d:'各種國際成就每累積 3 項，學分 +1。',fx:[['cr',1]],noApply:1})}}
 
-/* ---------- 社團：入社考驗 ---------- */
-async function clubTest(p,t,art){
-  const tag=`社團・${t.n}・入社考驗`;
-  if(p.bot) return Math.random()<.75;
-  const T=t.test;
-  if(T.kind==='judge') return await judgeSheet(p,{tag,title:`${t.n} 入社考驗`,art,prompt:T.prompt,label:`${t.n}入社考驗`});
-  if(T.kind==='mcq'){const q=pickBank(p,T.bank);const i=await mcqSheet({tag,title:`${t.n} 入社考驗`,art,intro:'入社考驗：答對就能入社！',q:q.q,o:q.o,giveUp:1});
-    if(i===null) return null; if(i!==q.a){p._clubWhy=`正確答案是 ${LET[q.a]}. ${q.o[q.a]}。${q.ex}`} return i===q.a}
-  if(T.kind==='chords'){
-    const how=await sheet({stay:1,tag,title:`${t.n} 入社考驗`,art,body:'<p>入社考驗：說出五個和弦的名稱（例如 C、G、Am、F、Em）。</p>',
-      buttons:[{l:'用說的（'+(S.online?'老師在大螢幕判定':'現場判定')+'）',v:'say',p:1},{l:'用打字回答',v:'type'},{l:'再看看',v:null}]});
-    if(!how) return null;
-    if(how==='say') return await judgeSheet(p,{tag,title:`${t.n} 入社考驗`,art,prompt:'入社考驗：說出五個和弦的名稱（例如 C、G、Am、F、Em）。',label:`${t.n}入社考驗`});
-    $('#sheet')._check=v=>{const xs=parseList(v.a).map(x=>x.replace('♯','#').replace('♭','b'));if(xs.length<5)return {retry:`要寫五個和弦喔，目前 ${xs.length} 個（用空白或逗號隔開）。`};
-      const bad=xs.find(x=>!CHORD_RE.test(x));if(bad)return {retry:`「${bad}」看起來不是和弦名稱，例如 C、Dm、G7、Am。`};if(new Set(xs).size<5)return {retry:'五個和弦不能重複喔。'};return {ok:1}};
-    const r=await taskSheet({tag,title:`${t.n} 入社考驗`,art,intro:'寫出五個不同的和弦名稱，用空白或逗號隔開。',fields:[{id:'a',label:'五個和弦',type:'text',ph:'例如：C G Am F Em'}]});
-    if(!r) return null; return r.ok;
-  }
-  return true;
-}
-async function doClub(p,t){
-  const art=avatar(AV[p.av]), tag=`社團・${t.n}`;
-  p.seenClubs=p.seenClubs||[];
-  if(!p.seenClubs.includes(t.idx)){p.seenClubs.push(t.idx);
-    await sheet({tag:'第一次來到這個社團',title:t.n,art:sprig('sprig'),body:`<p>${CLUB_INTRO[t.n]||t.d}</p>`,buttons:[{l:'繼續',v:1,p:1}]})}
-  if(p.club===null){
-    const testTxt=t.test.kind==='judge'?t.test.prompt.replace('入社考驗：',''):t.test.kind==='chords'?'說出五個和弦的名稱':`回答一題${t.s}相關的選擇題`;
-    const v=p.bot?Math.random()<.7:await sheet({tag,title:`${t.n} 招生中`,art,body:`<p>${t.d}</p><p><b>入社考驗：</b>${testTxt}</p><p class="note">通過就能入社，並獲得「${t.skill}」（${fxText(t.fx)}）。入社後，停在這裡就能推進社團支線。</p>`,buttons:[{l:'挑戰入社考驗',v:1,p:1},{l:'再看看',v:0}]});
-    if(!v) return;
-    p._clubWhy='';
-    const ok=await clubTest(p,t,art);
-    if(ok){
-      p.club=t.idx; log(`${esc(p.name)} 通過考驗，加入了${t.n}`);
-      learnSkill(p,t.skill); applyFx(p,t.fx); addBr(p,'club',2-(p.clubPt%2)); renderDynamic();
-      await sheet({tag,title:`歡迎加入${t.n}！`,art,body:`<div class="skillcard"><small>獲得技能</small><b>${t.skill}</b></div><p class="fx">${fxText(t.fx)}</p>`,buttons:[{l:'繼續',v:1,p:1}]});
-    }else if(ok===false){
-      log(`${esc(p.name)} 這次沒通過${t.n}的入社考驗`);
-      await sheet({tag,title:'這次沒通過入社考驗',art,body:`<p>${p._clubWhy||'沒關係，下次停在這裡可以再挑戰一次！'}</p>`,buttons:[{l:'繼續',v:1,p:1}]});
-    }
-    return;
-  }
-  if(p.club===t.idx){
-    const cs=stage(p.clubPt);
-    if(cs>=CLUB_ST.length){addCr(p,1);log(`${esc(p.name)} 回社團帶學弟妹`);
-      return sheet({tag,title:'傳承時間',art,body:'<p>你已經是傳說級前輩，回來帶學弟妹練習。學分 +1。</p>',buttons:[{l:'繼續',v:1,p:1}]})}
-    const next=CLUB_ST[cs], need=[2,2,3,3,3,4,5][cs];
-    const ok=await diceCheck({tag,title:`挑戰：${next.n}`,art,text:`在${t.n}努力中，目標是「${next.n}」。`,need});
-    addBr(p,'club',ok?2:1);
-    log(`${esc(p.name)} 在${t.n}${ok?`達成「${next.n}」`:'累積了一點經驗'}`);
-    if(!ok) await sheet({tag,title:'差一點點',art,body:'<p>雖然沒成功，還是累積了經驗（社團 +1）。</p>',buttons:[{l:'繼續',v:1,p:1}]});
-    return;
-  }
-  const love=Math.random()<.4;
-  addBr(p,'club',1); if(love) addBr(p,'love',1);
-  log(`${esc(p.name)} 和${t.n}跨社合作`);
-  await sheet({tag,title:'跨社交流',art,body:`<p>你的${CLUBS[p.club].n}和${t.n}一起辦活動。社團 +1${love?`，還在活動中和 ${crushOf(p).name} 變熟了（好感 +1）`:''}。</p>`,buttons:[{l:'繼續',v:1,p:1}]});
-}
-
 async function doSpot(p,t){
   const c=crushOf(p), art=avatar(c), ls=p.loveMax||0, tag=`約會景點・${t.n}`;
   if(ls>=LOVE_ST.length){addCr(p,1);log(`${esc(p.name)} 和 ${c.name} 去${t.s}約會`);
@@ -1627,57 +1585,6 @@ async function doSpot(p,t){
 
 /* ---------- 海外實習知識問答 ---------- */
 const svgBox=inner=>`<svg viewBox="0 0 200 150" aria-hidden="true"><g filter="url(#wc)">${inner}</g></svg>`;
-async function doIntern(p,t){
-  const I=INTERNS[t.idx], tag='海外企業實習', pic=svgBox(ART[I.art]());
-  if(p.bot){const ok=Math.random()<.75,g=ok?2:1;addCr(p,g);log(`${esc(p.name)} 在${I.n}${ok?'答對':'答錯'}（+${g} 學分）`);
-    await sheet({tag,title:I.n,art:avatar(AV[p.av]),body:`<p>${esc(p.name)} 回答實習知識問答：${ok?'答對了':'答錯了'}，學分 +${g}。</p>`,buttons:[{l:'繼續',v:1,p:1}]});return}
-  await sheet({stay:1,tag,title:I.n,body:`<div class="ipic">${pic}</div><p>${I.intro}</p>`,buttons:[{l:'開始答題',v:1,p:1}]});
-  const pick=await mcqSheet({tag:I.n,title:'實習知識問答',q:I.q,o:I.o});
-  const ok=pick===I.a, g=ok?2:1; addCr(p,g);
-  log(`${esc(p.name)} 在${I.n}${ok?'答對':'答錯'}（+${g} 學分）`);
-  await sheet({tag:I.n,title:ok?'答對了！':'答錯了',art:avatar(AV[p.av]),
-    body:`<p>你的答案：${LET[pick]}. ${esc(I.o[pick])}</p><p>正確答案：<b class="good">${LET[I.a]}. ${esc(I.o[I.a])}</b></p><p><b>解析：</b>${esc(I.ex)}</p>
-      <p class="fx num" style="font-size:15px">本題獲得 ${g} 學分・目前累積 ${p.cr} / ${S.target} 學分</p>`,
-    buttons:[{l:'繼續遊戲',v:1,p:1}]});
-}
-
-/* ---------- 國外姊妹校交換（每次停留問一輪） ---------- */
-function fxQ(X){
-  const amt=X.unit===1?[100,200,300,500,800][rnd(5)]:[1000,3000,5000,10000,20000][rnd(5)];
-  const ans=Math.round(amt/X.unit*X.twd);
-  const item=X.unit===1?`${amt} ${X.cur}`:`${amt.toLocaleString()} ${X.cur}`;
-  const wrong=[Math.round(ans*10),Math.round(ans/10),Math.round(ans*2)].filter(v=>v!==ans&&v>0);
-  const o=[ans,...wrong].slice(0,4);while(o.length<4)o.push(ans+o.length*7);
-  const it={q:`假設 ${X.unit===1?'1':X.unit} ${X.cur} ≈ ${X.twd} 新台幣。在${X.country}買一樣 ${item} 的東西，大約等於多少新台幣？`,o:o.map(v=>`${v.toLocaleString()} 元`),a:0,
-    ex:`${item} ÷ ${X.unit} × ${X.twd} ≈ ${ans.toLocaleString()} 元新台幣。`};
-  return shuffleQ(it);
-}
-async function doExchange(p,t){
-  const X=EXCH[t.idx], tag=`國外姊妹校交換・${X.country}`, art=svgBox(ART.plane(X));
-  p.ex=p.ex||{r:0,deg:[]};
-  const got=[];
-  if(!p.skills.includes(X.lang)){learnSkill(p,X.lang);got.push(`語言技能 +1（${X.lang}）`)}
-  addCr(p,1); got.push('學分 +1');
-  if(!p.ex.deg.includes(t.idx)){p.ex.deg.push(t.idx);addIntl(p,'雙聯學位・'+X.n);got.push(`雙聯制學位 +1（${X.n}）`)}
-  const round=p.ex.r<3?p.ex.r:1+rnd(2);
-  log(`${esc(p.name)} 到${X.n}交換（${got.join('、')}）`);
-  let ok, q;
-  if(p.bot){ok=Math.random()<.7}
-  else{
-    await sheet({stay:1,tag,title:X.n,art,body:`<p>恭喜你獲選到${X.country}的姊妹校交換！</p><div class="chips">${got.map(s=>`<span>${s}</span>`).join('')}</div><p>接下來是<b>${EX_ROUND[round]}</b>的題目。<span class="bad">答錯會被遣返回國，暫停一回合。</span></p>`,buttons:[{l:'開始答題',v:1,p:1}]});
-    q=round===0?pickBank(p,'abroad'):round===1?pickBank(p,'toeic'):fxQ(X);
-    const i=await mcqSheet({tag:`${X.country}交換・${EX_ROUND[round]}`,title:EX_ROUND[round],q:q.q,o:q.o});
-    ok=i===q.a;
-  }
-  let rew='';
-  if(ok){ if(round===0){addCr(p,1);rew='學分 +1'} else {addIntl(p,EX_ROUND[round]);rew='國際成就 +1'} if(p.ex.r<3) p.ex.r++ }
-  else {p.skip=1;p.skipWhy='遣返回國'}
-  log(`${esc(p.name)} ${EX_ROUND[round]}${ok?`答對（${rew}）`:'答錯，被遣返回國'}`);
-  await sheet({stay:!p.bot,tag,title:ok?`答對了！${rew}`:'答錯了，被遣返回國',art:avatar(AV[p.av]),
-    body:`${q?`<p>正確答案：<b class="good">${LET[q.a]}. ${esc(q.o[q.a])}</b></p><p class="note">${esc(q.ex||'')}</p>`:''}<p>${ok?(p.ex.r>=3&&round===2?'三輪題目全部通過，你是國際交換達人！':'下次停在姊妹校，會進入下一輪題目。'):'先回台灣準備好，下回合暫停一次。'}</p>
-      <p class="fx num">國際成就 ${p.intl||0} 項（每 3 項學分 +1）・目前 ${p.cr} / ${S.target} 學分</p>`,buttons:[{l:'繼續遊戲',v:1,p:1}]});
-}
-
 async function doCard(p,t,depth){
   const deck=t.type==='chance'?CHANCE:FATE, c=deck[rnd(deck.length)];
   let res='';
@@ -1712,6 +1619,378 @@ async function doCorner(p,t){
   }
 }
 
+
+/* ---------- 六科新題庫（日文、韓文、金融市場、會計學、品牌行銷學、管理學） ---------- */
+/* 選項依老師給的順序固定顯示；每位同學在同一門課抽過的題目不會再出 */
+const QM=(q,o,a,ex)=>({kind:'mcq',q,o,a:'ABCD'.indexOf(a),ex});
+const JP_WORDS=[['🍣','すし','壽司'],['🐱','ねこ','貓'],['🌸','さくら','櫻花'],['🍜','ラーメン','拉麵'],['🗻','ふじさん','富士山'],['🍵','おちゃ','茶'],['🚃','でんしゃ','電車'],['🍎','りんご','蘋果'],['🐶','いぬ','狗'],['🏫','がっこう','學校']];
+const KR_WORDS=[['사랑','愛'],['학교','學校'],['친구','朋友'],['김치','泡菜'],['커피','咖啡'],['물','水'],['한국','韓國'],['노래','歌'],['사과','蘋果'],['우유','牛奶']];
+const BRANDS=['麥當勞','星巴克','Nike','可口可樂','IKEA','UNIQLO','7-ELEVEN','Apple','全家','Adidas'];
+const shuf=a=>[...a].sort(()=>Math.random()-.5);
+function memMcq(seen,pool,askSeen,fmt){
+  /* askSeen=true：問「出現過哪一個」→ 1 個看過的 + 3 個沒看過；false：問「哪個沒出現」→ 3 個看過的 + 1 個沒看過 */
+  const unseen=shuf(pool.filter(x=>!seen.includes(x)));
+  const opts=askSeen?shuf([seen[rnd(seen.length)],...unseen.slice(0,3)]):shuf([...shuf(seen).slice(0,3),unseen[0]]);
+  const ans=askSeen?opts.findIndex(x=>seen.includes(x)):opts.findIndex(x=>!seen.includes(x));
+  return {o:opts.map(fmt),a:ans};
+}
+const BANK2={
+ jp:[
+  QM('早上遇到朋友時，最適合說哪一句？',['ありがとう','おやすみ','おはよう','さようなら'],'C','おはよう是「早安」；ありがとう是謝謝、おやすみ是晚安、さようなら是再見。'),
+  QM('「すし」是什麼食物？',['拉麵','壽司','天婦羅','飯糰'],'B','すし就是壽司；拉麵是ラーメン、天婦羅是てんぷら、飯糰是おにぎり。'),
+  QM('「ありがとう」代表什麼意思？',['你好','再見','謝謝','對不起'],'C','ありがとう是「謝謝」，更有禮貌可以說ありがとうございます。'),
+  QM('日本春天最有代表性的賞花活動是什麼？',['賞楓','賞櫻','賞雪','賞燈'],'B','春天賞櫻（花見）是日本最有代表性的活動；賞楓是秋天。'),
+  {kind:'mem',gen:()=>{const show=shuf(JP_WORDS).slice(0,5);const m=memMcq(show,JP_WORDS,true,w=>`${w[1]}（${w[2]}）`);
+    return {title:'日文圖片記憶',show:`<div class="memgrid">${show.map(w=>`<div><span class="emo">${w[0]}</span><b>${w[1]}</b><small>${w[2]}</small></div>`).join('')}</div>`,
+      q:'剛剛出現過哪一個單字？',o:m.o,a:m.a,ex:`剛剛出現的是：${show.map(w=>w[1]).join('、')}。`}}},
+ ],
+ kr:[
+  QM('「하나」代表多少？',['1','2','3','4'],'A','하나是 1，둘是 2，셋是 3，넷是 4。'),
+  QM('韓文的「你好」應該怎麼說？',['감사합니다','안녕하세요','사랑해요','미안합니다'],'B','안녕하세요是你好；감사합니다是謝謝、사랑해요是我愛你、미안합니다是對不起。'),
+  QM('「김치」是什麼食物？',['泡菜','炸雞','年糕','烤肉'],'A','김치（kimchi）就是韓國泡菜。'),
+  QM('韓國傳統服裝叫什麼名字？',['和服','韓服','長袍','唐裝'],'B','韓國傳統服裝是韓服（한복）；和服是日本的傳統服裝。'),
+  {kind:'mem',gen:()=>{const show=shuf(KR_WORDS).slice(0,5);const m=memMcq(show,KR_WORDS,true,w=>`${w[0]}（${w[1]}）`);
+    return {title:'韓文單字記憶',show:`<div class="memgrid">${show.map(w=>`<div><b>${w[0]}</b><small>${w[1]}</small></div>`).join('')}</div>`,
+      q:'剛剛看過哪一個單字？',o:m.o,a:m.a,ex:`剛剛出現的是：${show.map(w=>w[0]).join('、')}。`}}},
+ ],
+ banks:[
+  QM('A 商品售價 50 元，B 商品售價 35 元，哪個比較便宜？',['A 商品','B 商品','一樣便宜'],'B','35 元比 50 元少，所以 B 商品比較便宜。'),
+  QM('一件 100 元的商品打 8 折，折扣後要付多少錢？',['20 元','50 元','80 元','90 元'],'C','打 8 折就是原價 × 0.8，100 × 0.8 = 80 元。'),
+  QM('每個月存 500 元，連續存三個月，總共存多少錢？',['500 元','1,000 元','1,500 元','2,000 元'],'C','500 × 3 = 1,500 元。'),
+  QM('日本主要使用哪一種貨幣？',['美元','日圓','韓元','歐元'],'B','日本使用日圓（JPY）。'),
+  QM('以下哪一個是不用直接拿出現金，也能完成付款的方式？',['行動支付','現金','零錢','紙鈔'],'A','行動支付（例如手機感應付款）不用拿出現金就能付款。'),
+  QM('是非題：每個月領到零用錢後，應該先規劃支出與儲蓄。',['正確','錯誤'],'A','先規劃要存多少、花多少，才不會月底沒錢。'),
+  QM('小明每個月存 200 元，小華每個月存 300 元，三個月後誰存得比較多？',['小明','小華','一樣多'],'B','小明 600 元、小華 900 元，小華存得比較多。'),
+  QM('以下哪個觀念是正確的？',['投資一定賺錢','投資完全沒有風險','投資有可能賺錢，也有可能虧損','投資不需要了解商品'],'C','投資一定有風險，可能賺也可能賠，投資前要先了解商品。'),
+  QM('ATM 最常見的功能是什麼？',['洗衣服','提款','買食物','訂電影票'],'B','ATM（自動櫃員機）最常用來提款，也可以轉帳、查餘額。'),
+  QM('你身上有 100 元，買了一個 80 元的商品，還剩下多少錢？',['10 元','20 元','30 元','40 元'],'B','100 − 80 = 20 元。'),
+ ],
+ math:[
+  QM('買飲料 35 元、麵包 25 元，總共花多少錢？',['50 元','55 元','60 元','65 元'],'C','35 + 25 = 60 元。'),
+  QM('買 50 元的商品，付給店員 100 元，應該找回多少錢？',['30 元','40 元','50 元','60 元'],'C','100 − 50 = 50 元。'),
+  QM('打工領到薪水，對個人來說屬於什麼？',['收入','支出','負債','消費'],'A','領到的錢是收入；花出去的錢才是支出。'),
+  QM('以下哪一項屬於日常生活支出？',['打工薪水','收到紅包','購買午餐','收到獎金'],'C','購買午餐要花錢，是支出；其他三項都是收入。'),
+  QM('你購買飲料 30 元及麵包 35 元，店員算出總額為 75 元，請問正確金額是多少？',['55 元','60 元','65 元','75 元'],'C','30 + 35 = 65 元，店員多算了 10 元。'),
+  QM('你有 500 元，買午餐 100 元、文具 80 元，還剩下多少錢？',['280 元','300 元','320 元','350 元'],'C','500 − 100 − 80 = 320 元。'),
+  {kind:'mem',gen:()=>({title:'數字記憶挑戰',show:'<div class="memgrid"><div><b>20 元</b><small>第一筆</small></div><div><b>35 元</b><small>第二筆</small></div><div><b>45 元</b><small>第三筆</small></div></div>',
+    q:'剛剛三筆消費總共花多少錢？',o:['90 元','100 元','110 元','120 元'],a:1,ex:'20 + 35 + 45 = 100 元。'})},
+  QM('小明今天花了 150 元，小美花了 200 元，誰花得比較多？',['小明','小美','一樣多'],'B','200 元比 150 元多，小美花得比較多。'),
+  {kind:'classify',title:'生活記帳王',q:'請把每一項分類成「收入」或「支出」。',cats:['收入','支出'],items:[['打工薪水','收入'],['早餐費用','支出'],['交通費','支出'],['收到紅包','收入']],
+    ex:'收入：打工薪水、收到紅包；支出：早餐費用、交通費。'},
+  QM('飲料 30 元、蛋糕 50 元、麵包 20 元，帳單總額卻寫成 120 元，請問正確總額是多少？',['80 元','90 元','100 元','120 元'],'C','30 + 50 + 20 = 100 元，帳單多寫了 20 元。'),
+ ],
+ tactics:[
+  QM('看到一個黃色的大「M」字 Logo（金色拱門），你會想到哪個品牌？',['肯德基','麥當勞','星巴克','漢堡王'],'B','黃色的 M 字金色拱門是麥當勞的招牌 Logo。'),
+  QM('星巴克最具代表性的品牌顏色是哪一種？',['綠色','紫色','黃色','藍色'],'A','星巴克的 Logo 和招牌都以綠色為主。'),
+  QM('看到「Just Do It」這句知名標語，會想到哪個品牌？',['Adidas','Nike','Puma','New Balance'],'B','「Just Do It」是 Nike 最有名的廣告標語。'),
+  QM('可樂是以下哪個品牌最具代表性的商品？',['可口可樂','IKEA','UNIQLO','Nike'],'A','可樂是可口可樂的招牌商品；IKEA 賣家具、UNIQLO 賣衣服、Nike 賣運動用品。'),
+  QM('如果兩款商品品質及價格相同，你比較容易注意到哪一種包裝？',['顏色鮮明、設計清楚','完全沒有標示','字體模糊不清','包裝破損'],'A','清楚、好看的包裝最能吸引目光，這就是包裝設計的力量。'),
+  {kind:'pref',title:'你會選哪一個',q:'下面兩款飲料品質和價格都一樣，你比較想買哪一款？（沒有標準答案）',
+    choices:[{l:'清爽綠茶',svg:'<svg viewBox="0 0 80 140" aria-hidden="true"><rect x="28" y="6" width="24" height="14" rx="3" fill="#2f6b4a"/><path d="M24 24 h32 l6 18 v86 a8 8 0 0 1-8 8 h-34 a8 8 0 0 1-8-8 v-86z" fill="#e8f2ea" stroke="#2f6b4a" stroke-width="2"/><rect x="18" y="62" width="44" height="40" fill="#6aa57c"/><text x="40" y="87" font-size="11" text-anchor="middle" fill="#fff" font-weight="700">綠茶</text></svg>'},
+             {l:'繽紛果汁',svg:'<svg viewBox="0 0 80 140" aria-hidden="true"><rect x="28" y="6" width="24" height="14" rx="3" fill="#d0573f"/><path d="M24 24 h32 l6 18 v86 a8 8 0 0 1-8 8 h-34 a8 8 0 0 1-8-8 v-86z" fill="#fff4e0" stroke="#d0573f" stroke-width="2"/><circle cx="30" cy="70" r="9" fill="#e9a03b"/><circle cx="50" cy="78" r="9" fill="#d0573f"/><circle cx="38" cy="92" r="9" fill="#9bbf4a"/><text x="40" y="118" font-size="10" text-anchor="middle" fill="#d0573f" font-weight="700">果汁</text></svg>'}],
+    ex:'選哪一款都可以！品牌會用顏色、圖案和字體，讓不同的人一眼就喜歡上自己的商品，這就是包裝設計。'},
+  {kind:'mem',gen:()=>{const show=shuf(BRANDS).slice(0,5);const m=memMcq(show,BRANDS,false,x=>x);
+    return {title:'品牌記憶挑戰',show:`<div class="memgrid">${show.map(x=>`<div><b>${x}</b></div>`).join('')}</div>`,
+      q:'以下哪個品牌剛剛「沒有」出現？',o:m.o,a:m.a,ex:`剛剛出現的是：${show.join('、')}。`}}},
+  QM('如果要宣傳一雙新的運動鞋，找哪一種人物合作比較適合？',['運動員','廚師','水電師傅','花藝師'],'A','代言人要和商品形象相符，運動鞋找運動員最有說服力。'),
+  QM('「買一送一」屬於哪一種行銷方式？',['促銷活動','產品維修','商品退貨','售後服務'],'A','買一送一是常見的促銷活動，用來刺激大家購買。'),
+  {kind:'match',title:'品牌配對挑戰',q:'請幫每個品牌配上它的代表性商品。',pairs:[['Nike','運動鞋'],['IKEA','家具'],['Starbucks','咖啡'],["McDonald's",'漢堡']],
+    ex:"Nike＝運動鞋、IKEA＝家具、Starbucks＝咖啡、McDonald's＝漢堡。"},
+ ],
+ mgmt:[
+  QM('團隊成員對活動方向有不同意見，身為組長應該怎麼做？',['直接決定，不聽其他人的意見','讓大家表達想法，再一起討論','不處理問題','取消活動'],'B','好的領導者會先聽大家的想法，再一起討論做決定。'),
+  QM('完成團體報告時，哪一種方式最有效率？',['所有人都做同一份資料','由一個人完成全部工作','依照每個人的能力分配工作','不需要討論'],'C','依能力分工，每個人做自己擅長的部分，效率最高。'),
+  QM('小美擅長設計，小明擅長整理資料，應該如何分配工作？',['小美整理資料，小明負責設計','兩個人都不做事','小美負責設計，小明整理資料','全部交給小美'],'C','讓擅長的人做擅長的事，就是「適才適所」。'),
+  QM('明天要交報告、今天要準備考試，還有一週後才截止的作業，應該優先處理哪件事？',['一週後的作業','明天要交的報告','最不重要的事情','全部等到最後一天'],'B','時間管理要先處理最緊急的事；一週後的作業可以之後再排。'),
+  QM('活動當天突然下大雨，原本安排在戶外的活動無法進行，應該怎麼辦？',['直接取消所有活動','不管天氣繼續進行','啟動備用方案，調整活動場地','等雨停但不做任何準備'],'C','事先準備備用方案（雨備），突發狀況才能從容應對。'),
+  QM('組員不清楚自己的工作內容，最好的處理方式是什麼？',['責怪組員','清楚說明工作內容與完成期限','不再分配工作','直接幫組員完成'],'B','清楚溝通「做什麼、什麼時候完成」，是管理最基本的功夫。'),
+  QM('以下哪一個目標最明確、容易衡量？',['希望活動很成功','希望大家都開心','希望活動當天有 100 人參加','希望未來變得更好'],'C','好的目標要具體、可衡量，例如「100 人參加」。'),
+  QM('活動經費有限，以下哪一種做法比較合理？',['把全部預算花在裝飾上','先規劃必要支出，再分配剩餘預算','不需要記錄花費','想買什麼就買什麼'],'B','先確保必要支出，再分配剩下的錢，預算才不會超支。'),
+  QM('一個團隊沒有分工，所有人都做一樣的事情，最可能造成什麼問題？',['工作重複、效率降低','工作一定更快','完全不會出現問題','每個人都更清楚自己的任務'],'A','沒有分工會讓大家做重複的事，浪費時間。'),
+  QM('團隊遇到突發問題時，最適合先做什麼？',['直接責怪別人','了解問題原因，再討論解決方式','假裝沒有發生','馬上放棄'],'B','先找出原因，才能對症下藥、一起解決。'),
+ ],
+};
+/* 每門課的出題池：新題目＋原本任務（原本任務佔幾個名額） */
+const MIX_ORIG={jp:5,kr:5,banks:3,math:5,tactics:3,mgmt:0};
+const TEACH_SAY={jp:'雙慧老師',kr:'英子老師',banks:'武哥老師',math:'阿明老師',tactics:'艾瑞克老師',mgmt:'雙慧老師'};
+function mixTask(key,orig){
+  return p=>{const bank=BANK2[key], n=bank.length+(MIX_ORIG[key]||0), i=pickIdx(p,'mix_'+key,n);
+    if(i>=bank.length) return orig(p);
+    let it=bank[i]; if(it.kind==='mem') it={kind:'mem',...it.gen()};
+    return {...it,intro:`${TEACH_SAY[key]}：「來挑戰一題！」`,win:()=>`${TEACH_SAY[key]}：「答得好！」`};
+  };
+}
+['jp','kr','banks','math','tactics'].forEach(k=>{TASKS[k]=mixTask(k,TASKS[k])});
+TASKS.mgmt=mixTask('mgmt',null);
+
+/* 記憶挑戰：先看內容，倒數結束後自動隱藏，再作答 */
+function memSheet({tag,title,art,show,secs=6}){
+  return sheet({stay:1,tag,title,art,body:`<p><b>${title}</b>：請在 <b id="memsec">${secs}</b> 秒內記住下面的內容！</p>${show}`,buttons:[],
+    onOpen:el=>{let s=secs;const t=setInterval(()=>{s--;const e=el.querySelector('#memsec');if(e)e.textContent=s;
+      if(s<=0){clearInterval(t);if(el._res&&!$('#scrim').hidden){$('#scrim').hidden=true;el._res(1)}}},1000);
+      el.querySelector('.opts').innerHTML='<button class="btn" id="memok">我記住了</button>';el.querySelector('#memok').onclick=()=>{clearInterval(t);$('#scrim').hidden=true;el._res(1)}}});
+}
+/* 配對／分類：每一列選一個答案，全部選好才能確認 */
+function pickRowsSheet({tag,title,art,q,rows,choices}){
+  return sheet({stay:1,tag,title,art,body:`<p style="font-weight:700;font-size:16px">${esc(q)}</p><div class="prows">${rows.map((r,i)=>`<div class="prow"><b>${esc(r)}</b><div class="pch">${choices.map((c,j)=>`<button type="button" class="btn" data-r="${i}" data-c="${j}" aria-pressed="false">${esc(c)}</button>`).join('')}</div></div>`).join('')}</div>`,
+    buttons:[],onOpen:el=>{const sel=rows.map(()=>null);let done=false;
+      el.querySelector('.opts').innerHTML='<button class="btn primary" id="pok" disabled>確認答案</button><button class="btn" id="pgive">這次先放棄（學分 +0）</button>';
+      el.querySelectorAll('[data-r]').forEach(b=>b.onclick=()=>{if(done)return;const r=+b.dataset.r;sel[r]=+b.dataset.c;
+        el.querySelectorAll(`[data-r="${r}"]`).forEach(x=>x.setAttribute('aria-pressed',x===b));el.querySelector('#pok').disabled=sel.some(x=>x===null)});
+      el.querySelector('#pok').onclick=()=>{if(done||sel.some(x=>x===null))return;done=true;$('#scrim').hidden=true;el._res(sel)};
+      el.querySelector('#pgive').onclick=()=>{if(done)return;done=true;$('#scrim').hidden=true;el._res(null)}}});
+}
+/* 新題型接進原本的 runTask */
+const _runTask0=runTask;
+runTask=async function(p,spec,ctx){
+  if(spec.kind==='mem'){
+    await memSheet({...ctx,title:spec.title,show:spec.show});
+    const i=await mcqSheet({...ctx,intro:'內容已經隱藏了，憑記憶作答！',q:spec.q,o:spec.o,giveUp:1});
+    if(i===null) return null;
+    return {ok:i===spec.a,said:`${LET[i]}. ${spec.o[i]}`,lose:`正確答案是 ${LET[spec.a]}. ${spec.o[spec.a]}。${spec.ex||''}`,win:spec.ex};
+  }
+  if(spec.kind==='match'||spec.kind==='classify'){
+    const rows=spec.kind==='match'?spec.pairs.map(x=>x[0]):spec.items.map(x=>x[0]);
+    const choices=spec.kind==='match'?spec.pairs.map(x=>x[1]):spec.cats;
+    const want=spec.kind==='match'?spec.pairs.map(x=>x[1]):spec.items.map(x=>x[1]);
+    const sel=await pickRowsSheet({...ctx,q:spec.q,rows,choices});
+    if(!sel) return null;
+    const ok=sel.every((c,i)=>choices[c]===want[i]);
+    return {ok,said:rows.map((r,i)=>`${r}→${choices[sel[i]]}`).join('、'),lose:`正確答案：${spec.ex}`,win:spec.ex};
+  }
+  if(spec.kind==='pref'){
+    const v=await sheet({stay:1,...ctx,body:`<p style="font-weight:700;font-size:16px">${esc(spec.q)}</p><div class="prefgrid">${spec.choices.map((c,i)=>`<button type="button" class="btn" data-pf="${i}">${c.svg}<span>${esc(c.l)}</span></button>`).join('')}</div>`,
+      buttons:[],onOpen:el=>{el.querySelector('.opts').innerHTML='';el.querySelectorAll('[data-pf]').forEach(b=>b.onclick=()=>{$('#scrim').hidden=true;el._res(+b.dataset.pf)})}});
+    return {ok:true,said:`選了「${spec.choices[v].l}」`,win:spec.ex};
+  }
+  return _runTask0(p,spec,ctx);
+};
+
+/* ---------- 海外實習知識問答：每國 5 題，全班共用「已使用題目紀錄」 ---------- */
+async function internClaim(idx){
+  const n=INTERNS[idx].qs.length;
+  if(S.online&&fb){
+    const ref=fb.ref(`rooms/${S.online.code}/iused/${idx}`);
+    let used={}; try{used=(await ref.get()).val()||{}}catch(e){}
+    for(const q of shuf([...Array(n).keys()].filter(i=>!used[i]))){
+      try{const r=await ref.child(String(q)).transaction(v=>v?undefined:true);if(r.committed)return q}catch(e){}
+    }
+    return null;
+  }
+  S.iUsed=S.iUsed||{}; const used=S.iUsed[idx]=S.iUsed[idx]||[];
+  const left=[...Array(n).keys()].filter(i=>!used.includes(i)); if(!left.length) return null;
+  const q=left[rnd(left.length)]; used.push(q); save(); return q;
+}
+async function doIntern(p,t){
+  const I=INTERNS[t.idx], tag='海外企業實習', pic=svgBox(ART[I.art]());
+  if(p.bot){
+    const qi=await internClaim(t.idx);
+    if(qi===null){log(`${esc(p.name)} 來到${I.n}，題目已全部挑戰完畢`);
+      return sheet({tag,title:I.n,art:avatar(AV[p.av]),body:'<p>此國家的題目已全部挑戰完畢！請繼續探索其他海外實習地點。</p>',buttons:[{l:'繼續遊戲',v:1,p:1}]})}
+    const ok=Math.random()<.75,g=ok?2:1;addCr(p,g);log(`${esc(p.name)} 在${I.n}${ok?'答對':'答錯'}（+${g} 學分）`);
+    return sheet({tag,title:I.n,art:avatar(AV[p.av]),body:`<p>${esc(p.name)} 回答實習知識問答：${ok?'答對了':'答錯了'}，學分 +${g}。</p>`,buttons:[{l:'繼續',v:1,p:1}]});
+  }
+  await sheet({stay:1,tag,title:I.n,body:`<div class="ipic">${pic}</div><p>${I.intro}</p>`,buttons:[{l:'開始答題',v:1,p:1}]});
+  const qi=await internClaim(t.idx);   // 抽出就立刻標記為已使用，答對答錯都不會再出現
+  if(qi===null){log(`${esc(p.name)} 來到${I.n}，題目已全部挑戰完畢`);
+    return sheet({stay:1,tag,title:I.n,art:avatar(AV[p.av]),body:'<p><b>此國家的題目已全部挑戰完畢！請繼續探索其他海外實習地點。</b></p><p class="note">這次沒有答題，也不會發學分。</p>',buttons:[{l:'繼續遊戲',v:1,p:1}]})}
+  const Q=I.qs[qi];
+  const pick=await mcqSheet({tag:I.n,title:'實習知識問答',q:Q.q,o:Q.o});
+  const ok=pick===Q.a, g=ok?2:1; addCr(p,g);
+  log(`${esc(p.name)} 在${I.n}${ok?'答對':'答錯'}（+${g} 學分）`);
+  await sheet({tag:I.n,title:ok?'答對了！':'答錯了',art:avatar(AV[p.av]),
+    body:`<p>你的答案：${LET[pick]}. ${esc(Q.o[pick])}</p><p>正確答案：<b class="good">${LET[Q.a]}. ${esc(Q.o[Q.a])}</b></p><p><b>解析：</b>${esc(Q.ex)}</p>
+      <p class="fx num" style="font-size:15px">本題獲得 ${g} 學分・目前累積 ${p.cr} / ${S.target} 學分</p>`,
+    buttons:[{l:'繼續遊戲',v:1,p:1}]});
+}
+
+/* ---------- 國外姊妹校交換：每位同學在每個國家各自的三輪進度，口頭回答由老師判定 ---------- */
+const EX_TOEIC=[
+  {q:'請用英文說出「會議」。',a:'meeting'},
+  {q:'請用英文說出「發票、請款單」。',a:'invoice'},
+  {q:'請用英文說出「截止期限」。',a:'deadline'},
+  {q:'請用英文說出「登機證」。',a:'boarding pass'},
+  {q:'請把這句翻成中文：Please submit the report by Friday.',a:'請在星期五之前交報告。'},
+  {q:'填空並唸出整句：Ms. Chen is responsible ___ training new staff.',a:'for（be responsible for：負責）'},
+  {q:'填空並唸出整句：The store opens ___ 9 a.m.',a:'at（幾點幾分用 at）'},
+  {q:'請用英文說「很高興認識你」。',a:'Nice to meet you.'},
+  {q:'請用一句英文自我介紹（名字＋科系）。',a:'例如：My name is …. I major in International Business.'},
+  {q:'請把這句翻成中文：The meeting has been postponed until next Monday.',a:'會議延到下週一。'},
+  {q:'請用英文說出「履歷表」。',a:'résumé／CV'},
+  {q:'請用英文問「洗手間在哪裡？」',a:'Where is the restroom?'},
+];
+function exQuestion(p,X,r){
+  if(r===0) return {q:'出國交換需要具備什麼條件？',a:'說出 1～2 項就算通過：在校成績達標、語言能力（例如多益成績）、通過學校甄選、護照與簽證、經費與保險規劃。'};
+  if(r===1) return EX_TOEIC[pickIdx(p,'ex_toeic',EX_TOEIC.length)];
+  const amt=X.unit===1?[10,20,50,100,200][rnd(5)]:[1000,3000,5000,10000][rnd(5)], ans=Math.round(amt/X.unit*X.twd);
+  return {q:`假設 ${X.unit===1?1:X.unit.toLocaleString()} ${X.cur} ≈ ${X.twd} 元新台幣，在${X.country}買一樣 ${amt.toLocaleString()} ${X.cur} 的東西，大約是多少新台幣？`,a:`${amt.toLocaleString()} ÷ ${X.unit} × ${X.twd} ≈ ${ans.toLocaleString()} 元新台幣`};
+}
+async function doExchange(p,t){
+  const X=EXCH[t.idx], i=t.idx, tag=`國外姊妹校交換・${X.country}`, art=svgBox(ART.plane(X));
+  p.ex=p.ex||{deg:[]}; p.ex.deg=p.ex.deg||[]; p.ex.rc=p.ex.rc||{}; p.ex.seen=p.ex.seen||[];
+  const got=[];
+  if(!p.ex.seen.includes(i)){p.ex.seen.push(i);
+    if(!p.skills.includes(X.lang)) learnSkill(p,X.lang); got.push(`語言技能 +1（${X.lang}）`);
+    addCr(p,1); got.push('學分 +1');}
+  if(p.ex.deg.includes(i)){
+    log(`${esc(p.name)} 回到${X.n}${got.length?`（${got.join('、')}）`:''}`);
+    return sheet({tag,title:X.n,art,body:`${got.length?`<div class="chips">${got.map(s=>`<span>${s}</span>`).join('')}</div>`:''}<p>你已經在這裡完成三輪題目、拿到雙聯學位了！這次就在校園走走。</p>`,buttons:[{l:'繼續遊戲',v:1,p:1}]});
+  }
+  const r=p.ex.rc[i]||0, Q=exQuestion(p,X,r);
+  if(!p.bot) await sheet({stay:1,tag,title:X.n,art,body:`<p>歡迎來到${X.country}的姊妹校交換！</p>${got.length?`<div class="chips">${got.map(s=>`<span>${s}</span>`).join('')}</div>`:''}
+    <p>你在${X.country}的進度：<b>${EX_ROUND[r]}</b>（通過可得 ${EX_REWARD[r]}）。</p><p class="note">請站起來口頭回答，${S.online?'老師會在大螢幕上按「通過」或「不通過」':'由在場的老師判定'}。不通過就要從第一輪重新開始。</p>`,
+    buttons:[{l:'看題目',v:1,p:1}]});
+  const ok=await judgeSheet(p,{tag:`${X.country}交換・${EX_ROUND[r]}`,title:EX_ROUND[r],art,prompt:`<b>${esc(Q.q)}</b>`,label:`${X.country}交換・${EX_ROUND[r]}`,ans:esc(Q.a),judge:'請口頭回答，由在場的老師判定。'});
+  let rew='', msg='';
+  if(ok){
+    if(r===0){addCr(p,1);rew='學分 +1'}
+    else if(r===1){const sk=`語言能力（${X.country}交換・多益）`;learnSkill(p,sk);rew='語言能力 +1'}
+    else {addCr(p,1);rew='學分 +1'}
+    if(r<2){p.ex.rc[i]=r+1;msg=`下次停在${X.n}，就會進入${EX_ROUND[r+1]}。`}
+    else {p.ex.rc[i]=0;p.ex.deg.push(i);addIntl(p,'雙聯學位・'+X.n);rew+='、雙聯制學位 +1';msg=`三輪全部通過，你拿到${X.n}的雙聯制學位！`}
+  } else if(ok===false){p.ex.rc[i]=0;msg=`這輪沒通過，${X.country}的進度重設為第一輪，下次再從出國條件開始。`}
+  else msg='這次先跳過，進度不變。';
+  log(`${esc(p.name)} 在${X.n}：${EX_ROUND[r]}${ok?`通過（${rew}）`:ok===false?'沒通過，進度重設為第一輪':'先跳過'}`);
+  await sheet({tag,title:ok?`通過！${rew}`:ok===false?'沒通過，從第一輪重來':'先跳過',art:avatar(AV[p.av]),
+    body:`<p>${msg}</p><p class="note">參考答案：${esc(Q.a)}</p><p class="fx num">國際成就 ${p.intl||0} 項（每 3 項學分 +1）・目前 ${p.cr} / ${S.target} 學分</p>`,buttons:[{l:'繼續遊戲',v:1,p:1}]});
+}
+
+/* ---------- 社團：自由加入、社長考核、社團活動、聯誼、他社練習 ---------- */
+let clubMap={};                       // 線上教室：rooms/$code/clubs 的即時內容
+const myKey=p=>S.online?uid:String(S.players.indexOf(p));
+const keyName=k=>S.online?((clubMap.__names||{})[k]||'同學'):(S.players[+k]||{}).name||'同學';
+function clubOf(ci){
+  if(S.online){const c=clubMap[ci]||{};return {pres:c.pres?{k:c.pres.uid,name:c.pres.name}:null,mem:Object.entries(c.mem||{}).map(([k,v])=>({k,name:(v&&v.name)||'同學'})),last:c.last==null?-1:+c.last}}
+  S.clubs=S.clubs||{}; const c=S.clubs[ci]=S.clubs[ci]||{pres:null,mem:[],last:-1};
+  return {pres:c.pres==null?null:{k:String(c.pres),name:S.players[c.pres].name},mem:c.mem.map(k=>({k:String(k),name:S.players[k].name})),last:c.last};
+}
+const roundNo=p=>p.turns||0;           // 全班每人各擲一次骰子算一輪
+async function clubJoin(p,ci,asPres){
+  if(S.online){const ref=fb.ref(`rooms/${S.online.code}/clubs/${ci}`);
+    let pres=false;
+    if(asPres){try{const r=await ref.child('pres').transaction(v=>v?undefined:{uid,name:p.name,av:p.av});pres=!!r.committed}catch(e){}}
+    try{await ref.child('mem/'+uid).set({name:p.name,av:p.av})}catch(e){}
+    return pres;}
+  const c=(S.clubs=S.clubs||{})[ci]=S.clubs[ci]||{pres:null,mem:[],last:-1}, k=S.players.indexOf(p);
+  let pres=false; if(asPres&&c.pres==null){c.pres=k;pres=true}
+  if(!c.mem.includes(k)) c.mem.push(k); return pres;
+}
+async function clubClaimRound(ci,r){
+  if(S.online){try{const x=await fb.ref(`rooms/${S.online.code}/clubs/${ci}/last`).transaction(v=>v===r?undefined:r);return x.committed}catch(e){return false}}
+  const c=clubOf(ci); if(c.last===r) return false; S.clubs[ci].last=r; return true;
+}
+/* 發社團點數給別的玩家（線上：寫入對方的 clubGift；單機：直接加，成就留到對方回合再顯示） */
+function giveClub(k,n,why,p){
+  if(k===myKey(p)){addBr(p,'club',n);return}
+  if(S.online){fb.ref(`rooms/${S.online.code}/clubGift/${k}`).push({n,why:String(why).slice(0,60),from:p.name,at:TS()}).catch(()=>{});return}
+  const q=S.players[+k]; if(!q) return; const keep=pending; pending=[]; addBr(q,'club',n); q._pend=(q._pend||[]).concat(pending); pending=keep;
+}
+function clubReward(ci,why,p){
+  const c=clubOf(ci); c.mem.forEach(m=>giveClub(m.k,1,why,p)); if(c.pres) giveClub(c.pres.k,1,why+'（社長加碼）',p);
+  return c;
+}
+/* 社長考核：線上由社長手機判定（社長是電腦或離線改由老師），單機由在場的社長判定 */
+async function presJudge(p,ci,prompt,kind){
+  const t=CLUBS[ci], c=clubOf(ci), art=avatar(AV[p.av]), tag=`社團・${t.n}・${kind}`;
+  if(p.bot) return Math.random()<.75;
+  const pres=c.pres;
+  if(!S.online){
+    if(pres&&S.players[+pres.k]&&S.players[+pres.k].bot) return Math.random()<.75;
+    return judgeSheet(p,{tag,title:`${t.n} ${kind}`,art,prompt,label:`${t.n}${kind}`,judge:pres?`請社長 ${esc(pres.name)} 判定。`:'這個社團還沒有社長，由在場的老師判定。'});
+  }
+  const lp=(typeof livePlayers!=='undefined'&&livePlayers)||{}, pp=pres&&lp[pres.k];
+  const presOk=pres&&pres.k!==uid&&pp&&!pp.bot&&!(pp.seen&&Date.now()-pp.seen>90000);
+  if(!presOk) return judgeSheet(p,{tag,title:`${t.n} ${kind}`,art,prompt,label:`${t.n}${kind}${pres?'（代社長考核）':''}`});
+  const ref=fb.ref(`rooms/${S.online.code}`), jid=Date.now().toString(36)+rnd(1000);
+  try{await ref.child(`cjudge/${pres.k}/${uid}`).set({id:jid,ci,name:p.name,av:p.av,kind,prompt:plain(prompt).slice(0,200),at:TS()})}catch(e){return judgeSheet(p,{tag,title:`${t.n} ${kind}`,art,prompt,label:`${t.n}${kind}`})}
+  const v=await new Promise(res=>{
+    let done=false; const rref=ref.child('cjudgeRes/'+uid);
+    const fin=v=>{if(done)return;done=true;rref.off('value',fn);ref.child(`cjudge/${pres.k}/${uid}`).remove().catch(()=>{});$('#scrim').hidden=true;res(v)};
+    const fn=sn=>{const r=sn.val();if(r&&r.id===jid)fin(r.v==='pass')};
+    rref.on('value',fn);
+    sheet({stay:1,tag:'社長考核中・'+t.n,title:`${t.n} ${kind}`,art,body:`<p>${prompt}</p><div class="chk" style="flex-direction:column;align-items:flex-start"><b>請對社長 ${esc(pres.name)} 說出來（或做出來）！</b><span class="note">社長會在自己的手機上按「通過」或「不通過」。</span></div><p class="note">⏳ 等待社長判定中…</p>`,buttons:[],
+      onOpen:el=>{setTimeout(()=>{if(done||!el.isConnected)return;const o=el.querySelector('.opts');if(!o)return;o.innerHTML='<button class="btn" id="jteach">社長沒回應？改請老師判定</button>';o.querySelector('#jteach').onclick=()=>fin('teacher')},40000)}});
+  });
+  if(v==='teacher') return judgeSheet(p,{tag,title:`${t.n} ${kind}`,art,prompt,label:`${t.n}${kind}（代社長考核）`});
+  return v;
+}
+/* 社長的手機：有同學要考核時，畫面上方跳出卡片 */
+let presQueue={};
+function renderPresPanel(){
+  let el=$('#presPanel'); if(!el){el=document.createElement('div');el.id='presPanel';document.body.appendChild(el)}
+  const items=Object.entries(presQueue);
+  el.hidden=!items.length;
+  el.innerHTML=items.map(([k,j])=>`<div class="pcard">${avatar(AV[j.av]||AV[0])}<div><small>社長考核・${esc(CLUBS[j.ci]?CLUBS[j.ci].n:'')}・${esc(j.kind||'')}</small><b>${esc(j.name||'同學')}</b><p>${esc(j.prompt||'')}</p>
+    <div class="jbtn"><button class="btn primary" data-pj="pass" data-pk="${esc(k)}">✓ 通過</button><button class="btn" data-pj="fail" data-pk="${esc(k)}">✗ 不通過</button></div></div></div>`).join('');
+}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-pj]');if(!b||!S||!S.online)return;
+  const k=b.dataset.pk, j=presQueue[k]; if(!j) return; delete presQueue[k]; renderPresPanel();
+  fb.ref(`rooms/${S.online.code}/cjudgeRes/${k}`).set({id:j.id,v:b.dataset.pj,at:TS()}).catch(err=>toast('送出失敗：'+errMsg(err)));
+  fb.ref(`rooms/${S.online.code}/cjudge/${uid}/${k}`).remove().catch(()=>{});
+  toast(b.dataset.pj==='pass'?`你讓 ${j.name} 通過了考核`:`${j.name} 這次沒通過`);});
+
+async function doClub(p,t){
+  const ci=t.idx, art=avatar(AV[p.av]), tag=`社團・${t.n}`, c=clubOf(ci), r=roundNo(p), test=t.test.prompt.replace('社團考驗：','');
+  p.seenClubs=p.seenClubs||[];
+  if(!p.seenClubs.includes(ci)){p.seenClubs.push(ci);
+    await sheet({tag:'第一次來到這個社團',title:t.n,art:sprig('sprig'),body:`<p>${CLUB_INTRO[t.n]||t.d}</p>`,buttons:[{l:'繼續',v:1,p:1}]})}
+  const presTxt=c.pres?`社長：<b>${esc(c.pres.name)}</b>・社員 ${c.mem.length} 人`:'目前還沒有社長';
+  /* 1) 還沒加入任何社團：自由選擇要不要加入 */
+  if(p.club===null){
+    const v=p.bot?Math.random()<.75:await sheet({tag,title:`${t.n} 招生中`,art,body:`<p>${t.d}</p><p class="note">${presTxt}</p>
+      ${c.pres?`<p><b>入社考核：</b>${esc(test)}<br><span class="note">由社長考核，通過就能入社（社團 +1）。</span></p>`:'<p><b>第一位加入的同學直接成為社長！</b>（社團 +1）</p>'}
+      <p class="note">每人只能加入一個社團。入社可獲得「${t.skill}」（${fxText(t.fx)}）。</p>`,buttons:[{l:'加入這個社團',v:1,p:1},{l:'先不要',v:0}]});
+    if(!v){log(`${esc(p.name)} 路過${t.n}`);return}
+    let pres=false, ok=true;
+    if(!c.pres){pres=await clubJoin(p,ci,true); if(!pres) ok=null}
+    if(ok===null||c.pres){ok=await presJudge(p,ci,t.test.prompt,'入社考核'); if(ok) await clubJoin(p,ci,false)}
+    if(ok){
+      p.club=ci; p.clubPres=pres; learnSkill(p,t.skill); applyFx(p,t.fx); addBr(p,'club',1); renderDynamic();
+      log(`${esc(p.name)} ${pres?`加入${t.n}，成為社長`:`通過社長考核，加入${t.n}`}`);
+      await sheet({tag,title:pres?`你是${t.n}的社長！`:`歡迎加入${t.n}！`,art,body:`${pres?'<p>你是第一位加入的同學，直接成為社長。之後別人要入社，都要經過你的考核！</p>':''}<div class="skillcard"><small>獲得技能</small><b>${t.skill}</b></div><p class="fx">社團 +1・${fxText(t.fx)}</p>`,buttons:[{l:'繼續',v:1,p:1}]});
+    } else if(ok===false){
+      log(`${esc(p.name)} 這次沒通過${t.n}的入社考核`);
+      await sheet({tag,title:'這次沒通過入社考核',art,body:'<p>沒關係，下次停在這裡可以再挑戰一次！</p>',buttons:[{l:'繼續',v:1,p:1}]});
+    }
+    return;
+  }
+  /* 2) 停在自己的社團：可以舉辦社團活動（每個社團每一輪最多一次） */
+  if(p.club===ci){
+    if(c.last===r){return sheet({tag,title:'這一輪已經辦過活動了',art,body:`<p>${t.n}這一輪已經舉辦過活動，下一輪再來吧！</p>`,buttons:[{l:'繼續',v:1,p:1}]})}
+    const v=p.bot?true:await sheet({tag,title:`舉辦${t.n}社團活動？`,art,body:`<p class="note">${presTxt}</p><p>擲骰挑戰，<b>3 點以上</b>就成功：全體社員社團 +1，社長再加 1（共 +2）。</p><p class="note">每個社團每一輪最多舉辦一次活動。</p>`,buttons:[{l:'舉辦社團活動',v:1,p:1},{l:'這次不辦',v:0}]});
+    if(!v) return;
+    if(!await clubClaimRound(ci,r)) return sheet({tag,title:'這一輪已經有人辦過了',art,body:'<p>剛剛已經有社員舉辦過活動，下一輪再來吧！</p>',buttons:[{l:'繼續',v:1,p:1}]});
+    const ok=await diceCheck({tag,title:`${t.n} 社團活動`,art,text:`你發起了${t.n}的社團活動！`,need:3});
+    if(ok){const cc=clubReward(ci,`${t.n}社團活動`,p);log(`${esc(p.name)} 成功舉辦${t.n}社團活動（全體社員社團 +1，社長 +2）`);
+      await sheet({tag,title:'社團活動大成功！',art,body:`<p>全體社員（${cc.mem.length} 人）社團 +1${cc.pres?`，社長 ${esc(cc.pres.name)} 再加 1`:''}。</p>`,buttons:[{l:'繼續',v:1,p:1}]})}
+    else {log(`${esc(p.name)} 舉辦${t.n}社團活動，可惜沒成功`);await sheet({tag,title:'活動沒辦成',art,body:'<p>這次人潮不如預期，活動沒辦成。下一輪再試試！</p>',buttons:[{l:'繼續',v:1,p:1}]})}
+    return;
+  }
+  /* 3) 停在別的社團：社長可辦聯誼；社員可參加他社練習 */
+  const mine=CLUBS[p.club], cm=clubOf(p.club), amPres=cm.pres&&cm.pres.k===myKey(p);
+  const canMix=amPres&&c.pres&&c.mem.length&&cm.last!==r&&c.last!==r;
+  const opts=[];
+  if(canMix) opts.push({l:`舉辦${mine.s}×${t.s}聯誼（擲骰 3 點以上）`,v:'mix',p:1});
+  opts.push({l:`參加${t.n}練習（通過考驗社團 +1）`,v:'prac',p:!canMix});
+  opts.push({l:'路過就好',v:0});
+  const v=p.bot?(canMix&&Math.random()<.6?'mix':Math.random()<.5?'prac':0):await sheet({tag,title:`來到${t.n}`,art,body:`<p class="note">${presTxt}</p>
+    ${amPres?(canMix?`<p>你是${mine.n}的社長，可以和${t.n}辦聯誼：成功的話雙方全體社員社團 +1，雙方社長共 +2。</p>`:`<p class="note">${!c.pres?`${t.n}還沒有社長，不能辦聯誼。`:'這一輪有一方已經辦過活動，不能辦聯誼。'}</p>`):''}
+    <p>參加${t.n}練習：${esc(test)}（由${c.pres?'對方社長':'老師'}考核，通過社團 +1，不會加入對方社團）。</p>`,buttons:opts});
+  if(!v){log(`${esc(p.name)} 路過${t.n}`);return}
+  if(v==='mix'){
+    if(!await clubClaimRound(p.club,r)) return sheet({tag,title:'這一輪已經辦過活動了',art,body:'<p>你的社團這一輪已經辦過活動，下一輪再來吧！</p>',buttons:[{l:'繼續',v:1,p:1}]});
+    await clubClaimRound(ci,r);
+    const ok=await diceCheck({tag,title:`${mine.s}×${t.s} 聯誼`,art,text:`你代表${mine.n}，和${t.n}辦聯誼！`,need:3});
+    if(ok){clubReward(p.club,`${mine.s}×${t.s}聯誼`,p);clubReward(ci,`${mine.s}×${t.s}聯誼`,p);log(`${esc(p.name)} 成功舉辦${mine.s}×${t.s}聯誼（雙方社員社團 +1，雙方社長 +2）`);
+      await sheet({tag,title:'聯誼大成功！',art,body:`<p>${mine.n}和${t.n}的全體社員社團 +1，雙方社長再加 1。</p>`,buttons:[{l:'繼續',v:1,p:1}]})}
+    else {log(`${esc(p.name)} 舉辦聯誼沒成功`);await sheet({tag,title:'聯誼沒辦成',art,body:'<p>場地沒借到，聯誼只好延期。下一輪再試試！</p>',buttons:[{l:'繼續',v:1,p:1}]})}
+    return;
+  }
+  const ok=await presJudge(p,ci,t.test.prompt,'他社練習考驗');
+  if(ok){addBr(p,'club',1);log(`${esc(p.name)} 參加${t.n}練習，通過考驗（社團 +1）`);
+    await sheet({tag,title:'練習通過！社團 +1',art,body:`<p>你在${t.n}的練習表現很好，社團 +1。（你還是${mine.n}的社員）</p>`,buttons:[{l:'繼續',v:1,p:1}]})}
+  else if(ok===false){log(`${esc(p.name)} 參加${t.n}練習，這次沒通過`);await sheet({tag,title:'練習沒通過',art,body:'<p>這次沒通過考驗，下次再來練習吧！</p>',buttons:[{l:'繼續',v:1,p:1}]})}
+}
 /* ---------- 畢業 ---------- */
 async function graduate(p,place,final){
   const cs=stage(p.clubPt), ls=(p.loveMax||0);
@@ -1948,7 +2227,7 @@ function renderJudge(){
   }
   el.hidden=!pend.length;
   pend.forEach(([u,j])=>{if(!judgeSeen.has(j.id)){judgeSeen.add(j.id);Music.ding()}});
-  el.innerHTML=`<div class="label">請老師判定（${pend.length}）</div>`+pend.map(([u,j])=>`<div class="jcard">${avatar(avOf(j.av))}<div class="jtx"><b>${esc(j.name||'同學')}</b><small>${esc(j.task||'')}</small><p>${esc(j.prompt||'')}</p></div>
+  el.innerHTML=`<div class="label">請老師判定（${pend.length}）</div>`+pend.map(([u,j])=>`<div class="jcard">${avatar(avOf(j.av))}<div class="jtx"><b>${esc(j.name||'同學')}</b><small>${esc(j.task||'')}</small><p>${esc(j.prompt||'')}</p>${j.ans?`<p class="jans"><b>參考答案：</b>${esc(j.ans)}</p>`:''}</div>
     <div class="jbtn"><button class="btn primary" data-jv="pass" data-ju="${esc(u)}" data-jid="${esc(j.id)}">✓ 通過</button><button class="btn" data-jv="fail" data-ju="${esc(u)}" data-jid="${esc(j.id)}">✗ 不通過</button></div></div>`).join('');
 }
 async function doKick(id){
@@ -1960,6 +2239,8 @@ async function doKick(id){
   for(const [k,v] of Object.entries(r.avatars||{})) if(v===id) upd['avatars/'+k]=null;
   if(Array.isArray(r.order)&&r.order.includes(id)) upd['order']=r.order.filter(x=>x!==id);
   for(const [k,v] of Object.entries(r.ta||{})) if(v&&v.uid===id) upd['ta/'+k]=null;
+  for(const [k,v] of Object.entries(r.clubs||{})){if(v&&v.pres&&v.pres.uid===id) upd[`clubs/${k}/pres`]=null; if(v&&v.mem&&v.mem[id]) upd[`clubs/${k}/mem/${id}`]=null}
+  upd['clubGift/'+id]=null; upd['cjudge/'+id]=null; upd['cjudgeRes/'+id]=null;
   await ref.update(upd);
   toast(`已把「${p.name||'同學'}」移出教室`);
 }
@@ -2095,7 +2376,7 @@ async function botAct(id){
     await ref.child('events').push({uid:id,t:`${nm} ${p.skipWhy||'暫停'}，暫停一回合`,at:TS()}); return;
   }
   const a=1+rnd(6), b=1+rnd(6); let pos=(+p.pos||0)+a+b, year=p.year||1; if(pos>=N){pos-=N;year++}
-  const t=TILES[pos]; let cr=p.cr||0, skills=+p.skills||0, club=p.club||'', love=p.love||'', skip=0, skipWhy='';
+  const t=TILES[pos]; let cr=p.cr||0, skills=+p.skills||0, club=p.club||'', love=p.love||'', skip=0, skipWhy='', cpt=+p.cpt||0, cIdx=p.cIdx==null?-1:+p.cIdx, intl=+p.intl||0, exNew=null;
   const ev=[`${nm} 擲出 ${a+b} 點，來到「${t.n}」`];
   await ref.child('players/'+id).update({pos});
   await stg({tag:'擲骰子',title:`擲出 ${a+b} 點！`,text:`來到「${t.n}」。`,roll:a+b,pos});
@@ -2106,14 +2387,35 @@ async function botAct(id){
     if(Math.random()<.7){cr+=CR_COURSE;ev.push(`${nm} 在${t.n}課完成任務（+${CR_COURSE} 學分）`);
       if(!ta){await ref.child('ta/'+t.idx).set({uid:id,name:nm,av:p.av});ev.push(`${nm} 成為${t.n}的教學 TA`)}}
     else ev.push(`${nm} 在${t.n}課沒完成任務`)}
-  else if(t.type==='club'){const i=CLUB_ST.findIndex(x=>x.n===club);
-    if(i<0&&Math.random()<.7){club=CLUB_ST[0].n;skills++;ev.push(`${nm} 通過入社考驗，加入${t.n}`)}
-    else if(i>=0&&i<CLUB_ST.length-1&&Math.random()<.65){const st=CLUB_ST[i+1];club=st.n;cr+=sumCr(st.fx);ev.push(`${nm} 在${t.n}：${st.n}`)}
-    else ev.push(`${nm} 在${t.n}練習中`)}
+  else if(t.type==='club'){const ci=t.idx, cl=((r.clubs||{})[ci])||{}, rd=p.turns||0, my=+(p.cIdx==null?-1:p.cIdx);
+    const cref=ref.child('clubs/'+ci), mine=my>=0?((r.clubs||{})[my]||{}):{};
+    const giveAll=async(c2,why)=>{for(const [u] of Object.entries(c2.mem||{})){const n=1+((c2.pres&&c2.pres.uid===u)?1:0);
+      if(u===id){cpt+=n}else await ref.child('clubGift/'+u).push({n,why,from:nm,at:TS()})}};
+    if(my<0){ if(Math.random()<.75){
+        let pres=false; if(!cl.pres){try{const x=await cref.child('pres').transaction(v=>v?undefined:{uid:id,name:nm,av:p.av});pres=!!x.committed}catch(e){}}
+        if(pres||Math.random()<.75){await cref.child('mem/'+id).set({name:nm,av:p.av});cIdx=ci;cpt+=1;skills++;ev.push(`${nm} ${pres?`加入${t.n}，成為社長`:`通過社長考核，加入${t.n}`}`)}
+        else ev.push(`${nm} 沒通過${t.n}的入社考核`)} else ev.push(`${nm} 路過${t.n}`)}
+    else if(my===ci){ if(+cl.last!==rd){await cref.child('last').set(rd);
+        if(Math.random()<4/6){const fresh=(await cref.get()).val()||{};await giveAll(fresh,`${t.n}社團活動`);ev.push(`${nm} 成功舉辦${t.n}社團活動（全體社員社團 +1，社長 +2）`)}
+        else ev.push(`${nm} 舉辦${t.n}社團活動，可惜沒成功`)} else ev.push(`${nm} 在${t.n}練習`)}
+    else { const amPres=mine.pres&&mine.pres.uid===id;
+      if(amPres&&cl.pres&&+cl.last!==rd&&+mine.last!==rd&&Math.random()<.6){await cref.child('last').set(rd);await ref.child('clubs/'+my+'/last').set(rd);
+        if(Math.random()<4/6){const a=(await cref.get()).val()||{},b2=(await ref.child('clubs/'+my).get()).val()||{};await giveAll(a,'聯誼活動');await giveAll(b2,'聯誼活動');ev.push(`${nm} 成功舉辦${CLUBS[my].s}×${t.s}聯誼`)}
+        else ev.push(`${nm} 舉辦聯誼沒成功`)}
+      else if(Math.random()<.75){cpt+=1;ev.push(`${nm} 參加${t.n}練習，通過考驗（社團 +1）`)} else ev.push(`${nm} 參加${t.n}練習，這次沒通過`)}}
   else if(t.type==='spot'){const i=LOVE_ST.findIndex(x=>x.n===love);if(i<LOVE_ST.length-1&&Math.random()<.65){const st=LOVE_ST[i+1];love=st.n;cr+=sumCr(st.fx);ev.push(`${nm} 在${t.n}：${st.n}`)}else ev.push(`${nm} 在${t.n}散步`)}
-  else if(t.type==='intern'){const ok=Math.random()<.75,g=ok?2:1;cr+=g;ev.push(`${nm} 在${t.n}知識問答${ok?'答對':'答錯'}（+${g} 學分）`)}
-  else if(t.type==='exch'){cr+=1;const ok=Math.random()<.7;
-    if(ok) ev.push(`${nm} 到${t.n}交換，答對題目（學分 +1）`); else {skip=1;skipWhy='遣返回國';ev.push(`${nm} 到${t.n}交換，答錯被遣返回國，暫停一回合`)}}
+  else if(t.type==='intern'){const iref=ref.child('iused/'+t.idx);const used=(await iref.get()).val()||{};
+    const left=INTERNS[t.idx].qs.map((x,k)=>k).filter(k=>!used[k]);
+    if(!left.length) ev.push(`${nm} 來到${t.n}，題目已全部挑戰完畢`);
+    else{await iref.child(String(left[rnd(left.length)])).set(true);const ok=Math.random()<.75,g=ok?2:1;cr+=g;ev.push(`${nm} 在${t.n}知識問答${ok?'答對':'答錯'}（+${g} 學分）`)}}
+  else if(t.type==='exch'){const X=EXCH[t.idx], e=p.ex||{}, seen=e.seen||[], rc=e.rc||{}, deg=e.deg||[];
+    if(!seen.includes(t.idx)){seen.push(t.idx);cr+=1;skills++;ev.push(`${nm} 第一次到${X.n}（語言技能 +1、學分 +1）`)}
+    if(deg.includes(t.idx)) ev.push(`${nm} 回到${X.n}校園走走`);
+    else{const rr=rc[t.idx]||0, ok=Math.random()<.7;
+      if(ok){if(rr===1)skills++;else cr+=1; if(rr<2)rc[t.idx]=rr+1; else {rc[t.idx]=0;deg.push(t.idx);intl=(intl||0)+1;if(intl%3===0)cr+=1}
+        ev.push(`${nm} 在${X.n}：${EX_ROUND[rr]}通過${rr===2?'，拿到雙聯學位！':''}`)}
+      else {rc[t.idx]=0;ev.push(`${nm} 在${X.n}：${EX_ROUND[rr]}沒通過，進度重設為第一輪`)}}
+    exNew={seen,rc,deg}}
   else if(t.type==='chance'){const c=CHANCE[rnd(CHANCE.length)];cr+=sumCr(c.fx);if(c.skill)skills++;ev.push(`${nm} 抽到機會：${c.t}`)}
   else if(t.type==='fate'){const c=FATE[rnd(FATE.length)];cr+=sumCr(c.fx);if(c.skip||c.jail){skip=1;skipWhy='暫停'}ev.push(`${nm} 抽到命運：${c.t}`)}
   else if(t.code==='F'){cr+=1;skip=1;skipWhy='期末週閉關';ev.push(`${nm} 在期末考週熬夜 K 書（+1 學分），下回合閉關`)}
@@ -2121,7 +2423,9 @@ async function botAct(id){
   cr=Math.max(0,cr);
   const tagOf={course:'課堂任務',club:'社團',spot:'約會景點',intern:'海外實習',exch:'姊妹校交換',chance:'機會卡',fate:'命運卡',corner:'特殊格'}[t.type]||'';
   await stg({tag:tagOf+'（電腦代玩）',title:t.n,text:ev.slice(1).join('。')||'在這裡休息一下。',pos});
-  const upd={pos,year,cr,skills,club,love,clubSt:CLUB_ST.findIndex(x=>x.n===club)+1,loveSt:LOVE_ST.findIndex(x=>x.n===love)+1,turns:(p.turns||0)+1};
+  const cs=Math.min(CLUB_ST.length,stage(cpt)); club=cs?CLUB_ST[cs-1].n:'';
+  const upd={pos,year,cr,skills,club,love,cpt,cIdx,intl,clubSt:cs,loveSt:LOVE_ST.findIndex(x=>x.n===love)+1,turns:(p.turns||0)+1};
+  if(exNew) upd.ex=exNew;
   if(skip){upd.skip=skip;upd.skipWhy=skipWhy}
   if(cr>=(r.target||28)){upd.done=true;const res=await ref.child('finishCount').transaction(v=>(v||0)+1);upd.place=res.snapshot.val();
     await ref.child('finish/'+id).set({place:upd.place,name:nm,av:p.av,turns:upd.turns,at:TS()});ev.push(`${nm} 修滿學分畢業了！（第 ${upd.turns} 回合）`)}
@@ -2153,6 +2457,11 @@ function openTeacher(code){
   listen(ref.child('judge'),'value',sn=>{tJudge=sn.val()||{};renderJudge()});
   listen(ref.child('judgeRes'),'value',sn=>{tJudgeRes=sn.val()||{};renderJudge()});
   listen(ref.child('ta'),'value',sn=>{tTA=sn.val()||{};renderProjTA()});
+  listen(ref.child('clubGift'),'value',sn=>{const all=sn.val()||{};
+    for(const [u,gs] of Object.entries(all)){const pl=(tRoom.players||{})[u];if(!pl||!pl.bot)continue;
+      for(const [gid,g] of Object.entries(gs||{})){if(botGiftSeen.has(gid))continue;botGiftSeen.add(gid);
+        const cpt=(+pl.cpt||0)+(+g.n||1), cs=Math.min(CLUB_ST.length,stage(cpt));
+        ref.child('players/'+u).update({cpt,clubSt:cs,club:cs?CLUB_ST[cs-1].n:''}).catch(()=>{});ref.child('clubGift/'+u+'/'+gid).remove().catch(()=>{})}}});
   listen(ref.child('taGift'),'value',sn=>{const all=sn.val()||{};
     for(const [u,gs] of Object.entries(all)){const pl=(tRoom.players||{})[u];if(!pl||!pl.bot)continue;
       for(const [gid,g] of Object.entries(gs||{})){if(botGiftSeen.has(gid))continue;botGiftSeen.add(gid);
@@ -2380,6 +2689,13 @@ function enterStudent(code){
     if(S&&S.players&&S.players[0]&&COURSES[+g.c]){addTeach(S.players[0],+g.c,g.from||'同學');save();syncMe();toast(`${g.from||'同學'} 來上${COURSES[+g.c].n}，你當 TA 得到 1 個教學技能！`);if(!$('#game').hidden)renderDynamic()}
     sn.ref.remove().catch(()=>{})});
   listen(ref.child('kicked/'+uid),'value',sn=>{if(sn.exists()) onKicked()});
+  clubMap={}; presQueue={};
+  listen(ref.child('clubs'),'value',sn=>{clubMap=sn.val()||{}; if(S&&!$('#game').hidden) renderDynamic()});
+  listen(ref.child('clubGift/'+uid),'child_added',sn=>{const g=sn.val()||{};
+    if(S&&S.players&&S.players[0]){addBr(S.players[0],'club',+g.n||1);save();syncMe();toast(`${g.why||'社團活動'}：社團 +${+g.n||1}`);if(!$('#game').hidden)renderDynamic()}
+    sn.ref&&sn.ref.remove().catch(()=>{})});
+  listen(ref.child('cjudge/'+uid),'child_added',sn=>{presQueue[sn.key]=sn.val()||{};renderPresPanel();try{Music.ding()}catch(e){}});
+  listen(ref.child('cjudge/'+uid),'child_removed',sn=>{delete presQueue[sn.key];renderPresPanel()});
   const hb=setInterval(()=>{if(S&&S.online&&fb&&uid)fb.ref(`rooms/${code}/players/${uid}/seen`).set(TS()).catch(()=>{})},20000); liveOff.push(()=>clearInterval(hb));
 }
 function onKicked(){
