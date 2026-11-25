@@ -270,6 +270,11 @@ input[type=text]{font-family:var(--body);font-size:15px;color:var(--ink);backgro
 .dtab th,.dtab td{border:1px solid var(--line);padding:4px 6px;text-align:center;font-size:14px}
 .dtab th{background:var(--paper-2);font-weight:700}
 .judgep{border:2.5px solid var(--red);box-shadow:0 0 0 4px color-mix(in srgb,var(--red) 22%,transparent);animation:pulse 1.6s ease infinite}
+#turnBan{white-space:nowrap;position:fixed;left:50%;top:18%;transform:translateX(-50%);z-index:9999;background:var(--red);color:#fff;font-family:var(--display);font-size:clamp(26px,8vw,44px);padding:18px 30px;border-radius:18px;box-shadow:0 12px 40px rgba(0,0,0,.35);text-align:center;pointer-events:none;animation:tbIn .35s ease-out}
+#turnBan small{display:block;font-size:15px;font-family:inherit;opacity:.9;margin-top:4px}
+@keyframes tbIn{from{transform:translateX(-50%) scale(.6);opacity:0}}
+#btnRoll.myturn{animation:rollPulse 1s ease-in-out infinite}
+@keyframes rollPulse{50%{transform:scale(1.08);box-shadow:0 0 0 10px color-mix(in srgb,var(--red) 25%,transparent)}}
 @keyframes pulse{50%{box-shadow:0 0 0 9px color-mix(in srgb,var(--red) 10%,transparent)}}
 .jcard{display:grid;grid-template-columns:48px 1fr;gap:6px 10px;align-items:start;border-top:1px dashed var(--line);padding-top:8px}
 .jcard svg{width:48px;height:53px}
@@ -370,8 +375,8 @@ body:has(#scrim:not([hidden])) .musicbtn{display:none}
     <button class="btn primary" id="btnStart" style="align-self:center;padding:12px 34px;font-size:17px">入學報到 →</button>
     </div>
     <div class="panel"><div class="label">國企系老師與執秘</div><div class="teach" id="teach"></div></div>
-    <p class="note" style="text-align:center;font-size:11px;opacity:.7">版本 2026-11-13 v48（課程難易度、TA PK、社團 3 換 1、交換與實習資格）</p>
-    <p class="note" style="text-align:center">紅色格是 13 門國企系課程，要完成老師的課堂任務才拿得到學分，第一位完成的同學會成為教學 TA；綠色格是 7 個社團，要先通過入社考驗；還有海外實習、姊妹校交換和旗山美濃內門約會景點。累積 3 項技能可以向玟玟執秘簡報換學分。</p>
+    <p class="note" style="text-align:center;font-size:11px;opacity:.7">版本 2026-11-25 v49（最終修訂：老師判斷開放題、任務學分提高、實習交換第 4 輪開放、戀愛 4 階段、輪到你提醒）</p>
+    <p class="note" style="text-align:center">紅色格是 14 門國企系課程，要完成老師的課堂任務才拿得到學分，第一位完成的同學會成為教學 TA；綠色格是 5 個社團，要先通過入社考驗；還有海外實習、姊妹校交換和旗山美濃內門約會景點。累積 3 項技能可以向玟玟執秘簡報換學分。</p>
   </section>
 
   <section id="game" hidden>
@@ -758,16 +763,16 @@ const SKILL_POOL=['Excel 函數技能','跨文化溝通技能','英文簡報技�
 /* ---------- 題庫（每位同學看過的題目會先避開，盡量每次不同） ---------- */
 const BANK={
  consumer:[
-  {q:'馬斯洛需求層次理論中，最底層的需求是什麼？',o:['生理需求','自我實現需求','尊重需求','社會歸屬需求'],a:0,ex:'吃飯、喝水、睡覺這些生理需求被滿足後，人才會往上追求安全、歸屬、尊重和自我實現。'},
-  {q:'「限時限量、售完為止」主要利用消費者的哪一種心理？',o:['怕錯過的稀少性心理','從眾心理','價格敏感','品牌忠誠'],a:0,ex:'東西越少越覺得珍貴，怕錯過就會加快下單。'},
-  {q:'買了很貴的東西後，一直懷疑自己是不是買錯了，這叫做什麼？',o:['購後失調','衝動購買','品牌轉換','需求確認'],a:0,ex:'購後失調（認知失調）是買完之後的不安，所以很多品牌會在售後再強調產品優點。'},
-  {q:'網紅推薦之後大家搶著買，這主要是哪一種影響？',o:['參考群體的影響','季節性影響','通貨膨脹','價格歧視'],a:0,ex:'網紅、朋友、家人都屬於參考群體，會影響我們的購買決策。'},
-  {q:'結帳櫃台旁放口香糖和小零食，主要是想引發什麼？',o:['衝動性購買','延遲購買','比價行為','退貨'],a:0,ex:'排隊等結帳時順手拿一個，就是典型的衝動性購買。'},
-  {q:'「第二件六折」這類促銷，最主要想提高什麼？',o:['每次購買的數量（客單價）','員工薪水','商品成本','退貨率'],a:0,ex:'讓你一次買兩件，提高每筆交易的金額。'},
-  {q:'消費者購買決策過程的第一步通常是什麼？',o:['發現需求（問題確認）','蒐集資訊','比較方案','購後評價'],a:0,ex:'先發現「我需要」，才會開始找資料、比較、購買和評價。'},
-  {q:'商品標價 99 元而不是 100 元，用的是哪一種定價技巧？',o:['尾數定價','成本加成定價','滲透定價','聲望定價'],a:0,ex:'99 元看起來比 100 元便宜很多，這是尾數（畸零）定價。'},
-  {q:'賣場提供試吃、試用，主要是降低消費者的什麼？',o:['知覺風險（怕買錯）','購買能力','品牌知名度','運費'],a:0,ex:'先試過，比較不怕踩雷，購買意願就提高了。'},
-  {q:'一直固定買同一個品牌，很少換別家，這叫做什麼？',o:['品牌忠誠度','品牌延伸','市場區隔','價格戰'],a:0,ex:'品牌忠誠度高的顧客會重複購買，也比較願意推薦給朋友。'},
+  {q:'人最基本、一定要先被滿足的需求是什麼？',o:['吃飯、喝水、睡覺','買名牌包','出國旅遊','成為網紅'],a:0,ex:'先吃飽睡好，才會想到其他需求（馬斯洛需求層次的最底層：生理需求）。'},
+  {q:'商店寫「限時限量、售完為止」，最主要想讓消費者產生什麼感覺？',o:['怕買不到、趕快下手','覺得很便宜','覺得品質很差','想要退貨'],a:0,ex:'東西越少、時間越短，人越怕錯過，就會提早購買。'},
+  {q:'花大錢買了新手機，回家後一直懷疑「是不是買錯了」，這種感覺最接近？',o:['買完後的後悔與不安','衝動購物','存錢','比價'],a:0,ex:'行銷上稱為「購後失調」，所以店家常提供鑑賞期和售後服務。'},
+  {q:'好朋友都說某家手搖飲好喝，你也跑去買，這是受到誰的影響？',o:['身邊的朋友（參考群體）','天氣','政府政策','匯率'],a:0,ex:'家人、朋友、網紅都可能影響我們買什麼。'},
+  {q:'結帳櫃台旁邊常放口香糖、小零食，主要是希望顧客怎麼做？',o:['排隊時順手買','不要買','改去別家','下次再來'],a:0,ex:'這叫「衝動性購買」，沒計畫要買，但看到就拿了。'},
+  {q:'「第二件六折」這類促銷，店家最主要想讓你怎麼做？',o:['一次多買一點','少買一點','只看不買','改買別的品牌'],a:0,ex:'讓每位顧客一次買更多，店家營業額就提高。'},
+  {q:'買東西的過程中，通常第一步是什麼？',o:['發現自己需要某樣東西','付錢','寫評論','退貨'],a:0,ex:'先發現「我需要」，才會開始找資料、比較、購買。'},
+  {q:'商品標價 99 元而不是 100 元，主要是想讓消費者覺得？',o:['比較便宜','比較高級','比較重','比較難買'],a:0,ex:'這叫「尾數定價」，99 元看起來還沒到 100 元。'},
+  {q:'賣場提供試吃、試用，主要的目的是？',o:['讓顧客先體驗，比較敢買','讓顧客吃飽就走','增加垃圾','讓員工休息'],a:0,ex:'先試過，比較不怕買錯，購買意願就提高。'},
+  {q:'一直固定買同一個牌子的洗髮精，很少換別家，這表示你對它有？',o:['品牌忠誠度','品牌恐懼','價格戰','庫存'],a:0,ex:'喜歡、信任一個品牌，就會一直回購。'},
   {q:'同樣的商品，「原價 1000 元、現在 699 元」比只寫「699 元」更讓人想買，這是什麼效果？',o:['錨定效應','長尾效應','規模經濟','月暈效應'],a:0,ex:'先看到的 1000 元變成比較的「錨」，699 元就顯得特別划算。'},
   {q:'看到很多人在排隊，自己也想排看看，這是哪一種心理？',o:['從眾心理','購後失調','損失規避','品牌延伸'],a:0,ex:'大家都在買，就覺得一定不錯，這就是從眾。'},
   {q:'喜歡某位代言人，連帶覺得他代言的商品也很好，這叫做什麼？',o:['月暈效應','長鞭效應','邊際效用遞減','價格歧視'],a:0,ex:'對人的好印象「暈染」到商品上，所以品牌很愛找形象好的代言人。'},
@@ -776,16 +781,16 @@ const BANK={
   {q:'消費者在網路上看評論、比價，這是購買決策的哪一個步驟？',o:['蒐集資訊','發現需求','購後評價','購買'],a:0,ex:'知道自己需要之後，就會開始蒐集資訊、比較方案。'},
  ],
  scm:[
-  {q:'供應鏈中的「長鞭效應」指的是什麼？',o:['需求變動往上游被一層層放大','運輸距離越來越長','商品越賣越便宜','員工流動率變高'],a:0,ex:'零售端一點點需求變化，傳到工廠和原料商時會被放大，造成庫存忽多忽少。'},
-  {q:'豐田汽車有名的 JIT（及時生產）最主要的目標是？',o:['降低庫存浪費','增加廣告曝光','提高售價','延長交貨時間'],a:0,ex:'需要多少才生產多少，減少倉庫裡堆放的庫存。'},
-  {q:'國際海運最常用來裝貨的標準容器是什麼？',o:['貨櫃','紙箱','麻布袋','油桶'],a:0,ex:'標準化的貨櫃讓船、火車、卡車之間可以快速轉運。'},
-  {q:'倉庫的「先進先出」（FIFO）是什麼意思？',o:['先入庫的貨先出貨','價格高的先出貨','最輕的先出貨','新貨先出貨'],a:0,ex:'先進來的先出去，避免貨品放到過期。'},
-  {q:'「冷鏈物流」主要用來運送哪一類商品？',o:['需要低溫保存的生鮮或疫苗','家具','書籍','衣服'],a:0,ex:'從產地到消費者手上全程保持低溫，品質才不會壞掉。'},
-  {q:'下列哪一項屬於「逆物流」？',o:['退貨與回收','原料進貨','工廠出貨','門市補貨'],a:0,ex:'商品從消費者往回流到賣家或工廠，就是逆物流。'},
-  {q:'企業準備「安全庫存」的用途是什麼？',o:['應付需求或交貨時間的意外變化','讓倉庫看起來很滿','提高商品售價','減少員工人數'],a:0,ex:'多留一點緩衝，就算訂單突然變多或供應商延遲，也不會斷貨。'},
-  {q:'條碼和 RFID 在供應鏈中主要幫助什麼？',o:['追蹤與盤點貨品','設計包裝','決定售價','招募員工'],a:0,ex:'一掃就知道貨在哪裡、還剩多少。'},
-  {q:'把部分工作交給外部公司來做，這叫做什麼？',o:['外包','併購','上市','加盟'],a:0,ex:'例如把物流交給專業物流公司，自己專心做核心業務。'},
-  {q:'跟海運比起來，空運的特點是什麼？',o:['速度快但運費比較高','速度慢但比較便宜','只能運送液體','完全不用報關'],a:0,ex:'空運適合高價、急件或保存期限短的商品。'},
+  {q:'「供應鏈」最簡單的意思是什麼？',o:['商品從原料、工廠到消費者手上的整個過程','超市的貨架','公司的員工名單','一種廣告'],a:0,ex:'原料→製造→倉庫→門市→消費者，串起來就是供應鏈。'},
+  {q:'工廠「需要多少才生產多少」，最主要的好處是？',o:['倉庫不會堆太多貨','東西會更貴','員工要加班','廣告變多'],a:0,ex:'這是豐田汽車有名的 JIT（及時生產），減少庫存浪費。'},
+  {q:'國際海運最常用來裝貨的大鐵箱叫做什麼？',o:['貨櫃','紙箱','麻布袋','油桶'],a:0,ex:'標準化的貨櫃讓船、火車、卡車之間可以直接轉運。'},
+  {q:'倉庫裡的牛奶，應該先賣哪一批？',o:['比較早進來、比較快過期的','剛進來的','最貴的','最重的'],a:0,ex:'這叫「先進先出」（FIFO），避免貨放到過期。'},
+  {q:'運送冰淇淋、生鮮海鮮，需要哪一種物流？',o:['全程低溫的冷鏈物流','一般常溫貨車','郵寄平信','自己用手提'],a:0,ex:'冷鏈物流從產地到消費者手上都保持低溫。'},
+  {q:'網購退貨，商品從消費者送回賣家，這叫做？',o:['逆物流','正物流','直播','外包'],a:0,ex:'往回流的物流，例如退貨、回收舊電池。'},
+  {q:'店家平常多備一點貨，主要是為了？',o:['突然賣很好或送貨延遲時不會缺貨','讓倉庫看起來很滿','讓東西變貴','讓員工變多'],a:0,ex:'這些多備的貨叫「安全庫存」。'},
+  {q:'超商結帳時「嗶」一下掃條碼，除了算錢，還可以幫店家？',o:['知道每樣商品賣了多少、還剩多少','幫顧客拍照','播放音樂','決定天氣'],a:0,ex:'條碼讓店家即時掌握銷售和庫存。'},
+  {q:'公司把送貨的工作交給黑貓、宅配公司來做，這叫做？',o:['外包','併購','上市','加盟'],a:0,ex:'交給專業的公司做，自己專心在核心業務。'},
+  {q:'跟海運比起來，空運的特點是什麼？',o:['速度快，但運費比較貴','速度慢，但比較便宜','只能運送液體','完全不用報關'],a:0,ex:'急件、高價、輕的貨品常用空運。'},
   {q:'把大訂單拆成好幾批、在需要時才送到，最主要可以減少什麼？',o:['庫存積壓','品牌知名度','員工人數','產品種類'],a:0,ex:'分批、準時送貨，倉庫就不用一次堆滿貨。'},
   {q:'電商常說的「最後一哩路」指的是哪一段？',o:['從配送站送到消費者手上','從工廠到港口','從原料產地到工廠','從海關到倉庫'],a:0,ex:'最後一哩路最分散、最花成本，所以才有超商取貨、智慧取貨櫃。'},
   {q:'只跟一家供應商買關鍵零件，最大的風險是什麼？',o:['那家出問題就全部斷貨','價格一定比較高','品質一定比較差','運費一定比較貴'],a:0,ex:'所以很多企業會培養第二家供應商，分散風險。'},
@@ -794,16 +799,16 @@ const BANK={
   {q:'超商可以每天補貨好幾次，主要靠什麼？',o:['物流中心統一配送','每家店自己開車去批貨','顧客自己送貨','只在週末進貨'],a:0,ex:'物流中心把各廠商的貨集中、分揀，再一起送到各門市。'},
  ],
  trade:[
-  {q:'用 FOB 條件交易時，貨物裝上船之後的風險由誰承擔？',o:['買方','賣方','船長','銀行'],a:0,ex:'FOB（船上交貨）：貨物裝上船，風險就轉移給買方。'},
-  {q:'CIF 報價包含哪些費用？',o:['成本、保險費、運費','只有成本','成本和關稅','運費和倉儲費'],a:0,ex:'CIF = Cost（成本）+ Insurance（保險）+ Freight（運費）。'},
-  {q:'信用狀（L/C）是由誰開出的付款保證？',o:['銀行','海關','船公司','保險公司'],a:0,ex:'買方請銀行開信用狀，賣方只要交出符合規定的文件，銀行就保證付款。'},
-  {q:'貨物進口或出口時，要向哪個單位申報？',o:['海關','警察局','衛生所','戶政事務所'],a:0,ex:'進出口貨物都要經過海關查驗和報關。'},
-  {q:'報價單上的「MOQ」是什麼意思？',o:['最低訂購量','最高售價','付款期限','保固期'],a:0,ex:'MOQ（Minimum Order Quantity）：一次至少要訂這麼多，工廠才接單。'},
-  {q:'1 美元從兌換 30 元新台幣變成 32 元，代表新台幣怎麼了？',o:['貶值','升值','沒有變化','停止交易'],a:0,ex:'同樣 1 美元要用更多台幣才換得到，表示台幣變薄、貶值了。'},
-  {q:'新台幣貶值時，通常對哪一方比較有利？',o:['台灣的出口商','台灣的進口商','出國旅遊的人','買進口車的人'],a:0,ex:'出口賣出去收到美元，換回的台幣變多了。'},
-  {q:'海運「提單」（B/L）是由誰簽發的？',o:['運送人（船公司）','買方','海關','外交部'],a:0,ex:'提單是船公司收到貨物後簽發的單據，也是提貨的憑證。'},
-  {q:'「關稅」是對什麼課徵的稅？',o:['進出口的貨物','個人薪水','房屋','股票交易'],a:0,ex:'關稅是貨物通過國境時課徵的稅。'},
-  {q:'「產地證明」主要用來證明什麼？',o:['貨物是在哪個國家生產的','貨物的價格','買方的身分','運輸的時間'],a:0,ex:'有些國家依產地給予不同關稅，所以需要產地證明。'},
+  {q:'台灣把鳳梨賣到日本，對台灣來說這是？',o:['出口','進口','轉帳','關稅'],a:0,ex:'把東西賣到國外叫出口；從國外買進來叫進口。'},
+  {q:'從國外買進來的商品，常常要多繳一種稅，叫做？',o:['關稅','所得稅','房屋稅','娛樂稅'],a:0,ex:'關稅是貨物通過國境時課徵的稅。'},
+  {q:'貨物要出口或進口時，要向哪個單位申報、接受檢查？',o:['海關','警察局','衛生所','戶政事務所'],a:0,ex:'進出口貨物都要經過海關查驗和報關。'},
+  {q:'跟國外公司做生意時，最常用來報價的貨幣是？',o:['美元','新台幣硬幣','遊戲點數','禮券'],a:0,ex:'美元是國際貿易中最常用的貨幣。'},
+  {q:'1 美元可以換 30 元新台幣，100 美元可以換多少新台幣？',o:['3,000 元','300 元','30 元','30,000 元'],a:0,ex:'100 × 30 = 3,000 元。'},
+  {q:'1 美元從兌換 30 元新台幣變成 32 元，代表新台幣怎麼了？',o:['貶值（變得比較不值錢）','升值','沒有變化','停止使用'],a:0,ex:'同樣 1 美元要用更多新台幣才換得到，新台幣就是貶值。'},
+  {q:'報價單上寫「最低訂購量 500 個」，意思是？',o:['一次至少要訂 500 個工廠才接單','最多只能買 500 個','送你 500 個','500 元就能買全部'],a:0,ex:'這就是 MOQ（Minimum Order Quantity）。'},
+  {q:'兩個國家簽訂「自由貿易協定」，最常見的效果是？',o:['彼此降低或取消關稅','禁止貿易','提高關稅','統一使用同一種貨幣'],a:0,ex:'關稅降低，兩國之間的商品就更容易買賣。'},
+  {q:'貨物的「產地」標示 Made in Taiwan，代表什麼？',o:['這個商品是在台灣生產的','在台灣販售','老闆是台灣人','用台灣的錢買的'],a:0,ex:'產地就是商品生產製造的地方。'},
+  {q:'台灣很有名、大量出口到全世界的產品是？',o:['半導體晶片','石油','香蕉皮','雪'],a:0,ex:'半導體是台灣最重要的出口產品之一。'},
   {q:'出口商收到國外訂單後，寄給買方確認的「預估發票」叫做什麼？',o:['Proforma Invoice（預約發票）','Packing List（裝箱單）','Bill of Lading（提單）','Certificate of Origin（產地證明）'],a:0,ex:'Proforma Invoice 讓買方確認價格與條件，也常用來申請開狀或匯款。'},
   {q:'「裝箱單」（Packing List）上主要記載什麼？',o:['每箱的內容、數量和重量','買方的信用評等','匯率','關稅稅率'],a:0,ex:'海關查驗、買方點貨都會用到裝箱單。'},
   {q:'EXW（工廠交貨）條件下，誰負責把貨從賣方工廠運出去？',o:['買方','賣方','海關','銀行'],a:0,ex:'EXW 是賣方責任最輕的條件，貨在工廠交給買方就完成了。'},
@@ -839,16 +844,16 @@ const BANK={
   {q:'出國交換前，修課學分要先跟誰確認能不能抵免？',o:['系上（系辦與指導老師）','旅行社','航空公司','房東'],a:0,ex:'先和系上確認學分抵免，回國才不會延畢。'},
  ],
  toeic:[
-  {q:'The meeting has been ___ until next Monday.',o:['postponed','postpone','postponing','postpones'],a:0,ex:'has been + 過去分詞：會議「被延到」下週一。'},
-  {q:'Please submit the form ___ the end of the day.',o:['by','since','during','among'],a:0,ex:'by + 時間：在某時間之前完成。'},
-  {q:'Ms. Chen is responsible ___ training new staff.',o:['for','to','at','with'],a:0,ex:'be responsible for：負責某事。'},
-  {q:'The store opens ___ 9 a.m.',o:['at','in','on','to'],a:0,ex:'幾點幾分用 at。'},
+  {q:'The meeting is ___ 3 p.m.',o:['at','in','on','to'],a:0,ex:'幾點幾分用 at。'},
+  {q:'Please send the report ___ Friday.',o:['by','since','among','under'],a:0,ex:'by + 時間：在某時間之前完成。'},
+  {q:'"Customer" 的意思是什麼？',o:['顧客','海關','老闆','員工'],a:0,ex:'Customer 是買東西的顧客；海關是 customs。'},
+  {q:'The store opens ___ Monday.',o:['on','at','in','to'],a:0,ex:'星期幾用 on。'},
   {q:'"Invoice" 的意思是什麼？',o:['發票、請款單','邀請函','履歷表','登機證'],a:0,ex:'Invoice 是商業上很常見的請款單據。'},
   {q:'"Boarding pass" 的意思是什麼？',o:['登機證','護照','行李箱','出口'],a:0,ex:'機場報到後拿到的登機證。'},
-  {q:'If you have any questions, please feel free to ___ me.',o:['contact','contacting','contacts','contacted'],a:0,ex:'feel free to + 原形動詞。'},
-  {q:'The new product was ___ successful that it sold out in a week.',o:['so','such','very','too'],a:0,ex:'so + 形容詞 + that：太…以致於…'},
+  {q:'If you have any questions, please ___ me.',o:['contact','contacts','contacting','contacted'],a:0,ex:'please + 原形動詞。'},
+  {q:'"Discount" 的意思是什麼？',o:['折扣','發現','距離','討論'],a:0,ex:'There is a 20% discount = 打八折。'},
   {q:'"Deadline" 的意思是什麼？',o:['截止期限','死胡同','最後一班車','加班費'],a:0,ex:'職場上常說的 deadline 就是截止時間。'},
-  {q:'She has worked here ___ 2020.',o:['since','for','during','ago'],a:0,ex:'現在完成式 + since + 起始時間點。'},
+  {q:'I ___ a student at Shih Chien University.',o:['am','is','are','be'],a:0,ex:'I 搭配 am。'},
  ],
 };
 /* 選項打亂，避免答案永遠在同一個位置 */
@@ -885,7 +890,7 @@ const SPOTS = [
  {n:'美濃油紙傘',s:'紙傘',d:'客家油紙傘工坊，可以親手彩繪一把傘。'},
 ];
 
-/* ---------- 海外實習（5 國，知識問答：答對 2 學分、答錯 1 學分） ---------- */
+/* ---------- 海外實習（5 國，知識問答：答對 3 學分、答錯 1 學分） ---------- */
 const INTERNS = [
  {country:'日本',s:'日本實習',art:'snow',
   intro:'日本的實習目的地包括北海道 Tomamu、Kiroro、Sahoro，以及沖繩石垣島。北海道以雪景、滑雪及山岳度假體驗聞名；石垣島則以碧藍海水、海洋活動及熱帶島嶼風光為特色。',
@@ -917,10 +922,11 @@ const EX_REWARD=['學分 +1','語言能力 +1','學分 +1'];
 
 /* ---------- 地圖（44 格） ---------- */
 // 0 報到、11 圖書館、22 宿舍、33 期末考週
+/* v49：約會景點 4→2 格、社團 7→5 格（排球社、健身社暫停招生），空出的 4 格改成機會 3 格、命運 1 格 */
 const LAYOUT = ['S','k0','c0','i0','k1','s0','k2','fa','c1','k3','x0',
-                'L','k4','i1','c2','k13','ch','k5','c3','k6','i2','s2',
-                'R','k7','fa','x1','c4','k8','s3','i3','k9','ch','c5',
-                'F','k10','s4','x2','fa','k11','c6','i4','ch','k12','x3'];
+                'L','k4','i1','c2','k13','ch','k5','c3','k6','i2','ch',
+                'R','k7','fa','x1','ch','k8','c6','i3','k9','ch','fa',
+                'F','k10','s4','x2','fa','k11','ch','i4','ch','k12','x3'];
 const CORNERS = {S:{n:'入學報到・國企系辦',s:'報到',d:'每經過一次就升上一個年級。累積 3 項技能，就能向玟玟執秘簡報換學分。'},L:{n:'圖書館閉關',s:'圖書館',d:'被送來閉關要暫停一回合；路過只是來借書。'},
   R:{n:'學生宿舍',s:'宿舍',d:'宿舍夜談：自己選要讀書、顧社團，還是聊心事。'},F:{n:'期末考週',s:'期末週',d:'熬夜 K 書！拿 1 學分，然後去圖書館閉關一回合。'}};
 function tileInfo(code){
@@ -928,10 +934,10 @@ function tileInfo(code){
   if(code==='ch') return {type:'chance',n:'機會',s:'機會',d:'抽一張機會卡，多半是好事。',code};
   if(code==='fa') return {type:'fate',n:'命運',s:'命運',d:'抽一張命運卡，好壞都有可能。',code};
   const k=code[0], i=+code.slice(1);
-  if(k==='k') return {type:'course',idx:i,...COURSES[i],code,d:`${COURSES[i].t}老師的「${COURSES[i].n}」。可自選簡單題（國中程度，答對 +1 學分）或困難題（高中程度，答對 +2 學分）。第一位答對的同學成為 TA；之後別人來上課要和 TA PK 同一題。`};
+  if(k==='k') return {type:'course',idx:i,...COURSES[i],code,d:`${COURSES[i].t}老師的「${COURSES[i].n}」。可自選簡單題（國中程度，答對 +2 學分）或困難題（高中程度，答對 +3 學分）。第一位答對的同學成為 TA；之後別人來上課要和 TA PK 同一題。`};
   if(k==='c') return {type:'club',idx:i,...CLUBS[i],code};
-  if(k==='i') return {type:'intern',idx:i,...INTERNS[i],code,d:INTERNS[i].intro};
-  if(k==='x') return {type:'exch',idx:i,...EXCH[i],code,d:`${EXCH[i].country}的姊妹校「${EXCH[i].n}」。擲骰經過交換格、並停在課程格（答對）或實習格，符合門檻（總學分 2 分以上、1 項語言能力或多益金色證書）就能取得交換資格（學分 +1、暫停一回合）。有交換資格的人停在任何交換格，可挑戰雙聯學位：多益與匯率兩題全對，學分 +2。`};
+  if(k==='i') return {type:'intern',idx:i,...INTERNS[i],code,d:INTERNS[i].intro+'（第 4 輪起開放；課程學分滿 3 分才能實習，答對 +3 學分、答錯 +1 學分）'};
+  if(k==='x') return {type:'exch',idx:i,...EXCH[i],code,d:`${EXCH[i].country}的姊妹校「${EXCH[i].n}」。第 4 輪起開放。擲骰經過交換格、並停在課程格（答對）或實習格，符合門檻（總學分 2 分以上、1 項語言能力或多益金色證書）就能取得交換資格（學分 +1、暫停一回合）。有交換資格的人停在任何交換格，可挑戰雙聯學位：多益與匯率兩題全對，學分 +3。`};
   return {type:'spot',idx:i,...SPOTS[i],code};
 }
 const N=LAYOUT.length;
@@ -948,14 +954,10 @@ const CLUB_ST = [
  {n:'擔任社長（會長）',d:'眾望所歸，接下社長（會長）。',fx:[['cr',2],['love',1]]},
  {n:'獲選大專青年楷模',d:'全國大專優秀青年，實踐之光。',fx:[['cr',3]]},
 ];
-const LOVE_ST = [
- {n:'曖昧',d:'訊息聊到凌晨兩點，誰都沒有說破。',fx:[['club',1]]},
- {n:'暗戀',d:'發現自己每天都在找對方的身影。',fx:[['cr',1]]},
- {n:'告白',d:'終於說出口了！',fx:[['club',1]]},
+const LOVE_ST = [  /* v49：8 階段縮短為 4 階段 */
+ {n:'曖昧',d:'訊息聊到凌晨兩點，誰都沒有說破。',fx:[['cr',1]]},
+ {n:'告白',d:'終於說出口了！',fx:[['cr',1],['club',1]]},
  {n:'熱戀',d:'一起上課、一起去圖書館，成績也跟著變好。',fx:[['cr',1]]},
- {n:'出軌',d:'限動裡出現了另一個人，心碎一地。',fx:[['cr',-1]]},
- {n:'爭吵',d:'冷戰三天，誰都不肯先低頭。',fx:[['club',-1]]},
- {n:'復合',d:'把話說開，決定再給彼此一次機會。',fx:[['cr',1],['club',1]]},
  {n:'成為模範CP',d:'全系公認的模範情侶。',fx:[['cr',2],['club',1]]},
 ];
 const ACAD = [
@@ -974,24 +976,26 @@ const CHANCE = [
  {t:'國企系迎新晚會玩得超嗨',fx:[['love',1],['club',1]]},
  {t:'阿明老師幫你補救教學',fx:[['cr',2]]},
  {t:'拿到獎學金，心情大好',fx:[['cr',1],['club',1]]},
+ {t:'分組報告拿到全班最高分',fx:[['cr',2]]},
  {t:'多益考到金色證書',fx:[['cr',1]],intl:1,gold:1},
  {t:'搭校車到旗山吃香蕉冰',move:'s0'},
  {t:'籃球系隊缺人，學長拉你去練球',move:'c0'},
  {t:'週末去美濃湖騎單車',move:'s4'},
- {t:'參加海外實習說明會，直接去日本看看',move:'i0'},
  {t:'參加國際研習營，免費多學一項技能',skill:true},
  {t:'獲選到瑞典布羅斯大學（University of Borås）短期交換！',fx:[['cr',1]],intl:1},
 ];
+/* v49：命運卡好壞各半，壞事都是小事，而且只有 1 張會扣學分 */
 const FATE = [
  {t:'睡過頭錯過校車（內門山上真的遠）',skip:1},
- {t:'電腦當機，期末報告全沒了',fx:[['cr',-1]]},
- {t:'被室友揪去打電動到天亮',fx:[['cr',-1],['club',1]]},
- {t:'社團經費被砍一半',fx:[['club',-1]]},
+ {t:'電腦當機，期末報告要重做',fx:[['cr',-1]]},
  {t:'曖昧對象已讀不回',fx:[['love',-1]]},
  {t:'選課系統當機，往回走 3 格',back:3},
- {t:'熬夜趕行銷企劃，直接去圖書館閉關',jail:true},
+ {t:'社團經費被砍，活動縮水',fx:[['club',-1]]},
  {t:'校慶擺攤賺翻，還和攤位夥伴變熟',fx:[['club',1],['love',1]]},
- {t:'颱風停課，在宿舍躺平一天',fx:[]},
+ {t:'颱風停課，在宿舍把報告寫完',fx:[['cr',1]]},
+ {t:'被老師抽點回答，剛好會！',fx:[['cr',1]]},
+ {t:'撿到錢包交給系辦，失主送你一盒鳳梨酥',fx:[['love',1]]},
+ {t:'系烤當天天氣超好，和大家都變熟了',fx:[['club',1],['love',1]]},
 ];
 const TARGETS = [{v:10,n:'講解'},{v:28,n:'標準'},{v:36,n:'進階'},{v:60,n:'挑戰'}];
 const YEAR = y => y<=4 ? ['','大一','大二','大三','大四'][y] : `延畢第${y-4}年`;
@@ -999,7 +1003,7 @@ const TK = ['var(--red)','var(--blue)','var(--leaf)','var(--mustard)'];
 
 /* ---------- 狀態 ---------- */
 let S=null;
-const KEY='usc-ibm-v11';
+const KEY='usc-ibm-v12';
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
 const load=()=>{try{return JSON.parse(localStorage.getItem(KEY))}catch(e){return null}};
 const clear=()=>{try{localStorage.removeItem(KEY)}catch(e){}};
@@ -1290,8 +1294,17 @@ async function endTurn(){
   syncMe(); save(); renderBoard(); busy=false;
   await passTurn(); updateRollBtn(); scheduleBot();
 }
+/* v49：海外實習、姊妹校交換前 3 輪不開放（第 4 輪起開放），先停到的人拿 1 學分 */
+const OPEN_R=3, ieLocked=p=>(p.turns||0)<OPEN_R;
+async function doLockedIE(p,t){
+  addCr(p,1); const nm=t.type==='intern'?'海外實習':'姊妹校交換';
+  log(`${esc(p.name)} 來到${t.n}（${nm}第 ${OPEN_R+1} 輪起開放），先拿 1 學分`);
+  if(!p.bot) await sheet({tag:nm,title:`${nm}尚未開放`,art:svgBox(t.type==='intern'?ART[INTERNS[t.idx].art]():ART.plane(EXCH[t.idx])),
+    body:`<p>${nm}要等大家<b>第 ${OPEN_R+1} 輪起</b>才開放（你現在是第 ${(p.turns||0)+1} 輪）。先把課程學分修起來吧！</p><p class="fx">說明會聽講：學分 +1</p>`,buttons:[{l:'繼續',v:1,p:1}]});
+}
 async function resolve(p,depth){
   const t=TILES[p.pos];
+  if((t.type==='intern'||t.type==='exch')&&ieLocked(p)) return doLockedIE(p,t);
   if(t.type==='course') return doCourse(p,t);
   if(t.type==='club') return doClub(p,t);
   if(t.type==='spot') return doSpot(p,t);
@@ -1317,11 +1330,11 @@ function mcqSheet({tag,title,art,intro,q,o,giveUp}){
     }});
 }
 /* 口說類任務：線上教室由老師在大螢幕按「通過／不通過」；展示試玩由在場的人判定 */
-async function judgeSheet(p,{tag,title,art,prompt,label,ans,judge}){
+async function judgeSheet(p,{tag,title,art,prompt,label,ans,judge,stu}){
   if(p.bot) return Math.random()<.8;
   if(S.online&&fb&&uid){
     const ref=fb.ref(`rooms/${S.online.code}`), jid=Date.now().toString(36)+rnd(1000);
-    try{await ref.child('judge/'+uid).set({id:jid,name:p.name,av:p.av,task:String(label||tag).slice(0,40),prompt:plain(prompt).slice(0,280),...(ans?{ans:plain(ans).slice(0,200)}:{}),at:TS()})}
+    try{await ref.child('judge/'+uid).set({id:jid,name:p.name,av:p.av,task:String(label||tag).slice(0,40),prompt:plain(prompt).slice(0,280),...(ans?{ans:plain(ans).slice(0,200)}:{}),...(stu!=null?{stu:plain(stu).slice(0,200)}:{}),at:TS()})}
     catch(e){toast('送出判定失敗：'+errMsg(e));return null}
     return new Promise(res=>{
       let done=false; const rref=ref.child('judgeRes/'+uid);
@@ -1394,37 +1407,37 @@ const CHORD_RE=/^[A-G](#|b|♯|♭)?(m|M|maj|min|maj7|M7|m7|7|sus2|sus4|dim|aug|
 function parseList(s){return String(s||'').split(/[\s,，、/／;；]+/).map(x=>x.trim()).filter(Boolean)}
 const ECON_V=[
   {intro:'阿金老師：「經濟學就在生活裡！請舉一個因為供給或需求改變，讓某樣東西漲價或降價的例子。」',fields:[{id:'g',label:'什麼東西？',type:'text',ph:'例如：高麗菜'},{id:'r',label:'發生什麼事、價格怎麼變？',type:'textarea',ph:'例如：颱風後產量變少，所以…'}],
-    check:v=>v.g.trim().length<1?{retry:'先寫是什麼東西。'}:v.r.trim().length<8?{retry:'原因再多寫一點（至少 8 字）。'}:!/漲|跌|貴|便宜|降|升|高|低|價/.test(v.r)?{retry:'記得說出價格是變貴還是變便宜喔。'}:{ok:1},say:v=>`${v.g}：${v.r}`},
+    check:v=>!v.g.trim()?{retry:'先寫下你的回答再提交。'}:!v.r.trim()?{retry:'先寫下你的回答再提交。'}:{ok:1},say:v=>`${v.g}：${v.r}`},
   {intro:'阿金老師：「什麼是『替代品』？就是 A 變貴時，大家改買 B。請舉一組替代品的例子。」',fields:[{id:'a',label:'A（變貴的東西）',type:'text',ph:'例如：計程車'},{id:'b',label:'B（大家改買的東西）',type:'text',ph:'例如：捷運'}],
-    check:v=>v.a.trim().length<1||v.b.trim().length<1?{retry:'A 和 B 都要寫喔。'}:v.a.trim()===v.b.trim()?{retry:'A 和 B 要是不同的東西。'}:{ok:1},say:v=>`${v.a} 變貴就改買 ${v.b}`},
+    check:v=>v.a.trim().length<1||!v.b.trim()?{retry:'先寫下你的回答再提交。'}:v.a.trim()===v.b.trim()?{retry:'A 和 B 要是不同的東西。'}:{ok:1},say:v=>`${v.a} 變貴就改買 ${v.b}`},
   {intro:'阿金老師：「『互補品』就是常常一起用的東西，一個變貴，另一個也會賣得比較少。請舉一組互補品。」',fields:[{id:'a',label:'東西 1',type:'text',ph:'例如：印表機'},{id:'b',label:'東西 2',type:'text',ph:'例如：墨水匣'}],
-    check:v=>v.a.trim().length<1||v.b.trim().length<1?{retry:'兩樣東西都要寫喔。'}:v.a.trim()===v.b.trim()?{retry:'要寫兩樣不同的東西。'}:{ok:1},say:v=>`${v.a} + ${v.b}`},
+    check:v=>v.a.trim().length<1||!v.b.trim()?{retry:'先寫下你的回答再提交。'}:v.a.trim()===v.b.trim()?{retry:'要寫兩樣不同的東西。'}:{ok:1},say:v=>`${v.a} + ${v.b}`},
   {intro:'阿金老師：「『機會成本』就是你做了一個選擇，所放棄的最好的另一個選擇。你今天來上課，放棄了什麼？」',fields:[{id:'a',label:'你放棄了什麼？為什麼它是你的機會成本？',type:'textarea',ph:'例如：放棄去打工賺 400 元…'}],
-    check:v=>v.a.trim().length<6?{retry:'再多寫一點（至少 6 字）。'}:{ok:1},say:v=>v.a},
+    check:v=>!v.a.trim()?{retry:'先寫下你的回答再提交。'}:{ok:1},say:v=>v.a},
   {intro:'阿金老師：「『通貨膨脹』就是東西普遍變貴、錢變薄。請舉一個你生活中感受到的例子。」',fields:[{id:'a',label:'你的例子',type:'textarea',ph:'例如：便當從 70 元漲到 90 元…'}],
-    check:v=>v.a.trim().length<8?{retry:'再多寫一點（至少 8 字）。'}:!/漲|貴|變|價|元|塊/.test(v.a)?{retry:'記得說出什麼東西、價格怎麼變。'}:{ok:1},say:v=>v.a},
-  {intro:'阿金老師：「『沉沒成本』就是已經花掉、拿不回來的錢。請舉一個你因為『都已經付錢了』而硬撐下去的例子。」',fields:[{id:'a',label:'你的例子',type:'textarea',ph:'例如：電影很難看但票都買了…'}],check:v=>v.a.trim().length<8?{retry:'再多寫一點（至少 8 字）。'}:{ok:1},say:v=>v.a},
-  {intro:'阿金老師：「什麼是『規模經濟』？產量越大，平均成本越低。請舉一個生活中的例子。」',fields:[{id:'a',label:'你的例子',type:'textarea',ph:'例如：手搖飲連鎖店一次進大量茶葉…'}],check:v=>v.a.trim().length<8?{retry:'再多寫一點（至少 8 字）。'}:{ok:1},say:v=>v.a},
-  {intro:'阿金老師：「颱風過後菜價常常大漲，請用『供給』和『需求』說明為什麼。」',fields:[{id:'a',label:'你的說明',type:'textarea',ph:'例如：颱風讓菜田受損，供給變少…'}],check:v=>v.a.trim().length<10?{retry:'再多寫一點（至少 10 字）。'}:{ok:1},say:v=>v.a},
-  {intro:'阿金老師：「演唱會門票一開賣就秒殺，黃牛票卻賣好幾倍，請用經濟學說說原因。」',fields:[{id:'a',label:'你的說明',type:'textarea',ph:'例如：想去的人很多，票卻很少…'}],check:v=>v.a.trim().length<10?{retry:'再多寫一點（至少 10 字）。'}:{ok:1},say:v=>v.a},
-  {intro:'阿金老師：「便利商店的『第二件半價』，對店家有什麼好處？用經濟學的想法說說看。」',fields:[{id:'a',label:'你的說明',type:'textarea',ph:'例如：多賣一件的成本不高…'}],check:v=>v.a.trim().length<8?{retry:'再多寫一點（至少 8 字）。'}:{ok:1},say:v=>v.a},
-  {intro:'阿金老師：「最低工資調漲，對打工的大學生和老闆分別有什麼影響？各說一點。」',fields:[{id:'a',label:'你的說明',type:'textarea',ph:'例如：學生時薪變高，但老闆…'}],check:v=>v.a.trim().length<10?{retry:'再多寫一點（至少 10 字）。'}:{ok:1},say:v=>v.a},
-  {intro:'阿金老師：「什麼是『獨占』？請舉一個市場上只有一家或很少家公司的例子，說說對消費者的影響。」',fields:[{id:'a',label:'你的例子',type:'textarea',ph:'例如：台灣的自來水…'}],check:v=>v.a.trim().length<8?{retry:'再多寫一點（至少 8 字）。'}:{ok:1},say:v=>v.a},
+    check:v=>!v.a.trim()?{retry:'先寫下你的回答再提交。'}:{ok:1},say:v=>v.a},
+  {intro:'阿金老師：「『沉沒成本』就是已經花掉、拿不回來的錢。請舉一個你因為『都已經付錢了』而硬撐下去的例子。」',fields:[{id:'a',label:'你的例子',type:'textarea',ph:'例如：電影很難看但票都買了…'}],check:v=>!v.a.trim()?{retry:'先寫下你的回答再提交。'}:{ok:1},say:v=>v.a},
+  {intro:'阿金老師：「什麼是『規模經濟』？產量越大，平均成本越低。請舉一個生活中的例子。」',fields:[{id:'a',label:'你的例子',type:'textarea',ph:'例如：手搖飲連鎖店一次進大量茶葉…'}],check:v=>!v.a.trim()?{retry:'先寫下你的回答再提交。'}:{ok:1},say:v=>v.a},
+  {intro:'阿金老師：「颱風過後菜價常常大漲，請用『供給』和『需求』說明為什麼。」',fields:[{id:'a',label:'你的說明',type:'textarea',ph:'例如：颱風讓菜田受損，供給變少…'}],check:v=>!v.a.trim()?{retry:'先寫下你的回答再提交。'}:{ok:1},say:v=>v.a},
+  {intro:'阿金老師：「演唱會門票一開賣就秒殺，黃牛票卻賣好幾倍，請用經濟學說說原因。」',fields:[{id:'a',label:'你的說明',type:'textarea',ph:'例如：想去的人很多，票卻很少…'}],check:v=>!v.a.trim()?{retry:'先寫下你的回答再提交。'}:{ok:1},say:v=>v.a},
+  {intro:'阿金老師：「便利商店的『第二件半價』，對店家有什麼好處？用經濟學的想法說說看。」',fields:[{id:'a',label:'你的說明',type:'textarea',ph:'例如：多賣一件的成本不高…'}],check:v=>!v.a.trim()?{retry:'先寫下你的回答再提交。'}:{ok:1},say:v=>v.a},
+  {intro:'阿金老師：「最低工資調漲，對打工的大學生和老闆分別有什麼影響？各說一點。」',fields:[{id:'a',label:'你的說明',type:'textarea',ph:'例如：學生時薪變高，但老闆…'}],check:v=>!v.a.trim()?{retry:'先寫下你的回答再提交。'}:{ok:1},say:v=>v.a},
+  {intro:'阿金老師：「什麼是『獨占』？請舉一個市場上只有一家或很少家公司的例子，說說對消費者的影響。」',fields:[{id:'a',label:'你的例子',type:'textarea',ph:'例如：台灣的自來水…'}],check:v=>!v.a.trim()?{retry:'先寫下你的回答再提交。'}:{ok:1},say:v=>v.a},
 ];
 const ETHICS_V=[
   {intro:'系主任仲哥老師：「企業不只要賺錢，也要做對的事。請舉一家形象正面的知名企業，並說出你欣賞它的理由。」',fields:[{id:'c',label:'企業名稱',type:'text',ph:'例如：某某公司'},{id:'r',label:'為什麼它形象正面？',type:'textarea',ph:'它做了什麼好事…'}],
-    check:v=>v.c.trim().length<2?{retry:'請寫出企業名稱。'}:v.r.trim().length<6?{retry:'理由再多寫一點（至少 6 字）。'}:{ok:1},say:v=>`${v.c}：${v.r}`},
-  {intro:'系主任仲哥老師：「請舉一個企業做『企業社會責任（CSR）』的例子，例如環保、公益、照顧員工。」',fields:[{id:'a',label:'你的例子',type:'textarea',ph:'哪家企業、做了什麼…'}],check:v=>v.a.trim().length<10?{retry:'再多寫一點（至少 10 字）。'}:{ok:1},say:v=>v.a},
-  {intro:'系主任仲哥老師：「打工時，店長要你把快過期的食品換新標籤再賣，你會怎麼做？為什麼？」',fields:[{id:'a',label:'你會怎麼做？',type:'textarea',ph:'我會…因為…'}],check:v=>v.a.trim().length<10?{retry:'再多寫一點（至少 10 字）。'}:{ok:1},say:v=>v.a},
-  {intro:'系主任仲哥老師：「如果你當老闆，你會怎麼對待員工？寫出一個具體做法。」',fields:[{id:'a',label:'你的做法',type:'textarea',ph:'例如：準時發薪水、提供教育訓練…'}],check:v=>v.a.trim().length<8?{retry:'再多寫一點（至少 8 字）。'}:{ok:1},say:v=>v.a},
-  {intro:'系主任仲哥老師：「舉一個違反企業倫理的狀況（新聞或你聽過的），說說哪裡不對。」',fields:[{id:'a',label:'什麼狀況？哪裡不對？',type:'textarea',ph:'例如：黑心食品…'}],check:v=>v.a.trim().length<10?{retry:'再多寫一點（至少 10 字）。'}:{ok:1},say:v=>v.a},
-  {intro:'系主任仲哥老師：「同事把公司文具拿回家用，你覺得可以嗎？說說你的看法。」',fields:[{id:'a',label:'你的看法',type:'textarea',ph:'我覺得…因為…'}],check:v=>v.a.trim().length<10?{retry:'再多寫一點（至少 10 字）。'}:{ok:1},say:v=>v.a},
-  {intro:'系主任仲哥老師：「廣告說『百分百天然』，其實加了很多添加物，這樣有什麼問題？」',fields:[{id:'a',label:'你的看法',type:'textarea',ph:'這樣會…'}],check:v=>v.a.trim().length<10?{retry:'再多寫一點（至少 10 字）。'}:{ok:1},say:v=>v.a},
-  {intro:'系主任仲哥老師：「公司為了省錢，把廢水偷偷排進河裡。如果你是員工，你會怎麼做？」',fields:[{id:'a',label:'你會怎麼做？',type:'textarea',ph:'我會…'}],check:v=>v.a.trim().length<10?{retry:'再多寫一點（至少 10 字）。'}:{ok:1},say:v=>v.a},
-  {intro:'系主任仲哥老師：「面試時，老闆問你『有沒有男女朋友、打不打算結婚』，你覺得這樣問恰當嗎？為什麼？」',fields:[{id:'a',label:'你的看法',type:'textarea',ph:'我覺得…'}],check:v=>v.a.trim().length<10?{retry:'再多寫一點（至少 10 字）。'}:{ok:1},say:v=>v.a},
-  {intro:'系主任仲哥老師：「分組報告有同學都不做事，最後卻要掛名。你會怎麼處理？」',fields:[{id:'a',label:'你會怎麼處理？',type:'textarea',ph:'我會先…'}],check:v=>v.a.trim().length<10?{retry:'再多寫一點（至少 10 字）。'}:{ok:1},say:v=>v.a},
-  {intro:'系主任仲哥老師：「請舉一個企業照顧員工的做法，說說它為什麼重要。」',fields:[{id:'a',label:'你的例子',type:'textarea',ph:'例如：彈性上班、員工旅遊…'}],check:v=>v.a.trim().length<10?{retry:'再多寫一點（至少 10 字）。'}:{ok:1},say:v=>v.a},
-  {intro:'系主任仲哥老師：「網購賣家用假帳號幫自己刷五星好評，這樣對嗎？會造成什麼影響？」',fields:[{id:'a',label:'你的看法',type:'textarea',ph:'這樣會讓消費者…'}],check:v=>v.a.trim().length<10?{retry:'再多寫一點（至少 10 字）。'}:{ok:1},say:v=>v.a},
+    check:v=>!v.c.trim()?{retry:'先寫下你的回答再提交。'}:!v.r.trim()?{retry:'先寫下你的回答再提交。'}:{ok:1},say:v=>`${v.c}：${v.r}`},
+  {intro:'系主任仲哥老師：「請舉一個企業做『企業社會責任（CSR）』的例子，例如環保、公益、照顧員工。」',fields:[{id:'a',label:'你的例子',type:'textarea',ph:'哪家企業、做了什麼…'}],check:v=>!v.a.trim()?{retry:'先寫下你的回答再提交。'}:{ok:1},say:v=>v.a},
+  {intro:'系主任仲哥老師：「打工時，店長要你把快過期的食品換新標籤再賣，你會怎麼做？為什麼？」',fields:[{id:'a',label:'你會怎麼做？',type:'textarea',ph:'我會…因為…'}],check:v=>!v.a.trim()?{retry:'先寫下你的回答再提交。'}:{ok:1},say:v=>v.a},
+  {intro:'系主任仲哥老師：「如果你當老闆，你會怎麼對待員工？寫出一個具體做法。」',fields:[{id:'a',label:'你的做法',type:'textarea',ph:'例如：準時發薪水、提供教育訓練…'}],check:v=>!v.a.trim()?{retry:'先寫下你的回答再提交。'}:{ok:1},say:v=>v.a},
+  {intro:'系主任仲哥老師：「舉一個違反企業倫理的狀況（新聞或你聽過的），說說哪裡不對。」',fields:[{id:'a',label:'什麼狀況？哪裡不對？',type:'textarea',ph:'例如：黑心食品…'}],check:v=>!v.a.trim()?{retry:'先寫下你的回答再提交。'}:{ok:1},say:v=>v.a},
+  {intro:'系主任仲哥老師：「同事把公司文具拿回家用，你覺得可以嗎？說說你的看法。」',fields:[{id:'a',label:'你的看法',type:'textarea',ph:'我覺得…因為…'}],check:v=>!v.a.trim()?{retry:'先寫下你的回答再提交。'}:{ok:1},say:v=>v.a},
+  {intro:'系主任仲哥老師：「廣告說『百分百天然』，其實加了很多添加物，這樣有什麼問題？」',fields:[{id:'a',label:'你的看法',type:'textarea',ph:'這樣會…'}],check:v=>!v.a.trim()?{retry:'先寫下你的回答再提交。'}:{ok:1},say:v=>v.a},
+  {intro:'系主任仲哥老師：「公司為了省錢，把廢水偷偷排進河裡。如果你是員工，你會怎麼做？」',fields:[{id:'a',label:'你會怎麼做？',type:'textarea',ph:'我會…'}],check:v=>!v.a.trim()?{retry:'先寫下你的回答再提交。'}:{ok:1},say:v=>v.a},
+  {intro:'系主任仲哥老師：「面試時，老闆問你『有沒有男女朋友、打不打算結婚』，你覺得這樣問恰當嗎？為什麼？」',fields:[{id:'a',label:'你的看法',type:'textarea',ph:'我覺得…'}],check:v=>!v.a.trim()?{retry:'先寫下你的回答再提交。'}:{ok:1},say:v=>v.a},
+  {intro:'系主任仲哥老師：「分組報告有同學都不做事，最後卻要掛名。你會怎麼處理？」',fields:[{id:'a',label:'你會怎麼處理？',type:'textarea',ph:'我會先…'}],check:v=>!v.a.trim()?{retry:'先寫下你的回答再提交。'}:{ok:1},say:v=>v.a},
+  {intro:'系主任仲哥老師：「請舉一個企業照顧員工的做法，說說它為什麼重要。」',fields:[{id:'a',label:'你的例子',type:'textarea',ph:'例如：彈性上班、員工旅遊…'}],check:v=>!v.a.trim()?{retry:'先寫下你的回答再提交。'}:{ok:1},say:v=>v.a},
+  {intro:'系主任仲哥老師：「網購賣家用假帳號幫自己刷五星好評，這樣對嗎？會造成什麼影響？」',fields:[{id:'a',label:'你的看法',type:'textarea',ph:'這樣會讓消費者…'}],check:v=>!v.a.trim()?{retry:'先寫下你的回答再提交。'}:{ok:1},say:v=>v.a},
 ];
 const JP_V=['用日文打招呼','用日文說「謝謝」','用日文做一句自我介紹','用日文說「我是大學生」','用日文在餐廳點一杯咖啡','用日文說「早安」','用日文說「對不起」','用日文說「好吃！」','用日文問「多少錢？」','用日文說「我喜歡日本」','用日文說「再見」','用日文說「請多指教」','用日文問「廁所在哪裡？」','用日文說「我叫○○」'];
 const KR_V=['用韓文打招呼','用韓文說「謝謝」','用韓文做一句自我介紹','用韓文說「我是大學生」','用韓文說「很高興認識你」','用韓文說「對不起」','用韓文說「好吃！」','用韓文問「多少錢？」','用韓文說「再見」','用韓文說「我愛你」','用韓文說「加油！」','用韓文說「我是台灣人」','用韓文說「請給我這個」','用韓文說「我叫○○」'];
@@ -1447,8 +1460,8 @@ const TASKS={
     fields:[{id:'a',label:'答案',type:'number',ph:'輸入數字'}],
     check:v=>v.a.trim()===''?{retry:'先輸入答案再提交。'}:{ok:Math.abs(+v.a-q.a)<1e-9},
     win:()=>'阿明老師：「很好！你已經會用數據看出問題了。」',lose:`正確答案是 ${q.a}。`,say:v=>`答案 ${v.a}`}},
-  econ:p=>{const s=ECON_V[pickIdx(p,'econ',ECON_V.length)];return {kind:'form',...s,win:()=>'阿金老師摸摸光頭笑說：「這個例子很好，經濟學就在生活裡！」'}},
-  ethics:p=>{const s=ETHICS_V[pickIdx(p,'ethics',ETHICS_V.length)];return {kind:'form',...s,win:()=>'系主任仲哥老師點點頭：「想得很清楚，這就是企業倫理。」'}},
+  econ:p=>{const s=ECON_V[pickIdx(p,'econ',ECON_V.length)];return {kind:'form',tj:1,...s,win:()=>'阿金老師摸摸光頭笑說：「這個例子很好，經濟學就在生活裡！」'}},
+  ethics:p=>{const s=ETHICS_V[pickIdx(p,'ethics',ETHICS_V.length)];return {kind:'form',tj:1,...s,win:()=>'系主任仲哥老師點點頭：「想得很清楚，這就是企業倫理。」'}},
   consumer:p=>({kind:'mcq',intro:'仲哥老師：「消費者心裡在想什麼？懂了就會做行銷。」',...pickBank(p,'consumer')}),
   scm:p=>({kind:'mcq',intro:'阿金老師：「東西怎麼從工廠到你手上？這就是供應鏈。」',...pickBank(p,'scm')}),
   trade:p=>({kind:'mcq',intro:'英子老師：「做國際生意，這些都要懂！」',...pickBank(p,'trade')}),
@@ -1457,9 +1470,9 @@ const TASKS={
     check:v=>{const ks=[v.a,v.b,v.c].map(bankKey);if(ks.some(k=>!k))return {retry:'有一家看起來不是銀行，請寫出完整的銀行名稱（例如：第一銀行、玉山銀行）。'};
       if(new Set(ks).size<3)return {retry:'三家銀行不能重複喔。'};const used=p.banksUsed||[];const dup=ks.find(k=>used.includes(k));if(dup)return {retry:`「${dup}」你之前寫過了，換一家吧！`};return {ok:1,keys:ks}},
     win:()=>'武哥老師：「Very good! 認識銀行，就是認識金融市場的第一步。」',say:v=>[v.a,v.b,v.c].join('、'),after:r=>{p.banksUsed=[...(p.banksUsed||[]),...(r.keys||[])]}}),
-  tactics:p=>({kind:'form',intro:`艾瑞克老師：「品牌行銷有很多招！請說出三個行銷手段${(p.tacUsed||[]).length?'，<b>不能和你之前說過的重複</b>':''}。」<br><small class="note">例如：網紅業配、限時折扣、會員集點、聯名商品、直播帶貨、快閃店…</small>${(p.tacUsed||[]).length?`<br><small class="note">你說過：${p.tacUsed.join('、')}</small>`:''}`,
+  tactics:p=>({kind:'form',tj:1,intro:`艾瑞克老師：「品牌行銷有很多招！請說出三個行銷手段${(p.tacUsed||[]).length?'，<b>不能和你之前說過的重複</b>':''}。」<br><small class="note">例如：網紅業配、限時折扣、會員集點、聯名商品、直播帶貨、快閃店…</small>${(p.tacUsed||[]).length?`<br><small class="note">你說過：${p.tacUsed.join('、')}</small>`:''}`,
     fields:[{id:'a',label:'行銷手段 1',type:'text',ph:''},{id:'b',label:'行銷手段 2',type:'text',ph:''},{id:'c',label:'行銷手段 3',type:'text',ph:''}],
-    check:v=>{const ks=[v.a,v.b,v.c].map(x=>x.trim());if(ks.some(k=>k.length<2))return {retry:'三個都要寫，每個至少 2 個字。'};
+    check:v=>{const ks=[v.a,v.b,v.c].map(x=>x.trim());if(ks.some(k=>!k))return {retry:'三個都要寫喔。'};
       if(new Set(ks).size<3)return {retry:'三個行銷手段不能重複喔。'};const used=p.tacUsed||[];const dup=ks.find(k=>used.includes(k));if(dup)return {retry:`「${dup}」你之前說過了，換一個吧！`};return {ok:1,keys:ks}},
     win:()=>'艾瑞克老師：「很好！懂得組合不同的行銷手段，品牌就會被記住。」',fx:[['love',1]],say:v=>[v.a,v.b,v.c].join('、'),after:r=>{p.tacUsed=[...(p.tacUsed||[]),...(r.keys||[])]}}),
   jp:p=>{const s=JP_V[pickIdx(p,'jp',JP_V.length)];return {kind:'choice',prompt:`雙慧老師：「${s}！」`,
@@ -1497,6 +1510,12 @@ async function runTask(p,spec,ctx){
   $('#sheet')._check=spec.check;
   const r=await taskSheet({...ctx,intro:spec.intro,fields:spec.fields});
   if(!r) return null;
+  if(r.ok&&spec.tj){ const said=spec.say(r.v);
+    const v=await judgeSheet(p,{...ctx,title:'請老師判斷這個回答',prompt:S.online?spec.intro:`${spec.intro}<br><br>📝 <b>${esc(p.name)} 的回答：</b>${esc(said)}`,label:ctx.tag,stu:said,judge:'答案沒有字數限制，由在場老師判斷是否可行。'});
+    if(v===null) return null;
+    if(v&&spec.after) spec.after(r.r||{});
+    return {ok:v,said,lose:'老師覺得這個回答還可以再想想，下次停在這裡再挑戰！'};
+  }
   if(r.ok&&spec.after) spec.after(r.r||{});
   return {ok:r.ok,said:spec.say(r.v),lose:spec.lose};
 }
@@ -1579,7 +1598,7 @@ async function doSpot(p,t){
     '復合':`和 ${c.name} 回到第一次約會的${t.n}，你想把話說開。`,
     '成為模範CP':`和 ${c.name} 在${t.n}拍下兩人的合照，全系都在按讚。`,
   }[next.n];
-  const need={'告白':3,'復合':3,'成為模範CP':4}[next.n];
+  const need={'告白':3,'成為模範CP':4}[next.n];
   let ok=true, used=false;
   if(need){ok=await diceCheck({tag,title:`挑戰：${next.n}`,art,text:story,need});
     if(!ok&&(p.lovePt||0)>0){used=true;ok=true;p.lovePt--}}
@@ -1794,7 +1813,7 @@ async function doIntern(p,t){
     const qi=await internClaim(t.idx);
     if(qi===null){log(`${esc(p.name)} 來到${I.n}，題目已全部挑戰完畢`);
       return sheet({tag,title:I.n,art:avatar(AV[p.av]),body:'<p>此國家的題目已全部挑戰完畢！請繼續探索其他海外實習地點。</p>',buttons:[{l:'繼續遊戲',v:1,p:1}]})}
-    const ok=Math.random()<.75,g=ok?2:1;addCr(p,g);log(`${esc(p.name)} 在${I.n}${ok?'答對':'答錯'}（+${g} 學分）`);
+    const ok=Math.random()<.75,g=ok?3:1;addCr(p,g);log(`${esc(p.name)} 在${I.n}${ok?'答對':'答錯'}（+${g} 學分）`);
     return sheet({tag,title:I.n,art:avatar(AV[p.av]),body:`<p>${esc(p.name)} 回答實習知識問答：${ok?'答對了':'答錯了'}，學分 +${g}。</p>`,buttons:[{l:'繼續',v:1,p:1}]});
   }
   await sheet({stay:1,tag,title:I.n,body:`<div class="ipic">${pic}</div><p>${I.intro}</p>`,buttons:[{l:'開始答題',v:1,p:1}]});
@@ -1803,7 +1822,7 @@ async function doIntern(p,t){
     return sheet({stay:1,tag,title:I.n,art:avatar(AV[p.av]),body:'<p><b>此國家的題目已全部挑戰完畢！請繼續探索其他海外實習地點。</b></p><p class="note">這次沒有答題，也不會發學分。</p>',buttons:[{l:'繼續遊戲',v:1,p:1}]})}
   const Q=I.qs[qi];
   const pick=await mcqSheet({tag:I.n,title:'實習知識問答',q:Q.q,o:Q.o});
-  const ok=pick===Q.a, g=ok?2:1; addCr(p,g);
+  const ok=pick===Q.a, g=ok?3:1; addCr(p,g);
   log(`${esc(p.name)} 在${I.n}${ok?'答對':'答錯'}（+${g} 學分）`);
   await sheet({tag:I.n,title:ok?'答對了！':'答錯了',art:avatar(AV[p.av]),
     body:`<p>你的答案：${LET[pick]}. ${esc(Q.o[pick])}</p><p>正確答案：<b class="good">${LET[Q.a]}. ${esc(Q.o[Q.a])}</b></p><p><b>解析：</b>${esc(Q.ex)}</p>
@@ -1953,7 +1972,7 @@ async function doClub(p,t){
 /* =====================================================================
    v48：課程難易度自選、TA PK、社團 3 換 1、交換資格與雙聯學位挑戰、實習資格
    ===================================================================== */
-const CRX={easy:1,hard:2}, LVN={easy:'簡單（國中程度）',hard:'困難（高中程度）'};
+const CRX={easy:2,hard:3}, LVN={easy:'簡單（國中程度）',hard:'困難（高中程度）'};
 const SQ=(q,o,a,ex)=>({q,o,a,ex});            // 正確答案寫在 o[0]，出題時會打亂
 const MCQ2={
  ethics:{easy:[
@@ -1977,11 +1996,11 @@ const MCQ2={
   SQ('印表機和墨水匣常常一起使用，經濟學稱它們為？',['互補品','替代品','劣等財','公共財'],0,'互補品會一起被購買。'),
   SQ('物價普遍持續上漲的現象叫做什麼？',['通貨膨脹','通貨緊縮','經濟成長','失業'],0,'通膨會讓同樣的錢買到的東西變少。')],
  hard:[
-  SQ('某商品價格上漲 10%，需求量減少 20%，需求的價格彈性是多少？',['2','0.5','10','20'],0,'彈性＝需求量變動率 ÷ 價格變動率＝20% ÷ 10%＝2。'),
+  SQ('雞排從 60 元漲到 90 元，大部分同學會怎麼做？',['買少一點或改買別的','買更多','完全不受影響','全部買光'],0,'價格上漲，需求量通常會減少，這就是「需求法則」。'),
   SQ('政府把某商品的「價格上限」訂得比市場均衡價格低，最可能造成什麼？',['供不應求（短缺）','供過於求','價格上漲','沒有影響'],0,'價格被壓低，想買的人變多、願意賣的人變少。'),
   SQ('國內生產毛額（GDP）衡量的是什麼？',['一國一段期間內生產的最終商品與勞務的市場價值','政府的稅收','出口總額','人口數'],0,'GDP 是衡量經濟規模最常用的指標。'),
   SQ('中央銀行調升利率，通常會造成什麼影響？',['借錢成本變高，有助抑制通膨','物價暴漲','存款利息下降','市面上的錢變多'],0,'升息讓借貸變貴，消費與投資降溫。'),
-  SQ('市場上只有少數幾家大廠商、彼此互相影響定價，這種市場結構是？',['寡占','完全競爭','獨占性競爭','獨占'],0,'例如電信、石油業。')]},
+  SQ('市場上只有一家公司在賣某樣東西，沒有競爭對手，這叫做？',['獨占','完全競爭','通貨膨脹','外包'],0,'例如台灣的自來水公司；沒有競爭，消費者的選擇就變少。')]},
  speech:{easy:[
   SQ('上台報告時，眼睛最好看哪裡？',['台下的聽眾','一直看地板','一直盯著投影片','閉上眼睛'],0,'眼神接觸能讓聽眾覺得被重視。'),
   SQ('簡報開頭最重要的是什麼？',['吸引注意並說明主題','先道歉自己準備不足','把投影片的字全部念完','先講十分鐘笑話'],0,'好的開場讓聽眾想繼續聽。'),
@@ -2009,7 +2028,7 @@ const MCQ2={
   SQ('「사장님」是什麼意思？',['老闆、社長','學生','朋友','老師'],0,'韓國人常用사장님稱呼店家老闆。')]},
  banks:{hard:[
   SQ('存款 10,000 元，年利率 2%，用單利計算，1 年後的利息是多少？',['200 元','20 元','2,000 元','102 元'],0,'10,000 × 2% ＝ 200 元。'),
-  SQ('本金 10,000 元，年利率 10%，複利計算，2 年後本利和是多少？',['12,100 元','12,000 元','11,000 元','12,210 元'],0,'10,000 × 1.1 × 1.1 ＝ 12,100 元。'),
+  SQ('「複利」和「單利」最大的不同是？',['複利會把利息再加進本金一起生利息','複利沒有利息','單利的利息比較多','兩者完全一樣'],0,'複利就是「利滾利」，存越久差距越大。'),
   SQ('一般來說，股票和銀行定存相比？',['股票報酬可能較高，但風險也較高','股票沒有風險','定存的風險最高','兩者完全一樣'],0,'報酬和風險通常是一起的。'),
   SQ('「不要把所有雞蛋放在同一個籃子裡」是什麼投資觀念？',['分散投資降低風險','全部買同一檔股票','只存現金','借錢投資'],0,'分散投資可以降低單一投資失敗的影響。'),
   SQ('通貨膨脹率 3%、存款利率 1%，存款的實質購買力會怎樣？',['下降','上升','不變','加倍'],0,'利息趕不上物價上漲，錢變得比較不值錢。'),
@@ -2026,16 +2045,16 @@ const MCQ2={
   SQ('用來排定工作時程、看出每項工作開始與結束時間的圖表是？',['甘特圖','圓餅圖','魚骨圖','散布圖'],0,'甘特圖是專案管理的常用工具。'),
   SQ('KPI 是什麼的縮寫？',['關鍵績效指標','公司名稱','員工人數','產品價格'],0,'KPI＝Key Performance Indicator。'),
   SQ('PDCA 循環中的「C」代表什麼？',['檢查（Check）','計畫（Plan）','執行（Do）','行動改善（Act）'],0,'PDCA：計畫、執行、檢查、行動。'),
-  SQ('一位主管能直接管理的部屬人數，稱為？',['控制幅度','組織圖','指揮鏈','分權'],0,'控制幅度太大，主管會管不過來。')]},
+  SQ('公司用一張圖畫出各部門和誰管誰，這張圖叫做？',['組織圖','甘特圖','圓餅圖','地圖'],0,'組織圖讓大家一眼看懂公司的部門和上下關係。')]},
 };
 /* 高中程度的計算題 */
 function statsHardQ(){
   const k=rnd(3);
-  if(k===0){const m=20+rnd(60),d=1+rnd(9),a=[m-d,m-d,m+d,m+d].sort(()=>Math.random()-.5);
-    return {en:`What is the (population) standard deviation of ${a.join(', ')}?`,zh:'母體標準差',ans:d}}
+  if(k===0){const a=[0,0,0,0,0].map(()=>10+rnd(80)),m=[...a].sort((x,y)=>x-y)[2];
+    return {en:`What is the median of ${a.join(', ')}?`,zh:'中位數：由小排到大，最中間的數',ans:m}}
   if(k===1){const s=4+rnd(7),n=6-Math.abs(7-s);return {en:`Roll two dice. In how many ways can the sum be ${s}?`,zh:'擲兩顆骰子，點數和為 '+s+' 的情形有幾種？',ans:n}}
-  const big=[300,500,1000][rnd(3)],pb=[10,20][rnd(2)],sm=[20,50][rnd(2)],ps=[20,50][rnd(2)];
-  return {en:`A lottery ticket wins $${big} with probability ${pb}% and $${sm} with probability ${ps}%. What is the expected prize?`,zh:'期望值＝每種獎金 × 機率，再加起來',ans:big*pb/100+sm*ps/100};
+  const tot=[10,20,25][rnd(3)],r=1+rnd(tot-1);
+  return {en:`A bag has ${r} red balls and ${tot-r} blue balls. If you pick one ball, what is the probability (in %) that it is red?`,zh:'機率（%）＝紅球數 ÷ 全部球數 × 100',ans:r*100/tot};
 }
 function dataHardQ(){
   const M=['1 月','2 月','3 月','4 月','5 月'], k=rnd(3);
@@ -2060,7 +2079,7 @@ const LEVELS={
  ethics:{easy:{mcq:MCQ2.ethics.easy},hard:{mcq:MCQ2.ethics.hard,extra:p=>TASKS.ethics(p),nExtra:12}},
  consumer:{easy:{mcq:BK('consumer',10,16)},hard:{mcq:BK('consumer',0,10)}},
  stats:{easy:{gen:p=>{const q=uniqGen(p,'g_stats',statsQ,x=>x.en);return {form:numForm(`武哥老師全英授課：「${q.en}」<br><small class="note">（${q.zh}）</small>`,q.ans,'Excellent! 武哥老師開心地唱起德文歌。'),mcq:numMcq(`${q.en}（${q.zh}）`,q.ans,'')}}},
-        hard:{gen:p=>{const q=uniqGen(p,'g_statsH',statsHardQ,x=>x.en);return {form:numForm(`武哥老師全英授課：「${q.en}」<br><small class="note">（${q.zh}）</small>`,q.ans,'Excellent! 這是高中統計的程度喔！'),mcq:numMcq(`${q.en}（${q.zh}）`,q.ans,'')}}}},
+        hard:{gen:p=>{const q=uniqGen(p,'g_statsH',statsHardQ,x=>x.en);return {form:numForm(`武哥老師全英授課：「${q.en}」<br><small class="note">（${q.zh}）</small>`,q.ans,'Excellent! 統計就是這麼生活化！'),mcq:numMcq(`${q.en}（${q.zh}）`,q.ans,'')}}}},
  banks:{easy:{mcq:BANK2.banks.filter(x=>x.kind==='mcq').map(x=>({q:x.q,o:x.o,a:x.a,ex:x.ex})),fixed:1},hard:{mcq:MCQ2.banks.hard,extra:p=>TASKS.banks(p),nExtra:3}},
  econ:{easy:{mcq:MCQ2.econ.easy},hard:{mcq:MCQ2.econ.hard,extra:p=>TASKS.econ(p),nExtra:12}},
  scm:{easy:{mcq:BK('scm',10,16)},hard:{mcq:BK('scm',0,10)}},
@@ -2132,8 +2151,8 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-pk]');if(!
 
 async function chooseLevel(p,ctx,extra){
   if(p.bot) return Math.random()<.5?'easy':'hard';
-  return sheet({stay:1,...ctx,body:`${extra||''}<p>要挑戰哪一種難度？</p><p class="note">答對：簡單題 +1 學分、困難題 +2 學分。答錯或放棄 0 學分。</p>`,
-    buttons:[{l:'簡單題（國中程度）+1',v:'easy'},{l:'困難題（高中程度）+2',v:'hard',p:1}]});
+  return sheet({stay:1,...ctx,body:`${extra||''}<p>要挑戰哪一種難度？</p><p class="note">答對：簡單題 +2 學分、困難題 +3 學分。答錯或放棄 0 學分。</p>`,
+    buttons:[{l:'簡單題（國中程度）+2',v:'easy'},{l:'困難題（高中程度）+3',v:'hard',p:1}]});
 }
 async function doCourse(p,t){
   const c=COURSES[t.idx], T=T_BY(c.t), art=avatar(T.av), who=`${T.name}老師${T.name==='仲哥'?'（系主任）':''}`, tag=`國企系課程・${c.n}`, ctx={tag,title:`${who}的課`,art};
@@ -2222,12 +2241,12 @@ function exPassOK(p){return p.cr>=2||langCount(p)>=1||!!p.toeicGold}
 function exPassWhy(p){return `總學分 ${p.cr}（需 2 分以上）、語言能力 ${langCount(p)} 項（需 1 項）、多益金色證書 ${p.toeicGold?'有':'沒有'}`}
 /* 這一步擲骰經過交換格，停在課程（答對後）或實習格時，可以申請該校交換 */
 async function exchOffer(p,where){
-  const x=p._passX; if(x==null) return false;
+  const x=p._passX; if(x==null||ieLocked(p)) return false;
   p.exq=p.exq||[]; p.exDeg=p.exDeg||[]; const X=EXCH[x];
   if(p.exq.includes(x)||p.exDeg.includes(x)) return false;
   if(!exPassOK(p)){ if(!p.bot) await sheet({tag:'國外姊妹校交換',title:`剛經過${X.n}`,art:svgBox(ART.plane(X)),body:`<p>你剛剛經過${X.n}，可惜還沒達到交換門檻（符合任一項即可）：</p><p class="note">${exPassWhy(p)}</p>`,buttons:[{l:'繼續',v:1,p:1}]}); return false }
   const v=p.bot?Math.random()<.6:await sheet({tag:'國外姊妹校交換',title:`申請到${X.n}交換？`,art:svgBox(ART.plane(X)),
-    body:`<p>你剛剛經過${X.n}，而且符合交換門檻！</p><p>申請交換：<b>學分 +1，暫停一回合</b>（出國準備）。之後只要停在任何交換格，就能挑戰雙聯學位（兩題都答對，學分 +2）。</p>${where==='intern'?'<p class="note">選擇交換的話，這次就不做實習。</p>':''}`,
+    body:`<p>你剛剛經過${X.n}，而且符合交換門檻！</p><p>申請交換：<b>學分 +1，暫停一回合</b>（出國準備）。之後只要停在任何交換格，就能挑戰雙聯學位（兩題都答對，學分 +3）。</p>${where==='intern'?'<p class="note">選擇交換的話，這次就不做實習。</p>':''}`,
     buttons:[{l:'申請交換',v:1,p:1},{l:'先不要',v:0}]});
   if(!v) return false;
   p.exq.push(x); addCr(p,1); p.skip=(p.skip||0)+1; p.skipWhy='出國交換準備';
@@ -2245,14 +2264,14 @@ async function doExchange(p,t){
   let ok;
   if(p.bot) ok=Math.random()<.55;
   else{
-    await sheet({stay:1,tag,title:'雙聯制學位挑戰',art,body:`<p>你有<b>${X.n}</b>的交換資格！回答兩題（多益英文、匯率換算），兩題都答對就拿到雙聯學位，學分 +2。</p>`,buttons:[{l:'開始挑戰',v:1,p:1}]});
+    await sheet({stay:1,tag,title:'雙聯制學位挑戰',art,body:`<p>你有<b>${X.n}</b>的交換資格！回答兩題（多益英文、匯率換算），兩題都答對就拿到雙聯學位，學分 +3。</p>`,buttons:[{l:'開始挑戰',v:1,p:1}]});
     const q1=pickBank(p,'toeic'); const a1=await mcqSheet({tag,title:'第 1 題・多益英文',q:q1.q,o:q1.o});
     const q2=fxMcq(X); const a2=await mcqSheet({tag,title:'第 2 題・匯率換算',q:q2.q,o:q2.o});
     ok=a1===q1.a&&a2===q2.a;
     await sheet({tag,title:ok?'兩題都答對！':'這次沒有全對',art:avatar(AV[p.av]),body:`<p>第 1 題 ${a1===q1.a?'✓':'✗'}：${LET[q1.a]}. ${esc(q1.o[q1.a])}</p><p>第 2 題 ${a2===q2.a?'✓':'✗'}：${LET[q2.a]}. ${esc(q2.o[q2.a])}<br><small class="note">${esc(q2.ex)}</small></p>${ok?'':'<p>交換資格還在，下次停在交換格可以再挑戰。</p>'}`,buttons:[{l:'繼續',v:1,p:1}]});
   }
-  if(ok){p.exDeg.push(x);addCr(p,2);addIntl(p,'雙聯學位・'+X.n);log(`${esc(p.name)} 拿到${X.n}雙聯學位（學分 +2）`);
-    if(!p.bot) await sheet({tag,title:'🎓 拿到雙聯制學位！',art,body:`<p>恭喜！${X.n}雙聯學位到手，學分 +2，國際成就 +1。</p>`,buttons:[{l:'繼續',v:1,p:1}]})}
+  if(ok){p.exDeg.push(x);addCr(p,3);addIntl(p,'雙聯學位・'+X.n);log(`${esc(p.name)} 拿到${X.n}雙聯學位（學分 +3）`);
+    if(!p.bot) await sheet({tag,title:'🎓 拿到雙聯制學位！',art,body:`<p>恭喜！${X.n}雙聯學位到手，學分 +3，國際成就 +1。</p>`,buttons:[{l:'繼續',v:1,p:1}]})}
   else log(`${esc(p.name)} 挑戰${X.n}雙聯學位沒成功`);
 }
 /* ---------- 海外實習：課程學分滿 3 分才有資格；經過交換格則可改選交換 ---------- */
@@ -2275,7 +2294,7 @@ doIntern=async function(p,t){
 };
 async function exchOfferForce(p,x){p.exq=p.exq||[];const X=EXCH[x];p.exq.push(x);p.skip=(p.skip||0)+1;p.skipWhy='出國交換準備';
   log(`${esc(p.name)} 取得${X.n}交換資格（暫停一回合）`);
-  if(!p.bot) await sheet({tag:'國外姊妹校交換',title:`取得${X.n}交換資格！`,art:svgBox(ART.plane(X)),body:'<p>下回合暫停一次做出國準備，之後停在任何交換格就能挑戰雙聯學位（兩題都答對，學分 +2）。</p>',buttons:[{l:'繼續',v:1,p:1}]})}
+  if(!p.bot) await sheet({tag:'國外姊妹校交換',title:`取得${X.n}交換資格！`,art:svgBox(ART.plane(X)),body:'<p>下回合暫停一次做出國準備，之後停在任何交換格就能挑戰雙聯學位（兩題都答對，學分 +3）。</p>',buttons:[{l:'繼續',v:1,p:1}]})}
 /* ---------- 畢業 ---------- */
 async function graduate(p,place,final){
   const cs=stage(p.clubPt), ls=(p.loveMax||0);
@@ -2512,7 +2531,7 @@ function renderJudge(){
   }
   el.hidden=!pend.length;
   pend.forEach(([u,j])=>{if(!judgeSeen.has(j.id)){judgeSeen.add(j.id);Music.ding()}});
-  el.innerHTML=`<div class="label">請老師判定（${pend.length}）</div>`+pend.map(([u,j])=>`<div class="jcard">${avatar(avOf(j.av))}<div class="jtx"><b>${esc(j.name||'同學')}</b><small>${esc(j.task||'')}</small><p>${esc(j.prompt||'')}</p>${j.ans?`<p class="jans"><b>參考答案：</b>${esc(j.ans)}</p>`:''}</div>
+  el.innerHTML=`<div class="label">請老師判定（${pend.length}）</div>`+pend.map(([u,j])=>`<div class="jcard">${avatar(avOf(j.av))}<div class="jtx"><b>${esc(j.name||'同學')}</b><small>${esc(j.task||'')}</small><p>${esc(j.prompt||'')}</p>${j.stu?`<p class="jans"><b>學生回答：</b>${esc(j.stu)}</p>`:''}${j.ans?`<p class="jans"><b>參考答案：</b>${esc(j.ans)}</p>`:''}</div>
     <div class="jbtn"><button class="btn primary" data-jv="pass" data-ju="${esc(u)}" data-jid="${esc(j.id)}">✓ 通過</button><button class="btn" data-jv="fail" data-ju="${esc(u)}" data-jid="${esc(j.id)}">✗ 不通過</button></div></div>`).join('');
 }
 async function doKick(id){
@@ -2686,9 +2705,11 @@ async function botAct(id){
   await ref.child('players/'+id).update({pos});
   await stg({tag:'擲骰子',title:`擲出 ${a+b} 點！`,text:`來到「${t.n}」。`,roll:a+b,pos});
   await new Promise(r=>setTimeout(r,1600));
-  if(t.type==='course'){const lv=Math.random()<.5?1:2, ok=Math.random()<(lv===1?.8:.6);
-    if(ok){cr+=lv;ccr+=lv;ev.push(`${nm} 在${t.n}課答對${lv===1?'簡單':'困難'}題（+${lv} 學分）`);
-      if(passX!=null&&!exq.includes(passX)&&!exDeg.includes(passX)&&(cr>=2)&&Math.random()<.6){exq.push(passX);cr+=1;skip=1;skipWhy='出國交換準備';ev.push(`${nm} 取得${EXCH[passX].n}交換資格（學分 +1，暫停一回合）`)}}
+  const lockIE=(p.turns||0)<OPEN_R;
+  if((t.type==='intern'||t.type==='exch')&&lockIE){cr+=1;ev.push(`${nm} 來到${t.n}（第 ${OPEN_R+1} 輪起開放），先拿 1 學分`)}
+  else if(t.type==='course'){const lv=Math.random()<.5?1:2, ok=Math.random()<(lv===1?.8:.6), g=lv+1;
+    if(ok){cr+=g;ccr+=g;ev.push(`${nm} 在${t.n}課答對${lv===1?'簡單':'困難'}題（+${g} 學分）`);
+      if(!lockIE&&passX!=null&&!exq.includes(passX)&&!exDeg.includes(passX)&&(cr>=2)&&Math.random()<.6){exq.push(passX);cr+=1;skip=1;skipWhy='出國交換準備';ev.push(`${nm} 取得${EXCH[passX].n}交換資格（學分 +1，暫停一回合）`)}}
     else ev.push(`${nm} 在${t.n}課沒答對`)}
   else if(t.type==='club'){const ci=t.idx, cl=((r.clubs||{})[ci])||{}, rd=p.turns||0, my=+(p.cIdx==null?-1:p.cIdx);
     const cref=ref.child('clubs/'+ci), mine=my>=0?((r.clubs||{})[my]||{}):{};
@@ -2715,10 +2736,10 @@ async function botAct(id){
       const left=INTERNS[t.idx].qs.map((x,k)=>k).filter(k=>!used[k]);
       if(canEx) cr+=1;
       if(!left.length) ev.push(`${nm} 來到${t.n}，題目已全部挑戰完畢`);
-      else{await iref.child(String(left[rnd(left.length)])).set(true);const ok=Math.random()<.75,g=ok?2:1;cr+=g;ev.push(`${nm} 在${t.n}知識問答${ok?'答對':'答錯'}（+${g} 學分）`)}}}
+      else{await iref.child(String(left[rnd(left.length)])).set(true);const ok=Math.random()<.75,g=ok?3:1;cr+=g;ev.push(`${nm} 在${t.n}知識問答${ok?'答對':'答錯'}（+${g} 學分）`)}}}
   else if(t.type==='exch'){const X=EXCH[t.idx], todo=exq.filter(k=>!exDeg.includes(k));
     if(!todo.length) ev.push(`${nm} 路過${X.n}`);
-    else{const x=todo.includes(t.idx)?t.idx:todo[0];if(Math.random()<.55){exDeg.push(x);cr+=2;intl+=1;if(intl%3===0)cr+=1;ev.push(`${nm} 拿到${EXCH[x].n}雙聯學位（學分 +2）`)}else ev.push(`${nm} 挑戰${EXCH[x].n}雙聯學位沒成功`)}}
+    else{const x=todo.includes(t.idx)?t.idx:todo[0];if(Math.random()<.55){exDeg.push(x);cr+=3;intl+=1;if(intl%3===0)cr+=1;ev.push(`${nm} 拿到${EXCH[x].n}雙聯學位（學分 +3）`)}else ev.push(`${nm} 挑戰${EXCH[x].n}雙聯學位沒成功`)}}
   else if(t.type==='chance'){const c=CHANCE[rnd(CHANCE.length)];cr+=sumCr(c.fx);if(c.skill)skills++;ev.push(`${nm} 抽到機會：${c.t}`)}
   else if(t.type==='fate'){const c=FATE[rnd(FATE.length)];cr+=sumCr(c.fx);if(c.skip||c.jail){skip=1;skipWhy='暫停'}ev.push(`${nm} 抽到命運：${c.t}`)}
   else if(t.code==='F'){cr+=1;skip=1;skipWhy='期末週閉關';ev.push(`${nm} 在期末考週熬夜 K 書（+1 學分），下回合閉關`)}
@@ -2977,7 +2998,7 @@ function enterStudent(code){
   listen(ref.child('mode'),'value',sn=>{S.roomMode=sn.val()||'free';updateRollBtn()});
   listen(ref.child('order'),'value',sn=>{S.roomOrder=sn.val()||[]});
   listen(ref.child('turn'),'value',sn=>{const t=sn.val(), was=S.turnUid; S.turnUid=t;
-    if(S.roomMode==='turn'&&t===uid&&was!==uid&&!S.over){toast('輪到你了！擲骰子吧');try{navigator.vibrate&&navigator.vibrate([120,60,120])}catch(e){}}
+    if(S.roomMode==='turn'&&t===uid&&was!==uid&&!S.over) turnAlert();
     updateRollBtn()});
   listen(ref.child('players'),'value',sn=>{
     livePlayers=sn.val()||{};
@@ -3031,10 +3052,20 @@ function renderLive(){
 }
 function updateRollBtn(){
   const btn=$('#btnRoll'); if(!btn||!S) return;
+  btn.classList.remove('myturn');
   if(!(S.online&&S.roomMode==='turn')){const bot=!S.online&&S.players[S.cur]&&S.players[S.cur].bot;btn.textContent=bot?'電腦代玩中…':'擲骰子';btn.disabled=!!(bot||busy||S.over);return}
   if(S.over){btn.disabled=true;btn.textContent='已畢業';return}
   const mine=S.turnUid===uid, who=S.turnUid&&livePlayers[S.turnUid]?livePlayers[S.turnUid].name:'';
-  btn.disabled=!mine||busy; btn.textContent=mine?'輪到你！擲骰子':(who?`等待中・輪到 ${who}`:'等待老師開始');
+  btn.classList.toggle('myturn',!!(mine&&!busy)); btn.disabled=!mine||busy; btn.textContent=mine?'輪到你！擲骰子':(who?`等待中・輪到 ${who}`:'等待老師開始');
+}
+/* v49：輪到自己時：大字提示＋提示音＋震動（Android）＋分頁標題閃爍＋擲骰鍵跳動 */
+let _ttl=null;
+function turnAlert(){
+  toast('輪到你了！擲骰子吧');
+  try{navigator.vibrate&&navigator.vibrate([300,120,300,120,500])}catch(e){}
+  try{Music.ding();setTimeout(()=>{try{Music.ding()}catch(e){}},700)}catch(e){}
+  try{let b=document.getElementById('turnBan');if(b)b.remove();b=document.createElement('div');b.id='turnBan';b.innerHTML='🎲 輪到你了！<small>按下方「擲骰子」</small>';document.body.appendChild(b);setTimeout(()=>b.remove(),2600)}catch(e){}
+  if(!_ttl){const t0=document.title;let k=0;_ttl=setInterval(()=>{if(!(S&&S.turnUid===uid)||(!document.hidden&&k>6)){clearInterval(_ttl);_ttl=null;document.title=t0;return}document.title=(k++%2)?t0:'🎲 輪到你了！'},900)}
 }
 async function passTurn(){
   if(!(S&&S.online&&S.roomMode==='turn'&&S.turnUid===uid&&fb)) return;
